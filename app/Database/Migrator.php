@@ -3,7 +3,7 @@
 namespace App\Database;
 
 use App\Core\App;
-use App\Core\Database;
+use app\Core\Database\Database;
 
 class Migrator
 {

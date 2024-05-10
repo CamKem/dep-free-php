@@ -12,25 +12,25 @@
             </div>
             <nav class="hidden mobile-only mobile-nav">
                 <ul>
-                    <li><a aria-label="Login" href="#">Login</a></li>
-                    <li><a aria-label="Home" href="#">Home</a></li>
-                    <li><a aria-label="About SW" href="#">About SW</a></li>
-                    <li><a aria-label="Contact Us" href="#">Contact Us</a></li>
-                    <li><a aria-label="View Products" href="#">View Products</a></li>
+                    <li><a aria-label="Login" href="<?= route('login.index') ?>">Login</a></li>
+                    <li><a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
+                    <li><a aria-label="About SW" href="<?= route('about') ?>">About SW</a></li>
+                    <li><a aria-label="Contact Us" href="<?= route('contact.index') ?>">Contact Us</a></li>
+                    <li><a aria-label="View Products" href="<?= route('products.index') ?>">View Products</a></li>
                 </ul>
             </nav>
 
             <nav class="desktop-only desktop-nav">
                 <ul>
-                    <li><a aria-label="Home" href="#">Home</a></li>
-                    <li><a aria-label="About SW" href="#">About SW</a></li>
-                    <li><a aria-label="Contact Us" href="#">Contact Us</a></li>
-                    <li><a aria-label="View Products" href="#">View Products</a></li>
+                    <li><a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
+                    <li><a aria-label="About SW" href="<?= route('about') ?>">About SW</a></li>
+                    <li><a aria-label="Contact Us" href="<?= route('contact.index') ?>">Contact Us</a></li>
+                    <li><a aria-label="View Products" href="<?= route('products.index') ?>">View Products</a></li>
                 </ul>
             </nav>
 
             <div class="top-bar-right">
-                <a href="#" aria-label="Login" class="desktop-only login-link">
+                <a href="<?= route('login.index') ?>" aria-label="Login" class="desktop-only login-link">
                     <i class="fas fa-lock" aria-hidden="true"></i>
                     <span>Login</span>
                 </a>
@@ -49,7 +49,7 @@
         <section class="logo-container">
             <h1 class="sr-only">Sports Warehouse</h1>
             <a href="/" aria-label="Sports Warehouse Home" class="logo">
-                <img src="./assets/images/sports-warehouse-logo.svg" alt="Sports Warehouse Logo">
+                <img src="./images/sports-warehouse-logo.svg" alt="Sports Warehouse Logo">
             </a>
         </section>
 
@@ -64,13 +64,11 @@
 
     <nav class="category-nav content-container" aria-label="Product categories">
         <ul>
-            <li><a aria-label="Shoes" href="#">Shoes</a></li>
-            <li><a aria-label="Helmets" href="#">Helmets</a></li>
-            <li><a aria-label="Pants" href="#">Pants</a></li>
-            <li><a aria-label="Balls" href="#">Balls</a></li>
-            <li><a aria-label="Tops" href="#">Tops</a></li>
-            <li><a aria-label="Equipment" href="#">Equipment</a></li>
-            <li><a aria-label="Training Gear" href="#">Training Gear</a></li>
+            <?php
+            foreach ($categories->toArray() as $category) {
+                echo "<li><a aria-label=\"{$category['name']}\" href=\"" . route('categories.show', ['category' => $category['slug']]) . "\">{$category['name']}</a></li>";
+            }
+            ?>
         </ul>
     </nav>
 </header>

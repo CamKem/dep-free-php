@@ -41,7 +41,7 @@ function route(string $name, string|array|null $params = []): string
     // If there's only one parameter & it's not an associative array
     // use the first key from the route parameters
     if (count($params) === 1 && array_keys($params)[0] === 0) {
-        $routeParameters = app(Router::class)->getRoute($name)->getParameters();
+        $routeParameters = app(Router::class)->getRoute($name)?->getParameters();
         $params = [key($routeParameters) => $params[0]];
     }
 
@@ -118,7 +118,13 @@ function request($key = null, $default = null): mixed
     return app(Request::class)->get($key, $default);
 }
 
-// add phpdocs to ignore the debug function
+/**
+ * Log a message to the error log
+ * Find the logs by using: echo ini_get('error_log');
+ * @param string $message
+ * @param string $level
+ * @param array $context
+ */
 function logger($message, $level = 'info', $context = []): void
 {
     error_log("[$level] $message: " . print_r($context, true));
@@ -149,21 +155,15 @@ function app(string|null $key = null): object
 /**
  * Render a view
  * @param string $path
- * @param array $attributes
+ * @param array $data
  * @return View
  */
-function view(string $path, array $attributes = []): View
+function view(string $path, array $data = []): View
 {
-    return View::make($path, $attributes);
+    return View::make($path, $data);
 }
 
-/**
- * Include a view
- * @param string $path
- * @param array $attributes
- * @return void
- */
-function add(string $path, array $attributes = []): void
+function add(string $path, array $data = []): string
 {
-    View::include($path, $attributes);
+    return View::add($path, $data);
 }

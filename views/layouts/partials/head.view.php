@@ -15,5 +15,5 @@
           rel="stylesheet">
     <script type="module" src="./scripts/main.js"></script>
 </head>
-<body id="<?= $view ?>">
-<div class="site-wrapper">
+<body id="<?= mb_strtolower($title) ?>">
+    <div class="site-wrapper">

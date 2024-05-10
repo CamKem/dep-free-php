@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use app\Core\Database\Database;
+
 class Validator
 {
     public static function string($value, $min = 1, $max = INF): bool

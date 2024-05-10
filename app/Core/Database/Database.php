@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Core;
+namespace app\Core\Database;
 
 use PDO;
 use PDOStatement;
-use SensitiveParameter;
 
 class Database
 {
     public ?PDO $connection;
     public PDOStatement $statement;
+    protected array $bindings = [];
 
     public function connect(): void
     {
@@ -31,11 +31,25 @@ class Database
         $this->connection = null;
     }
 
-    public function query($query, $params = []): static
+    public function bind(array $bindings): void
+    {
+        $this->bindings = array_merge($this->bindings, $bindings);
+    }
+
+    public function getBindings(): array
+    {
+        return $this->bindings;
+    }
+
+    public function query(string $query): static
     {
         $this->statement = $this->connection->prepare($query);
 
-        $this->statement->execute($params);
+        foreach ($this->bindings as $key => $value) {
+            $this->statement->bindValue(':' . $key, $value);
+        }
+
+        $this->statement->execute();
 
         return $this;
     }

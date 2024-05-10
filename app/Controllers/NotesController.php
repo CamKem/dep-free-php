@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Core\Database;
+use app\Core\Database\Database;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;

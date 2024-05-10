@@ -344,7 +344,7 @@ a {
     .hero {
         position: relative;
         margin-top: 30px;
-        background-image: url('../assets/images/hero-image.jpeg');
+        background-image: url('../images/hero-image.jpeg');
         background-size: cover;
         background-position: center;
         height: 340px;

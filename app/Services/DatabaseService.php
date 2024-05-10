@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Core\Database;
+use app\Core\Database\Database;
 use App\Core\ServiceProvider;
 use App\Database\Migrator;
 use Override;

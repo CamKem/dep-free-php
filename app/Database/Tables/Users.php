@@ -2,7 +2,7 @@
 
 namespace App\Database\Tables;
 
-use App\Core\Database;
+use app\Core\Database\Database;
 use App\Database\Migration;
 
 class Users extends Migration

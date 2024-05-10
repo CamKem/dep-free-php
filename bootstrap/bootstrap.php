@@ -6,6 +6,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\Session;
+use App\Core\View;
 use App\Middleware\AuthMiddleware;
 use App\Services\ConfigService;
 use App\Services\DatabaseService;
