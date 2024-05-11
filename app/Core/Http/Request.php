@@ -55,6 +55,11 @@ class Request
         return array_merge($this->queryParameters, $this->bodyParameters, $this->routeParameters);
     }
 
+    public function getBody(): array
+    {
+        return $this->bodyParameters;
+    }
+
     public function has(string $key): bool
     {
         return isset($this->getParameters()[$key]);

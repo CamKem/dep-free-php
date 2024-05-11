@@ -2,17 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Actions\HandleCsrfTokens;
 use App\Core\Controller;
+use App\Core\Http\Request;
+use App\Core\Validator;
 use App\Core\View;
 
 class ContactController extends Controller
 {
 
-    protected string $csrfToken;
-
-    public function randomCsrfToken(): string
+    public function __construct()
     {
-        return $this->csrfToken = bin2hex(random_bytes(32));
+        if (!session()->has('csrf_token')) {
+            session()->set('csrf_token', (new HandleCsrfTokens())
+                ->randomCsrfToken());
+        }
+        parent::__construct();
     }
 
 
@@ -20,14 +25,24 @@ class ContactController extends Controller
     {
 
         return view("contact", [
-            'heading' => 'Contact Us',
-            'csrfToken' => $this->randomCsrfToken()
+            'title' => 'Contact Us',
+            'csrfToken' => session()->get('csrf_token')
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        (new HandleCsrfTokens())->validateToken($request);
+
         // validate the request
+        $validated = (new Validator)->validate($request->getBody(), [
+            'first_name' => ['required', 'string', 'min:3', 'max:255'],
+            'last_name' => ['required', 'string', 'min:3', 'max:255'],
+            'contact' => ['required', 'string', 'min:10', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'message' => ['required', 'string', 'min:10', 'max:255'],
+            'mailing_list' => ['boolean'],
+        ]);
     }
 
 }
