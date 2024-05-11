@@ -49,7 +49,7 @@
         <section class="logo-container">
             <h1 class="sr-only">Sports Warehouse</h1>
             <a href="/" aria-label="Sports Warehouse Home" class="logo">
-                <img src="./images/sports-warehouse-logo.svg" alt="Sports Warehouse Logo">
+                <img src="/images/sports-warehouse-logo.svg" alt="Sports Warehouse Logo">
             </a>
         </section>
 
