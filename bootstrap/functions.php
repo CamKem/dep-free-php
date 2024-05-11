@@ -76,6 +76,12 @@ function base_path($path): string
     return BASE_PATH . $path;
 }
 
+function class_basename($class): string
+{
+    $class = is_object($class) ? get_class($class) : $class;
+    return basename(str_replace('\\', '/', $class));
+}
+
 function config($key): mixed
 {
     return app(Config::class)->get($key);
