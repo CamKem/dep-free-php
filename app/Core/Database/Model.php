@@ -37,9 +37,11 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
 
     public static function all(): ModelCollection
     {
-        $model = new static();
-        $query = $model->toSql();
-        $results = $model->db->execute($query)->get();
+        $model = static::getInstance();
+        $results = $model->db->execute(
+            $model->toSql(),
+            $model->getBindings(),
+        )->get();
         return $model->mapResultsToModel($results);
     }
 

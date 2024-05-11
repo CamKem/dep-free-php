@@ -5,7 +5,7 @@ namespace app\Core\Database;
 class QueryBuilder
 {
 
-    protected static self|null $instance = null;
+    protected static array $instances = [];
     protected string $query;
     protected array $conditions = [];
     protected array $with = [];
@@ -19,12 +19,12 @@ class QueryBuilder
 
     public static function getInstance(): static
     {
-        return static::$instance ??= new static();
+        return static::$instances[static::class] ??= new static();
     }
 
     public static function setInstance(Model $instance): void
     {
-        static::$instance = $instance;
+        static::$instances[get_class($instance)] = $instance;
     }
 
     public static function where(string $column, mixed $operator, mixed $value = null): static
