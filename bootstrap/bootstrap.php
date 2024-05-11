@@ -28,10 +28,6 @@ $app->singleton(Session::class);
 $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
 
-// Start the session by instantiating the session class from the container
-// which will start the session if it hasn't already been started
-$app->resolve(Session::class);
-
 // Middleware aliases for the application
 $app->alias('auth', AuthMiddleware::class);
 
