@@ -29,7 +29,6 @@ class View
 
     public static function make(string $view, array $data = []): self
     {
-        logger('Creating view: ' . $view);
         $instance = new static();
         $instance->data = $data;
         $instance->view = $view;
@@ -53,7 +52,6 @@ class View
 
     public function render(): string
     {
-        logger('Rendering view: ' . $this->view);
         ob_start();
         try {
             if ($this->isNested) {
