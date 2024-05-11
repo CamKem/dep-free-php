@@ -3,7 +3,7 @@
     <div class="hero-content">
         <span>View our brand-new range of</span>
         <strong>Sports balls</strong>
-        <a href="#" class="shop-now">Shop now</a>
+        <a aria-label="Shop Now" href="<?= route('categories.show', ['category' => 'balls']) ?>" class="shop-now">Shop now</a>
     </div>
     <div class="slider-indicator">
         <span class="dot active"></span>
