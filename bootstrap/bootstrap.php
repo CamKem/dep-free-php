@@ -12,6 +12,7 @@ use App\Services\ConfigService;
 use App\Services\DatabaseService;
 use App\Services\EnvService;
 use App\Services\RouterService;
+use App\Services\SessionService;
 
 // Create the application & container.
 $app = new App();
@@ -21,10 +22,10 @@ $app->registerProvider(new EnvService($app));
 $app->registerProvider(new ConfigService($app));
 $app->registerProvider(new DatabaseService($app));
 $app->registerProvider(new RouterService($app));
+$app->registerProvider(new SessionService($app));
 $app->registerProvider(new CategoryService($app));
 
-// Bind the session, request, and response services to the container
-$app->singleton(Session::class);
+// Bind the Request & Response to the container
 $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
 
