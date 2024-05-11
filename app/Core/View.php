@@ -42,7 +42,7 @@ class View
         $instance->isNested = true;
         $instance->data = $data;
         $instance->view = $view;
-        return (string)$instance;
+        return $instance->render();
     }
 
     public function __toString(): string
@@ -56,8 +56,7 @@ class View
         try {
             if ($this->isNested) {
                 $this->require($this->view);
-                $this->content = ob_get_clean();
-                return $this->content;
+                return ob_get_contents();
             }
             $this->require($this->view);
             $this->content = ob_get_clean();
