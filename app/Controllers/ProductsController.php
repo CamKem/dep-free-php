@@ -14,6 +14,7 @@ class ProductsController extends Controller
     {
         return view("products.index", [
             'title' => 'Products',
+            'products' => Product::all(),
         ]);
     }
 
@@ -27,7 +28,7 @@ class ProductsController extends Controller
 
     public function search(Request $request): View
     {
-        return view("products.search", [
+        return view("products.index", [
             'title' => 'Search',
             'products' => Product::where('name', 'like', "%{$request->get('search')}%")->get(),
         ]);
