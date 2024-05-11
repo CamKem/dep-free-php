@@ -3,20 +3,89 @@
 namespace App\Core;
 
 use app\Core\Database\Database;
+use App\Core\Exceptions\ValidationException;
 
 class Validator
 {
-    public static function string($value, $min = 1, $max = INF): bool
-    {
-        $value = trim($value);
+    protected array $errors = [];
 
-        return strlen($value) >= $min && strlen($value) <= $max;
+    public function validate(array $data, array $rules): void
+    {
+        foreach ($rules as $field => $fieldRules) {
+            if (!is_array($fieldRules)) {
+                $fieldRules = [$fieldRules];
+            }
+
+            foreach ($fieldRules as $rule) {
+                $ruleParts = explode(':', $rule);
+                $ruleName = $ruleParts[0];
+                $ruleParams = isset($ruleParts[1]) ? explode(',', $ruleParts[1]) : [];
+
+                $this->{$ruleName}($data, $field, ...$ruleParams);
+            }
+        }
+
+        if (!empty($this->errors)) {
+            throw new ValidationException($this->errors);
+        }
     }
 
-    public static function email(string $value): bool
+    protected function required(array $data, string $field)
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL);
+        if (empty($data[$field])) {
+            $this->errors[$field][] = 'The ' . $field . ' field is required.';
+        }
     }
+
+    protected function email(array $data, string $field)
+    {
+        if (!filter_var($data[$field], FILTER_VALIDATE_EMAIL)) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a valid email address.';
+        }
+    }
+
+    public function string(array $data, string $field): void
+    {
+        if (!trim($data[$field])) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a string.';
+        }
+    }
+
+    protected function min(array $data, string $field, int $min)
+    {
+        if (strlen($data[$field]) < $min) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be at least ' . $min . ' characters.';
+        }
+    }
+
+    protected function max(array $data, string $field, int $max)
+    {
+        if (strlen($data[$field]) > $max) {
+            $this->errors[$field][] = 'The ' . $field . ' field may not be greater than ' . $max . ' characters.';
+        }
+    }
+
+    protected function boolean(array $data, string $field): void
+    {
+        if (!is_bool($this->normalizeBoolean($data[$field]))) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a boolean.';
+        }
+    }
+
+    public function normalizeBoolean($value): bool
+    {
+        if (is_bool($value) || is_numeric($value)) {
+            return (bool) $value;
+        }
+
+        if ($value === 'on') {
+            return true;
+        }
+
+        return false;
+    }
+
+    // TODO: fix the validation rules errors below here:
 
     public static function url(string $value): bool
     {
@@ -33,15 +102,6 @@ class Validator
         return strtotime($value);
     }
 
-public static function min(string $value, int $min): bool
-    {
-        return strlen($value) >= $min;
-    }
-
-    public static function max(string $value, int $max): bool
-    {
-        return strlen($value) <= $max;
-    }
 
     public static function match(string $value, string $match): bool
     {
