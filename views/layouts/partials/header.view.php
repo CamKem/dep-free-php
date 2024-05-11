@@ -65,7 +65,7 @@
     <nav class="category-nav content-container" aria-label="Product categories">
         <ul>
             <?php
-            foreach ($categories->toArray() as $category) {
+            foreach ($categories as $category) {
                 echo "<li><a aria-label=\"{$category['name']}\" href=\"" . route('categories.show', ['category' => $category['slug']]) . "\">{$category['name']}</a></li>";
             }
             ?>

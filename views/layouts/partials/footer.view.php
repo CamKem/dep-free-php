@@ -15,7 +15,7 @@
                 <h1>Product categories</h1>
                 <ul class="footer-nav">
                     <?php
-                    foreach ($categories->toArray() as $category) {
+                    foreach ($categories as $category) {
                         echo "<li><a aria-label=\"{$category['name']}\" href=\"" . route('categories.show', ['category' => $category['slug']]) . "\">{$category['name']}</a></li>";
                     }
                     ?>
