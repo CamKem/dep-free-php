@@ -724,3 +724,36 @@ main > section > h2 {
         display: none;
     }
 }
+
+/* flash message styles */
+.flash-message {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: var(--dark-blue-color);
+    color: var(--white-color);
+    border-radius: 5px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--blue-color);
+    padding: 10px 15px;
+    text-align: center;
+    z-index: 1000;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(100%); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0;transform: translateY(100%); }
+}
+
+.flash-message.slide-in {
+    animation: slideIn 0.5s ease-in-out;
+}
+
+.flash-message.slide-out {
+    animation: slideOut 0.5s ease-in-out;
+}

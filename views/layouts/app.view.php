@@ -8,4 +8,5 @@
 
     </main>
 <?= add('layouts/partials/footer', ['categories' => session()->get('categories')]) ?>
+<?= add('layouts/partials/flash') ?>
 <?= add('layouts/partials/bottom') ?>
