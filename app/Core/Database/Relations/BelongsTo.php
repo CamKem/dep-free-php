@@ -2,7 +2,6 @@
 
 namespace app\Core\Database\Relations;
 
-use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Model;
 
 class BelongsTo
@@ -16,15 +15,6 @@ class BelongsTo
         $this->parent = $parent;
         $this->related = $related;
         $this->foreignKey = strtolower(class_basename($related)) . '_id';
-    }
-
-    public function getRelated(): ModelCollection
-    {
-        // get the result of the related model
-        return $this->related::where(
-            'id',
-            $this->parent->{$this->foreignKey}
-        )->all();
     }
 
     public function getRelatedTable(): string
