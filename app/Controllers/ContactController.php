@@ -7,6 +7,7 @@ use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Validator;
 use App\Core\View;
+use App\Models\Contact;
 
 class ContactController extends Controller
 {
@@ -34,8 +35,12 @@ class ContactController extends Controller
     {
         (new HandleCsrfTokens())->validateToken($request);
 
-        // validate the request
-        $validated = (new Validator)->validate($request->getBody(), [
+        $requestBody = $request->getBody();
+        if (!isset($requestBody['mailing_list'])) {
+            $requestBody['mailing_list'] = false;
+        }
+
+        $validated = (new Validator)->validate($requestBody, [
             'first_name' => ['required', 'string', 'min:3', 'max:255'],
             'last_name' => ['required', 'string', 'min:3', 'max:255'],
             'contact' => ['required', 'string', 'min:10', 'max:255'],
@@ -43,6 +48,14 @@ class ContactController extends Controller
             'message' => ['required', 'string', 'min:10', 'max:255'],
             'mailing_list' => ['boolean'],
         ]);
+
+        // store the $validated data in the database
+        (new Contact)->store($validated);
+
+        // store the request
+        session()->set('flash-message', 'Your message has been sent successfully!');
+        // redirect back with a success message
+        return redirect(route('contact.index'));
     }
 
 }
