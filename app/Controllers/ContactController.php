@@ -12,22 +12,10 @@ use App\Models\Contact;
 class ContactController extends Controller
 {
 
-    public function __construct()
-    {
-        if (!session()->has('csrf_token')) {
-            session()->set('csrf_token', (new HandleCsrfTokens())
-                ->randomCsrfToken());
-        }
-        parent::__construct();
-    }
-
-
     public function index(): View
     {
-
         return view("contact", [
             'title' => 'Contact Us',
-            'csrfToken' => session()->get('csrf_token')
         ]);
     }
 

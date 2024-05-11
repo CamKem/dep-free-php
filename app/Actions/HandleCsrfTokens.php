@@ -15,7 +15,7 @@ class HandleCsrfTokens
      * @return string
      * @throws RandomException
      */
-    public function randomCsrfToken(): string
+    public function generateToken(): string
     {
         return bin2hex(random_bytes(32));
     }

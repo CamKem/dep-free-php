@@ -173,3 +173,8 @@ function add(string $path, array $data = []): string
 {
     return View::add($path, $data);
 }
+
+function csrf_token(): string
+{
+    return session()->get('csrf_token');
+}
