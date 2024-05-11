@@ -7,7 +7,7 @@
     <div class="flex-center">
         <form method="POST" action="/contact" id="contact-form"
               class="flex-center">
-            <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+            <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
             <label for="first_name"><span>First name</span></label>
             <input type="text"
                    name="first_name"
