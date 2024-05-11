@@ -42,6 +42,10 @@ class QueryBuilder
 
     public function toSql(): string
     {
+        if (str_starts_with(trim($this->query), 'INSERT')) {
+            return $this->query;
+        }
+
         if (!empty($this->with)) {
             $modelInstance = new static();
             foreach ($this->with as $relation) {
@@ -77,6 +81,19 @@ class QueryBuilder
         return $this->query;
     }
 
+    public static function create(array $data): static
+    {
+        $instance = self::getInstance();
+        $columns = implode(", ", array_keys($data));
+        $placeholders = array_map(fn($key) => ":{$key}", array_keys($data));
+        $values = implode(", ", $placeholders);
+
+        $instance->query = "INSERT INTO {$instance->table} ({$columns}) VALUES ({$values})";
+        $instance->conditions = array_map(fn($key) => [$key, '=', $data[$key]], array_keys($data));
+
+        return $instance;
+    }
+
     public function getBindings(): array
     {
         $bindings = [];
@@ -84,6 +101,14 @@ class QueryBuilder
             $bindings[$condition[0]] = $condition[2];
         }
         return $bindings;
+    }
+
+    public function insert(array $data): bool
+    {
+        $columns = implode(", ", array_keys($data));
+        $values = implode(", ", array_map(fn($value) => ":$value", array_keys($data)));
+        $this->query = "insert into $this->table ($columns) values ($values)";
+        return $this->query;
     }
 
 }

@@ -42,6 +42,15 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         return $model->mapResultsToModel($results);
     }
 
+    public function save(): void
+    {
+       // dd($this->toSql(), $this->getBindings());
+        $this->db->execute(
+            $this->toSql(),
+            $this->getBindings(),
+        );
+    }
+
     public function get(): ModelCollection
     {
        // dd($this->query->toSql());
