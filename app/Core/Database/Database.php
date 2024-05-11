@@ -9,7 +9,6 @@ class Database
 {
     public ?PDO $connection;
     public PDOStatement $statement;
-    protected array $bindings = [];
 
     public function connect(): void
     {
@@ -31,21 +30,11 @@ class Database
         $this->connection = null;
     }
 
-    public function bind(array $bindings): void
-    {
-        $this->bindings = array_merge($this->bindings, $bindings);
-    }
-
-    public function getBindings(): array
-    {
-        return $this->bindings;
-    }
-
-    public function query(string $query): static
+    public function execute(string $query, array $bindings = []): static
     {
         $this->statement = $this->connection->prepare($query);
 
-        foreach ($this->bindings as $key => $value) {
+        foreach ($bindings as $key => $value) {
             $this->statement->bindValue(':' . $key, $value);
         }
 
@@ -54,30 +43,9 @@ class Database
         return $this;
     }
 
-    public function count(): int
-    {
-        return $this->statement->rowCount();
-    }
-
     public function get(): false|array
     {
         return $this->statement->fetchAll();
-    }
-
-    public function find(): false|array
-    {
-        return $this->statement->fetch();
-    }
-
-    public function findOrFail(): false|array
-    {
-        $result = $this->find();
-
-        if (! $result) {
-            abort();
-        }
-
-        return $result;
     }
 
     public function lastInsertId(): string
