@@ -56,27 +56,24 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
     {
         $models = array_map(function ($result) {
             $model = new static();
-            $relatedTables = [];
+            $relations = [];
             foreach ($result as $key => $value) {
                 if (str_contains($key, '_id')) {
                     $relation = str_replace('_id', '', $key);
                     if (method_exists($model, $relation)) {
-                        $relatedModel = $model->$relation();
-                        $relatedTable = $relatedModel->getRelatedTable();
-                        $relatedTables[] = $relatedTable;
-
+                        $relations[] = $relation;
                         $model->$relation = [];
 
                         foreach ($result as $relatedKey => $relatedValue) {
-                            if (str_starts_with($relatedKey, $relatedTable . '_')) {
-                                $attribute = str_replace($relatedTable . '_', '', $relatedKey);
+                            if (str_starts_with($relatedKey, $relation . '_')) {
+                                $attribute = str_replace($relation. '_', '', $relatedKey);
                                 $model->attributes[$relation][$attribute] = $relatedValue;
                                 unset($model->attributes[$relatedKey]);
                             }
                         }
 
-                        if (isset($model->{$relatedTable . '_id'})) {
-                            unset($model->{"{$relatedTable}_id"});
+                        if (isset($model->{$relation . '_id'})) {
+                            unset($model->{"{$relation}_id"});
                         }
                     }
                 } else {
@@ -84,9 +81,9 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
                 }
             }
 
-            foreach ($relatedTables as $relatedTable) {
+            foreach ($relations as $relation) {
                 foreach ($model->attributes as $key => $value) {
-                    if (str_starts_with($key, $relatedTable . '_')) {
+                    if (str_starts_with($key, $relation . '_')) {
                         unset($model->attributes[$key]);
                     }
                 }
