@@ -4,18 +4,16 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\View;
-use App\Models\Category;
+use App\Models\Product;
 
 class HomeController extends Controller
 {
 
     public function __invoke(): View
     {
-       // dd(session()->get('categories'));
-
         return view("home", [
             'title' => 'Home',
-            'categories' => (new Category)->all()->get(),
+            'products' => Product::where('featured', 1)->with('category')->get(),
         ]);
     }
 
