@@ -42,21 +42,6 @@ class QueryBuilder
 
     public function toSql(): string
     {
-        $baseQuery = $this->query;
-
-//        if (!empty($this->conditions)) {
-//            $baseQuery .= " where ";
-//            //$this->query .= " where ";
-//            foreach ($this->conditions as $index => $condition) {
-//                if ($index > 0) {
-//                    $baseQuery .= " and ";
-//                    //$this->query .= " and ";
-//                }
-//                $baseQuery .= "{$condition[0]} = :{$condition[0]}";
-//                //$this->query .= "{$condition[0]} = :{$condition[0]}";
-//            }
-//        }
-
         if (!empty($this->with)) {
             $modelInstance = new static();
             foreach ($this->with as $relation) {
@@ -64,40 +49,32 @@ class QueryBuilder
                 $relatedTable = $related->getRelatedTable();
                 $foreignColumn = $related->getForeignKey();
 
-                // work out the column names
                 $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
 
                 $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
                     return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
                 }, $columns);
 
-                $baseQuery = str_replace("select *", "select {$this->table}.*, " . implode(", ", $prefixedColumns), $baseQuery);
-                $baseQuery .= " inner join {$relatedTable} on {$this->table}.{$foreignColumn} = {$relatedTable}.id";
-                //$this->query = str_replace("select *", "select {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-                //$this->query .= " left join {$relatedTable} on {$this->table}.{$foreignColumn} = {$relatedTable}.id";
+                $this->query = str_replace("select *", "select {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                $this->query .= " inner join {$relatedTable} on {$this->table}.{$foreignColumn} = {$relatedTable}.id";
             }
         }
 
         if (!empty($this->conditions)) {
-            $baseQuery .= " where ";
-            //$this->query .= " where ";
+            $this->query .= " where ";
             foreach ($this->conditions as $index => $condition) {
                 if ($index > 0) {
-                    $baseQuery .= " and ";
-                    //$this->query .= " and ";
+                    $this->query .= " and ";
                 }
-                // if there is a with, we need to prefix the column name
                 if (!empty($this->with)) {
-                    $baseQuery .= "{$this->table}.{$condition[0]} {$condition[1]} :{$condition[0]}";
-                    //$this->query .= "{$this->table}.{$condition[0]} = :{$condition[0]}";
+                    $this->query .= "{$this->table}.{$condition[0]} {$condition[1]} :{$condition[0]}";
                 } else {
-                    $baseQuery .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
-                    //$this->query .= "{$condition[0]} = :{$condition[0]}";
+                    $this->query .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
                 }
             }
         }
 
-        return $baseQuery;
+        return $this->query;
     }
 
     public function getBindings(): array
