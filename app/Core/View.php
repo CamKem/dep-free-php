@@ -61,6 +61,8 @@ class View
             }
             $this->require($this->view);
             $this->content = ob_get_clean();
+            // if there is a title set it or use the default
+            $this->title = $this->title ?? 'Error';
             $this->require('layouts.app');
             return ob_get_clean();
         } catch (Throwable $e) {
@@ -70,6 +72,7 @@ class View
             $this->message = $e->getMessage();
             $this->require('error.exception');
             $this->content = ob_get_clean();
+            $this->title = 'Exception';
             $this->require('layouts.app');
             return ob_get_clean();
         } finally {
