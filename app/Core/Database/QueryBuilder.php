@@ -22,6 +22,11 @@ class QueryBuilder
         return static::$instance ??= new static();
     }
 
+    public static function setInstance(Model $instance): void
+    {
+        static::$instance = $instance;
+    }
+
     public static function where(string $column, mixed $operator, mixed $value = null): static
     {
         if (func_num_args() === 2) {
