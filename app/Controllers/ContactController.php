@@ -33,13 +33,16 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
+        // validate the csrf token
         (new HandleCsrfTokens())->validateToken($request);
 
+        // handle the checkbox
         $requestBody = $request->getBody();
         if (!isset($requestBody['mailing_list'])) {
             $requestBody['mailing_list'] = false;
         }
 
+        // validate the request
         $validated = (new Validator)->validate($requestBody, [
             'first_name' => ['required', 'string', 'min:3', 'max:255'],
             'last_name' => ['required', 'string', 'min:3', 'max:255'],
@@ -49,8 +52,16 @@ class ContactController extends Controller
             'mailing_list' => ['boolean'],
         ]);
 
-        // store the $validated data in the database
-        (new Contact)->store($validated);
+        // store the contact
+        $contact = Contact::create([
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'contact' => $validated['contact'],
+            'email' => $validated['email'],
+            'message' => $validated['message'],
+            'mailing_list' => $validated['mailing_list'],
+        ]);
+        $contact->save();
 
         // store the request
         session()->set('flash-message', 'Your message has been sent successfully!');
