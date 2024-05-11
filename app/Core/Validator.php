@@ -9,7 +9,7 @@ class Validator
 {
     protected array $errors = [];
 
-    public function validate(array $data, array $rules): void
+    public function validate(array $data, array $rules): array
     {
         foreach ($rules as $field => $fieldRules) {
             if (!is_array($fieldRules)) {
@@ -28,6 +28,8 @@ class Validator
         if (!empty($this->errors)) {
             throw new ValidationException($this->errors);
         }
+
+        return $data;
     }
 
     protected function required(array $data, string $field)
@@ -65,11 +67,9 @@ class Validator
         }
     }
 
-    protected function boolean(array $data, string $field): void
+    protected function boolean(array &$data, string $field): void
     {
-        if (!is_bool($this->normalizeBoolean($data[$field]))) {
-            $this->errors[$field][] = 'The ' . $field . ' field must be a boolean.';
-        }
+        $data[$field] = $this->normalizeBoolean($data[$field]);
     }
 
     public function normalizeBoolean($value): bool
