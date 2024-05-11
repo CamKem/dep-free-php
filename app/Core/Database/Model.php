@@ -4,21 +4,19 @@ namespace app\Core\Database;
 
 use App\Core\Arrayable;
 use App\Core\Collecting\ModelCollection;
+use app\Core\Database\Relations\BelongsTo;
 use JsonSerializable;
 
-class Model implements Arrayable, JsonSerializable
+class Model extends QueryBuilder implements Arrayable, JsonSerializable
 {
 
     protected Database $db;
-    protected string $query;
-
-    protected string $table;
     protected array $attributes = [];
 
     public function __construct()
     {
-        $this->query = "select * from $this->table";
         $this->db = app(Database::class);
+        parent::__construct($this->table);
     }
 
     public function __get(string $name): mixed
@@ -36,48 +34,72 @@ class Model implements Arrayable, JsonSerializable
         return isset($this->attributes[$name]);
     }
 
-    public function all(): self
+    public static function all(): ModelCollection
     {
-        return $this;
-    }
-
-    public function where(string $column, mixed $value): self
-    {
-        $this->query .= " where $column = :value";
-        $this->db->bind(compact('value'));
-        return $this;
+        $model = new static();
+        $query = $model->toSql();
+        $results = $model->db->execute($query)->get();
+        return $model->mapResultsToModel($results);
     }
 
     public function get(): ModelCollection
     {
-        $results = $this->db->query($this->query)->get();
+       // dd($this->query->toSql());
+        $results = $this->db->execute(
+            $this->toSql(),
+            $this->getBindings(),
+        )->get();
         return $this->mapResultsToModel($results);
     }
 
-    private function mapRow(array $row): static
+    public function mapResultsToModel(array $results): ModelCollection
     {
-        $model = new static();
-        foreach ($row as $key => $value) {
-            $model->$key = $value;
-        }
-        return $model;
-    }
+        $models = array_map(function ($result) {
+            $model = new static();
+            $relatedTables = [];
+            foreach ($result as $key => $value) {
+                if (str_contains($key, '_id')) {
+                    $relation = str_replace('_id', '', $key);
+                    if (method_exists($model, $relation)) {
+                        $relatedModel = $model->$relation();
+                        $relatedTable = $relatedModel->getRelatedTable();
+                        $relatedTables[] = $relatedTable;
 
-    private function mapRows(array $rows): ModelCollection
-    {
-        return new ModelCollection(array_map(function ($row) {
-            return $this->mapRow($row);
-        }, $rows));
-    }
+                        $model->$relation = [];
 
-    private function mapResultsToModel(array $results): ModelCollection
-    {
-        return $this->mapRows($results);
+                        foreach ($result as $relatedKey => $relatedValue) {
+                            if (str_starts_with($relatedKey, $relatedTable . '_')) {
+                                $attribute = str_replace($relatedTable . '_', '', $relatedKey);
+                                $model->attributes[$relation][$attribute] = $relatedValue;
+                                unset($model->attributes[$relatedKey]);
+                            }
+                        }
+
+                        if (isset($model->{$relatedTable . '_id'})) {
+                            unset($model->{"{$relatedTable}_id"});
+                        }
+                    }
+                } else {
+                    $model->$key = $value;
+                }
+            }
+
+            foreach ($relatedTables as $relatedTable) {
+                foreach ($model->attributes as $key => $value) {
+                    if (str_starts_with($key, $relatedTable . '_')) {
+                        unset($model->attributes[$key]);
+                    }
+                }
+            }
+            return $model;
+        }, $results);
+
+        return new ModelCollection($models);
     }
 
     public function toArray(): array
     {
-        return $this->attributes;
+        return $this->getAttributes();
     }
 
     public function jsonSerialize(): array
@@ -88,6 +110,17 @@ class Model implements Arrayable, JsonSerializable
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    public function getTable(): string
+    {
+        return $this->table;
+    }
+
+    public function belongsTo(string $relatedModel): BelongsTo
+    {
+        $relatedModelInstance = new $relatedModel;
+        return new BelongsTo($this, $relatedModelInstance);
     }
 
 }
