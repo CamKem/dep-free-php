@@ -40,3 +40,7 @@ Route::get('/products')
 Route::get('/categories/{category}/products/{product}')
     ->controller([ProductsController::class, 'show'])
     ->name('products.show');
+
+Route::get('/products/search')
+    ->controller([ProductsController::class, 'search'])
+    ->name('products.search');

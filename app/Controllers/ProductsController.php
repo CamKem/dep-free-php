@@ -3,21 +3,12 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use app\Core\Database\Database;
 use App\Core\Http\Request;
 use App\Core\View;
+use App\Models\Product;
 
 class ProductsController extends Controller
 {
-
-    protected Database $db;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->db = app(Database::class);
-    }
-
 
     public function index(): View
     {
@@ -30,10 +21,15 @@ class ProductsController extends Controller
     {
         return view("products.show", [
             'title' => 'Product',
-            'product' => $this->db->query(
-                'select * from products where id = :id',
-                ['id' => $request->route('product')]
-            )->get(),
+            'product' => Product::where('slug', $request->get('slug'))->get(),
+        ]);
+    }
+
+    public function search(Request $request): View
+    {
+        return view("products.search", [
+            'title' => 'Search',
+            'products' => Product::where('name', 'like', "%{$request->get('search')}%")->get(),
         ]);
     }
 
