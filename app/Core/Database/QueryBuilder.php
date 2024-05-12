@@ -10,9 +10,7 @@ class QueryBuilder
     protected array $orConditions = [];
     protected array $with = [];
 
-    public function __construct(
-        protected string $table,
-    )
+    public function __construct(protected string $table,)
     {
         $this->query = "select * from $this->table";
     }
