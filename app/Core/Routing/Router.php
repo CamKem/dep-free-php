@@ -20,8 +20,6 @@ class Router
         return $this->routes->add($route);
     }
 
-    // TODO: add the ability to constrain the route parameters
-    // TODO: accept the request method as a parameter in the closure & controllers
     public function dispatch(Request $request): mixed
     {
         // Check for form spoofing
@@ -54,7 +52,8 @@ class Router
             return $controller($request);
         }
 
-        if (is_string($controller) && $action !== null) {
+        // if $controller is a string, then we can call the method on the controller
+        if (is_string($controller)) {
             return (new $controller)->$action($request);
         }
     }
