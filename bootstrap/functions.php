@@ -172,5 +172,15 @@ function add(string $path, array $data = []): string
 
 function csrf_token(): string
 {
-    return session()->get('csrf_token');
+    return session()->get('_token');
+}
+
+function old($key, $default = ''): string
+{
+    return session()->old($key, $default);
+}
+
+function error($key): ?string
+{
+    return session()->error($key);
 }
