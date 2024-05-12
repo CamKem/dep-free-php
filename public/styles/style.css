@@ -119,6 +119,11 @@ button:hover {
     display: none;
 }
 
+.header-text {
+    font-size: 14px;
+    font-weight: 300;
+}
+
 @media screen and (min-width: 885px) {
     .desktop-only {
         display: block;
@@ -132,7 +137,6 @@ button:hover {
     .desktop-nav ul {
         display: flex;
         gap: 15px;
-        font-size: 14px;
     }
 }
 
