@@ -5,9 +5,12 @@
                 <h1>Site navigation</h1>
                 <ul class="footer-nav">
                     <li><a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
-                    <li><a aria-label="About SW" href="<?= route('about') ?>">About SW</a></li>
-                    <li><a aria-label="Contact Us" href="<?= route('contact.index') ?>">Contact Us</a></li>
-                    <li><a aria-label="View Products" href="<?= route('products.index') ?>">View Products</a></li>
+                    <li><a aria-label="About" href="<?= route('about') ?>">About</a></li>
+                    <li><a aria-label="Contact" href="<?= route('contact.index') ?>">Contact</a></li>
+                    <li><a aria-label="VProducts" href="<?= route('products.index') ?>">Products</a></li>
+                    <?php if (auth()->check()) : ?>
+                        <li><a aria-label="Dashboard" href="<?= route('dashboard.index') ?>">Dashboard</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
 

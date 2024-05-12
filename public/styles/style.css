@@ -55,7 +55,6 @@ input[type="email"] {
 button {
     background-color: var(--orange-color);
     color: white;
-    padding: 10px 50px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -64,6 +63,10 @@ button {
 
 button:hover {
     background-color: var(--mid-orange-color);
+}
+
+.button-padding {
+    padding: 10px 50px;
 }
 
 .general-text {
@@ -208,13 +211,13 @@ button:hover {
     border-bottom: 1px solid var(--white-color);
 }
 
-.mobile-nav ul li:first-child::before {
+.mobile-nav-login::before {
     content: "\f023";
     font-family: "FontAwesome", serif;
     margin-right: 10px;
 }
 
-.mobile-nav ul li:not(:first-child)::before {
+.mobile-nav-item::before {
     content: "\f10c";
     font-family: "FontAwesome", serif;
     font-size: 12px;

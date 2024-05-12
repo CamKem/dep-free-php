@@ -10,30 +10,24 @@
                 </a>
                 <span class="menu-text">Menu</span>
             </div>
-            <nav class="hidden mobile-only mobile-nav">
-                <ul>
-                    <li><a aria-label="Login" href="<?= route('login.index') ?>">Login</a></li>
-                    <li><a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
-                    <li><a aria-label="About SW" href="<?= route('about') ?>">About SW</a></li>
-                    <li><a aria-label="Contact Us" href="<?= route('contact.index') ?>">Contact Us</a></li>
-                    <li><a aria-label="View Products" href="<?= route('products.index') ?>">View Products</a></li>
-                </ul>
-            </nav>
+            <?= add('layouts.partials.mobile-nav') ?>
 
-            <nav class="desktop-only desktop-nav">
-                <ul>
-                    <li><a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
-                    <li><a aria-label="About SW" href="<?= route('about') ?>">About SW</a></li>
-                    <li><a aria-label="Contact Us" href="<?= route('contact.index') ?>">Contact Us</a></li>
-                    <li><a aria-label="View Products" href="<?= route('products.index') ?>">View Products</a></li>
-                </ul>
-            </nav>
+            <?= add('layouts.partials.desktop-nav') ?>
 
-            <div class="top-bar-right">
-                <a href="<?= route('login.index') ?>" aria-label="Login" class="desktop-only login-link">
-                    <i class="fas fa-lock" aria-hidden="true"></i>
-                    <span>Login</span>
-                </a>
+            <div class="top-bar-right header-text">
+                <?php if (auth()->check()): ?>
+                    <a href="<?= route('logout') ?>" aria-label="Logout"
+                       class="desktop-only login-link">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                        <span>Logout</span>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= route('login.index') ?>" aria-label="Login"
+                       class="desktop-only login-link">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                        <span>Login</span>
+                    </a>
+                <?php endif; ?>
                 <a class="cart-view" aria-label="View Cart Link" href="#">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                     <span>View Cart</span>
@@ -49,13 +43,16 @@
         <section class="logo-container">
             <h1 class="sr-only">Sports Warehouse</h1>
             <a href="/" aria-label="Sports Warehouse Home" class="logo">
-                <img src="/images/sports-warehouse-logo.svg" alt="Sports Warehouse Logo">
+                <img src="/images/sports-warehouse-logo.svg"
+                     alt="Sports Warehouse Logo">
             </a>
         </section>
 
-        <form class="search-form" action="<?= route('products.index')?>" method="get">
+        <form class="search-form" action="<?= route('products.index') ?>"
+              method="get">
             <label for="search-bar" class="sr-only">Search products</label>
-            <input type="text" name="search" id="search-bar" placeholder="Search products">
+            <input type="text" name="search" id="search-bar"
+                   placeholder="Search products">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
