@@ -8,6 +8,7 @@ class QueryBuilder
     protected static array $instances = [];
     protected string $query;
     protected array $conditions = [];
+    protected array $orConditions = [];
     protected array $with = [];
 
     public function __construct(
@@ -35,6 +36,17 @@ class QueryBuilder
         }
         $queryBuilder = self::getInstance();
         $queryBuilder->conditions[] = [$column, $operator, $value];
+        return $queryBuilder;
+    }
+
+    public static function orWhere(string $column, mixed $operator, mixed $value = null): static
+    {
+        if (func_num_args() === 2) {
+            $value = $operator;
+            $operator = "=";
+        }
+        $queryBuilder = self::getInstance();
+        $queryBuilder->orConditions[] = [$column, $operator, $value];
         return $queryBuilder;
     }
 
@@ -81,11 +93,17 @@ class QueryBuilder
                 if ($index > 0) {
                     $this->query .= " and ";
                 }
-                if (!empty($this->with)) {
-                    $this->query .= "{$this->table}.{$condition[0]} {$condition[1]} :{$condition[0]}";
-                } else {
-                    $this->query .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
+                $this->withCheck($condition);
+            }
+        }
+
+        if (!empty($this->orConditions)) {
+            $this->query .= " or ";
+            foreach ($this->orConditions as $index => $condition) {
+                if ($index > 0) {
+                    $this->query .= " or ";
                 }
+                $this->withCheck($condition);
             }
         }
 
@@ -102,13 +120,18 @@ class QueryBuilder
         $instance->query = "INSERT INTO {$instance->table} ({$columns}) VALUES ({$values})";
         $instance->conditions = array_map(fn($key) => [$key, '=', $data[$key]], array_keys($data));
 
+        // set the attributes of the instance
+        foreach ($data as $key => $value) {
+            $instance->$key = $value;
+        }
+
         return $instance;
     }
 
     public function getBindings(): array
     {
         $bindings = [];
-        foreach ($this->conditions as $condition) {
+        foreach (array_merge($this->conditions, $this->orConditions) as $condition) {
             $bindings[$condition[0]] = $condition[2];
         }
         return $bindings;
@@ -120,6 +143,19 @@ class QueryBuilder
         $values = implode(", ", array_map(fn($value) => ":$value", array_keys($data)));
         $this->query = "insert into $this->table ($columns) values ($values)";
         return $this->query;
+    }
+
+    /**
+     * @param mixed $condition
+     * @return void
+     */
+    public function withCheck(mixed $condition): void
+    {
+        if (!empty($this->with)) {
+            $this->query .= "{$this->table}.{$condition[0]} {$condition[1]} :{$condition[0]}";
+        } else {
+            $this->query .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
+        }
     }
 
 }
