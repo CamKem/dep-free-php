@@ -79,7 +79,7 @@ class Route
         return $this->parameters;
     }
 
-    public function getParameter(int $index): string
+    public function getParameter(mixed $index): string
     {
         return $this->parameters[$index] ?? '';
     }

@@ -92,15 +92,9 @@ class Request
         return $uri;
     }
 
-    public function route($parameter = null): Route
+    public function route(): Route
     {
-        $route = app(Router::class)->getRoutes()->match($this);
-
-        if ($parameter !== null) {
-            return $route->getParameter($parameter);
-        }
-
-        return $route;
+        return app(Router::class)->getRoutes()->match($this);
     }
 
     public function setRouteParameters(): array
