@@ -2,7 +2,6 @@
 
 namespace App\Core;
 
-use app\Core\Database\Database;
 use App\Core\Exceptions\ValidationException;
 
 class Validator
@@ -102,32 +101,9 @@ class Validator
         return strtotime($value);
     }
 
-
     public static function match(string $value, string $match): bool
     {
         return $value === $match;
-    }
-
-    public static function unique(string $value, string $table, string $column): bool
-    {
-        $db = app(Database::class);
-
-        $result = $db->query(
-            "select * from {$table} where {$column} = :value", compact('value'))
-            ->count();
-
-        return $result === 0;
-    }
-
-    public static function exists(string $value, string $table, string $column): bool
-    {
-        $db = app(Database::class);
-
-        $result = $db->query(
-            "select * from {$table} where {$column} = :value", compact('value'))
-            ->count();
-
-        return $result > 0;
     }
 
     public static function file(string $value): bool
