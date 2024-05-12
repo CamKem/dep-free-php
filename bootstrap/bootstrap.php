@@ -5,8 +5,7 @@ use App\Core\Exceptions\RouteException;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
-use App\Core\Session;
-use App\Middleware\AuthMiddleware;
+use App\Services\AuthService;
 use App\Services\CategoryService;
 use App\Services\ConfigService;
 use App\Services\DatabaseService;
@@ -24,13 +23,11 @@ $app->registerProvider(new DatabaseService($app));
 $app->registerProvider(new RouterService($app));
 $app->registerProvider(new SessionService($app));
 $app->registerProvider(new CategoryService($app));
+$app->registerProvider(new AuthService($app));
 
 // Bind the Request & Response to the container
 $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
-
-// Middleware aliases for the application
-$app->alias('auth', AuthMiddleware::class);
 
 // Boot the Application
 $app->boot();
