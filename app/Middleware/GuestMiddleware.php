@@ -5,13 +5,14 @@ namespace App\Middleware;
 use App\Core\Middleware;
 use Override;
 
-class AuthMiddleware extends Middleware
+class GuestMiddleware extends Middleware
 {
     #[Override]
     public function handle(): void
     {
-        if (!auth()->check()) {
-            abort(403);
+
+        if (auth()->check()) {
+            redirect(route('dashboard.index'));
         }
 
     }
