@@ -6,7 +6,9 @@
     --dark-blue-color: #002936;
     --grey-color: #595959;
     --light-grey-color: #D0CFCF;
+    --very-light-grey-color: #f4f4f4;
     --orange-color: #FB6806;
+    --mid-orange-color: #E55D1B;
 
     --default-padding: 15px;
     --default-margin: 10px;
@@ -36,6 +38,77 @@ body {
 a {
     color: var(--white-color);
     text-decoration: none;
+}
+
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid var(--light-grey-color);
+    border-radius: 4px;
+}
+
+button {
+    background-color: var(--orange-color);
+    color: white;
+    padding: 10px 50px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--mid-orange-color);
+}
+
+.general-text {
+    text-align: center;
+    margin-top: 30px;
+}
+.standard-link {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+/* Container styles */
+.standard-container {
+    margin: 0 auto;
+    max-width: 80rem;
+    padding: 1.5rem;
+}
+
+.general-heading {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.error-message {
+    color: #cc0000;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    height: 1rem;
+}
+
+.user-form {
+    align-items: flex-start;
+    padding: 2rem;
+    background-color: var(--very-light-grey-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
 }
 
 .hidden {
