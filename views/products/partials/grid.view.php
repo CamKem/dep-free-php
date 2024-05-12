@@ -2,14 +2,14 @@
     <?php foreach ($products->toArray() as $product): ?>
         <li>
             <a href="<?= route('products.show', [
-                    'category' => $product['category']['slug'],
+                    'category' => $product['category']['slug'] ?? $category->slug,
                     'product' => $product['slug']]
             ) ?>"
                class="product-link"
                aria-label="<?= $product['name'] ?>"
             >
                 <article class="product-card">
-                    <img src="./images/products/<?= $product['image'] ?>"
+                    <img src="/images/products/<?= $product['image'] ?>"
                          alt="<?= $product['name'] ?>">
                     <p class="price">
                         <?php if ($product['sale_price']): ?>
@@ -22,7 +22,7 @@
                             <strong>$<?= $product['price'] ?></strong>
                         <?php endif; ?>
                     </p>
-                    <h3 class="short-desc"><?= substr($product['description'], 0, 30) ?>...</h3>
+                    <h3 class="short-desc"><?= $product['name'] ?></h3>
                 </article>
             </a>
         </li>
