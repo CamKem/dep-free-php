@@ -8,10 +8,12 @@ use App\Core\Routing\RouteProxy as Route;
 // Login routes
 Route::get('/login')
     ->controller([SessionController::class, 'index'])
+    ->middleware('guest')
     ->name('login.index');
 
 Route::post('/login')
     ->controller([SessionController::class, 'store'])
+    ->middleware('guest')
     ->name('login.store');
 
 Route::get('/logout')
@@ -22,10 +24,12 @@ Route::get('/logout')
 // Registration routes
 Route::get('/register')
     ->controller([RegistrationController::class, 'index'])
+    ->middleware('guest')
     ->name('register.index');
 
 Route::post('/register')
     ->controller([RegistrationController::class, 'store'])
+    ->middleware('guest')
     ->name('register.store');
 
 // Password reset routes
