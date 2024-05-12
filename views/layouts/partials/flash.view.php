@@ -15,4 +15,3 @@
         }, 3000);
     </script>
 <?php endif; ?>
-<?php session()->remove('flash-message'); ?>
