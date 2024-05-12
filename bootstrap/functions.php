@@ -48,13 +48,12 @@ function route(string $name, string|array|null $params = []): string
     return app(Router::class)->generate($name, $params ?? []);
 }
 
-function abort($code = 404): void
+function abort($code = 404): View
 {
     http_response_code($code);
-
-    require base_path("views/error/{$code}.view.php");
-
-    die();
+    return view("errors.$code",
+        ['title' => $code]
+    );
 }
 
 function collect(array $items = []): Collection
@@ -125,7 +124,7 @@ function request($key = null, $default = null): mixed
 }
 
 /**
- * Log a message to the error log
+ * Log a message to the errors log
  * Find the logs by using: echo ini_get('error_log');
  * @param string $message
  * @param string $level

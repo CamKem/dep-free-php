@@ -69,7 +69,7 @@ class View
                 ob_end_clean();
             }
             $this->message = $e->getMessage();
-            $this->require('error.exception');
+            $this->require('errors.exception');
             $this->content = ob_get_clean();
             $this->title = 'Exception';
             $this->require('layouts.app');
