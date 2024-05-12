@@ -25,6 +25,8 @@ class Validator
         }
 
         if (!empty($this->errors)) {
+            // TODO: work out a way to return the errors instead of throwing an exception
+            //return $this->errors;
             throw new ValidationException($this->errors);
         }
 

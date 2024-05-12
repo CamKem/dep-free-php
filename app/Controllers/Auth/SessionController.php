@@ -24,10 +24,6 @@ class SessionController extends Controller
     {
         (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 
-        if (! Validator::string($_POST['password'], 1, 255)) {
-            $errors['password'] = 'A password is required.';
-        }
-
         $validated = (new Validator())->validate(
             $request->only(['email', 'password']), [
             'email' => ['required', 'email'],
