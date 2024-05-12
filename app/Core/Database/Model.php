@@ -35,7 +35,7 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         return isset($this->attributes[$name]);
     }
 
-    public static function all(): ModelCollection
+    public function all(): ModelCollection
     {
         $model = new static();
         $results = $model->db->execute(

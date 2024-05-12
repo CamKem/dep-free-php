@@ -59,7 +59,7 @@ class Auth
         session()->remove('user');
     }
 
-    public static function getUserByEmail(#[SensitiveParameter] string $email): ?User
+    public function getUserByEmail(#[SensitiveParameter] string $email): ?User
     {
         return (new User())
             ->where('email', $email)
