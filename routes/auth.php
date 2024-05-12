@@ -16,6 +16,7 @@ Route::post('/login')
 
 Route::get('/logout')
     ->controller([SessionController::class, 'destroy'])
+    ->middleware('auth')
     ->name('logout');
 
 // Registration routes

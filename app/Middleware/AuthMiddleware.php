@@ -11,7 +11,7 @@ class AuthMiddleware extends Middleware
     public function handle(): void
     {
         if (!session()->has('user')) {
-            redirect('login');
+            abort(403);
         }
     }
 }
