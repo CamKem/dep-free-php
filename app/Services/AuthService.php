@@ -2,39 +2,26 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Core\Authentication\Auth;
+use App\Core\ServiceProvider;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\GuestMiddleware;
 
-class AuthService
+class AuthService extends ServiceProvider
 {
-    public function register(string $username, string $password, array $roles): User
+    public function register(): void
     {
-        // Create a new User object and save it to the database
-        // ...
-
-        return $user;
+        // Register AUTH service IN THE CONTAINER
+        $this->app->singleton(Auth::class);
     }
 
-    public function login(string $username, string $password): bool
+    public function boot(): void
     {
-        // Retrieve the User object from the database and check if the password is correct
-        // ...
+        // Resolve the auth so it loads the user from the session
+        $this->app->resolve(Auth::class);
 
-        return $isPasswordCorrect;
-    }
-
-    public function isAuthenticated(): bool
-    {
-        // Check if the user is authenticated
-        // ...
-
-        return $isAuthenticated;
-    }
-
-    public function isAuthorized(array $requiredRoles): bool
-    {
-        // Check if the user has the required roles
-        // ...
-
-        return $isAuthorized;
+        // Register the auth middleware aliases
+        $this->app->alias('auth', AuthMiddleware::class);
+        $this->app->alias('guest', GuestMiddleware::class);
     }
 }
