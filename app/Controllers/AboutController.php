@@ -7,13 +7,10 @@ use App\Core\View;
 
 class AboutController extends Controller
 {
-
     public function __invoke(): View
     {
         return view("about", [
-            'title' => 'About page',
-            'heading' => 'About Us',
+            'title' => 'About Us',
         ]);
     }
-
 }
