@@ -527,6 +527,7 @@ main > section > h2 {
 }
 
 /* Brand logo styles */
+
 @media screen and (min-width: 885px) {
     .brand-logo-wrapper {
         display: flex;
@@ -542,6 +543,10 @@ main > section > h2 {
         justify-content: center;
         align-items: flex-start;
         margin-bottom: 30px;
+    }
+
+    .brand-text p {
+        text-align: left;
     }
 
     .brand-text p + p {
