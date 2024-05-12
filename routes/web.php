@@ -3,6 +3,7 @@
 use App\Controllers\AboutController;
 use App\Controllers\CategoriesController;
 use App\Controllers\ContactController;
+use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
 use App\Controllers\ProductsController;
 use App\Core\Routing\RouteProxy as Route;
@@ -40,3 +41,9 @@ Route::get('/products')
 Route::get('/categories/{category}/products/{product}')
     ->controller([ProductsController::class, 'show'])
     ->name('products.show');
+
+// Dashboard Route
+Route::get('/dashboard')
+    ->controller(DashboardController::class)
+    ->name('dashboard')
+    ->middleware('auth');
