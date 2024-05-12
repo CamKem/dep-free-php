@@ -116,15 +116,12 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
 
     public function belongsTo(string $relatedModel): BelongsTo
     {
-        $relatedModelInstance = new $relatedModel;
-        return new BelongsTo($this, $relatedModelInstance);
+        return new BelongsTo($this, new $relatedModel);
     }
 
     public function hasMany(string $relatedModel): HasMany
     {
-        $relatedModelInstance = new $relatedModel;
-//        $this->setInstance($relatedModelInstance);
-        return new HasMany($this, $relatedModelInstance);
+        return new HasMany($this, new $relatedModel);
     }
 
     /**
