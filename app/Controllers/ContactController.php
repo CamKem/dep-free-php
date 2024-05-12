@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Actions\HandleCsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
+use App\Core\Http\Response;
 use App\Core\Validator;
 use App\Core\View;
 use App\Models\Contact;
@@ -19,10 +20,10 @@ class ContactController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         // validate the csrf token
-        (new HandleCsrfTokens())->validateToken($request);
+        (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 
         // handle the checkbox
         $requestBody = $request->getBody();
