@@ -17,7 +17,7 @@
                    data-validate=true
             >
             <p class="error-message">
-                <?= errors('email') ?>
+                <?= error('email') ?>
             </p>
 
             <label for="password"><span>Password</span></label>
@@ -29,7 +29,7 @@
                    data-validate=true
             >
             <p class="error-message">
-                <?= errors('password') ?>
+                <?= error('password') ?>
             </p>
 
             <button class="button-padding" id="submit" type="submit">Login</button>

@@ -1,7 +1,8 @@
 <section>
-    <h2>Login</h2>
+    <h2>Register</h2>
     <script type="module">
         import FormValidator from './scripts/validation.js';
+
         window.onload = () => new FormValidator('registration-form');
     </script>
     <div class="flex-center">
@@ -19,7 +20,7 @@
                    data-validate=true
             >
             <p class="error-message">
-                <?= errors('username') ?>
+                <?= error('username') ?>
             </p>
 
             <label for="email"><span>Email address</span></label>
@@ -31,7 +32,7 @@
                    data-validate=true
             >
             <p class="error-message">
-                <?= errors('email') ?>
+                <?= error('email') ?>
             </p>
 
             <label for="password"><span>Password</span></label>
@@ -43,10 +44,11 @@
                    data-validate=true
             >
             <p class="error-message">
-                <?= errors('password') ?>
+                <?= error('password') ?>
             </p>
 
-            <button class="button-padding" id="submit" type="submit">Login</button>
+            <button class="button-padding" id="submit" type="submit">Register
+            </button>
 
         </form>
     </div>
