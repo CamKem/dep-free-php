@@ -2,12 +2,15 @@
 
 namespace app\Core\Database;
 
+use RuntimeException;
+
 class QueryBuilder
 {
 
     protected string $query;
     protected array $conditions = [];
     protected array $orConditions = [];
+    protected array $updateValues = [];
     protected array $with = [];
 
     public function __construct(protected string $table,)
@@ -67,26 +70,26 @@ class QueryBuilder
                     return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
                 }, $columns);
 
-                $this->query = str_replace("select *", "select {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-                $this->query .= " inner join {$relatedTable} on {$this->table}.{$foreignColumn} = {$relatedTable}.id";
+                $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                $this->query .= " INNER JOIN {$relatedTable} ON {$this->table}.{$foreignColumn} = {$relatedTable}.id";
             }
         }
 
         if (!empty($this->conditions)) {
-            $this->query .= " where ";
+            $this->query .= " WHERE ";
             foreach ($this->conditions as $index => $condition) {
                 if ($index > 0) {
-                    $this->query .= " and ";
+                    $this->query .= " AND ";
                 }
                 $this->withCheck($condition);
             }
         }
 
         if (!empty($this->orConditions)) {
-            $this->query .= " or ";
+            $this->query .= " OR ";
             foreach ($this->orConditions as $index => $condition) {
                 if ($index > 0) {
-                    $this->query .= " or ";
+                    $this->query .= " OR ";
                 }
                 $this->withCheck($condition);
             }
@@ -113,27 +116,39 @@ class QueryBuilder
         return $instance;
     }
 
+    public function update(array $data): static
+    {
+        $instance = new static();
+        $columns = array_keys($data);
+        $setClause = implode(", ", array_map(fn($column) => "{$column} = :{$column}", $columns));
+        $instance->query = "UPDATE {$instance->table} SET {$setClause}";
+        $instance->conditions = $this->conditions;
+        $instance->updateValues = array_map(fn($column) => [$column, '=', $data[$column]], $columns);
+        return $instance;
+    }
+
+    public function delete(): static
+    {
+        if (empty($this->conditions) && isset($this->attributes['id'])) {
+            $this->conditions[] = ['id', '=', $this->attributes['id']];
+        }
+
+        if (empty($this->conditions)) {
+            throw new RuntimeException("Delete without conditions is not allowed");
+        }
+        $this->query = "DELETE FROM {$this->table}";
+        return $this;
+    }
+
     public function getBindings(): array
     {
         $bindings = [];
-        foreach (array_merge($this->conditions, $this->orConditions) as $condition) {
+        foreach (array_merge($this->conditions, $this->orConditions, $this->updateValues) as $condition) {
             $bindings[$condition[0]] = $condition[2];
         }
         return $bindings;
     }
 
-    public function insert(array $data): bool
-    {
-        $columns = implode(", ", array_keys($data));
-        $values = implode(", ", array_map(fn($value) => ":$value", array_keys($data)));
-        $this->query = "insert into $this->table ($columns) values ($values)";
-        return $this->query;
-    }
-
-    /**
-     * @param mixed $condition
-     * @return void
-     */
     public function withCheck(mixed $condition): void
     {
         if (!empty($this->with)) {
