@@ -45,11 +45,6 @@ class View
         return $instance->render();
     }
 
-    public function __toString(): string
-    {
-        return $this->render();
-    }
-
     public function render(): string
     {
         ob_start();
@@ -60,7 +55,6 @@ class View
             }
             $this->require($this->view);
             $this->content = ob_get_clean();
-            // if there is a title set it or use the default
             $this->title = $this->title ?? 'Error';
             $this->require('layouts.app');
             return ob_get_clean();
