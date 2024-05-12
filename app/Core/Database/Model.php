@@ -80,6 +80,15 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         return $model;
     }
 
+    public function exists(): bool
+    {
+        $count = $this->db->execute(
+            $this->toSql(),
+            $this->getBindings(),
+        )->count();
+        return $count > 0;
+    }
+
     public function mapResultsToModel(array $results): ModelCollection
     {
         $models = $this->mapModels($results);
@@ -164,4 +173,13 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         }, $results);
     }
 
+    public function __serialize(): array
+    {
+        return $this->attributes;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->attributes = $data;
+    }
 }
