@@ -7,6 +7,8 @@ use SensitiveParameter;
 class Mailer
 {
 
+    // TODO: implement an actual mailer and not log the email
+
     public function sendPasswordResetEmail(
         #[SensitiveParameter] string $email,
         #[SensitiveParameter] string $token
