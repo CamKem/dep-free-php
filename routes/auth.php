@@ -34,8 +34,8 @@ Route::post('/register')
 
 // Password reset routes
 Route::get('/password/reset')
-    ->controller([PasswordResetController::class, 'index'])
-    ->name('password.reset.index');
+    ->controller([PasswordResetController::class, 'show'])
+    ->name('password.reset.show');
 
 Route::post('/password/reset')
     ->controller([PasswordResetController::class, 'store'])
@@ -44,3 +44,7 @@ Route::post('/password/reset')
 Route::get('/password/reset/{token}')
     ->controller([PasswordResetController::class, 'edit'])
     ->name('password.reset.edit');
+
+Route::post('/password/reset/{token}')
+    ->controller([PasswordResetController::class, 'update'])
+    ->name('password.reset.update');
