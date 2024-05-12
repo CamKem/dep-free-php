@@ -47,7 +47,6 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
 
     public function save(): void
     {
-        // dd($this->toSql(), $this->getBindings());
         $this->db->execute(
             $this->toSql(),
             $this->getBindings(),
@@ -56,7 +55,6 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
 
     public function get(): ModelCollection
     {
-        // dd($this->query->toSql());
         $results = $this->db->execute(
             $this->toSql(),
             $this->getBindings(),
