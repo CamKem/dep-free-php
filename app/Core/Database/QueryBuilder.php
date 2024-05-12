@@ -38,6 +38,12 @@ class QueryBuilder
         return $queryBuilder;
     }
 
+    // find method
+    public static function find(int $id): static
+    {
+        return static::where('id', $id);
+    }
+
     public static function with(string $relation): static
     {
         $queryBuilder = self::getInstance();
