@@ -98,15 +98,14 @@ class Router
     }
 
     /**
-     * Abort the request & Return the error page
+     * Abort the request & Return the errors page
      * @param int $code
      * @return null
      */
     protected function abort(int $code = 404)
     {
         http_response_code($code);
-        require base_path("views/error/{$code}.view.php");
-        die();
+        return view("errors.$code", ['title' => $code]);
     }
 
     /**
