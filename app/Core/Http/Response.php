@@ -29,6 +29,17 @@ class Response {
         exit;
     }
 
+    public function withInput(array $input): static
+    {
+        session()->flash('old', $input);
+        return $this;
+    }
+
+    public function withErrors(array $errors): static
+    {
+        session()->flash('errors', $errors);
+        return $this;
+    }
 
     public static function send(): void
     {
