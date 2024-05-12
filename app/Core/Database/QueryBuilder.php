@@ -15,7 +15,7 @@ class QueryBuilder
 
     public function __construct(protected string $table,)
     {
-        $this->query = "select * from $this->table";
+        $this->query = "SELECT * FROM $this->table";
     }
 
     public function where(string $column, mixed $operator, mixed $value = null): static

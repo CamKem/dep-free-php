@@ -15,8 +15,7 @@ class SessionController extends Controller
     public function index(): View
     {
         return view("users.login", [
-            'heading' => 'Login',
-            'errors' => []
+            'title' => 'Login',
         ]);
     }
 
