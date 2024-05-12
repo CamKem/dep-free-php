@@ -1,6 +1,7 @@
 <?php
 
-// a php class that will be our base class to handle all the migration logic for our database
+// TODO: set up the migration class to handle the creation of tables, columns, and the tracking of migrations
+//  work out a way to do it via the command line
 
 namespace App\Database;
 
@@ -9,13 +10,11 @@ use app\Core\Database\Database;
 
 class Migration
 {
-
     protected Database $db;
 
     public function __construct()
     {
-        // todo work out for this part of the boundry if we resolve off the app or the container
-        $this->db = app::resolve(Database::class);
+        $this->db = app(Database::class);
     }
 
     public function createTable($table, $fields): Database

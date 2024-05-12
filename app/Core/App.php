@@ -86,7 +86,7 @@ class App extends Container
     protected function unBootProvider(ServiceProvider $provider): void
     {
         // TODO: set up to remove the resolved providers from the container
-        // TODO: also remove them from the bootedProviders array
+        //  also remove them from the bootedProviders array
         if (method_exists($provider, 'unBoot')) {
             $provider->unBoot();
             // remove the provider from the bootedProviders array
@@ -123,3 +123,8 @@ class App extends Container
     }
 
 }
+
+// TODO: test memory usage
+// echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
+// echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
+// echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";

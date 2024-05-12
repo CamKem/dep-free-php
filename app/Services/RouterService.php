@@ -22,7 +22,6 @@ class RouterService extends ServiceProvider
     #[Override]
     public function boot(): void
     {
-        // TODO: autocomplete doesn't work here, not sure if it's possible with IoC containers
         /** @var Router $router */
         $router = $this->app->resolve(Router::class);
         $router->loadRoutes();

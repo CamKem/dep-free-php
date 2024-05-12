@@ -27,8 +27,11 @@ class DatabaseService extends ServiceProvider
     public function boot(): void
     {
         $this->app->resolve(Database::class)->connect();
-        // TODO: if the route name is 'migrate' then run the migration
-        // return $this->app->resolve(Migrator::class)->run();
+    }
+
+    public function unBoot(): void
+    {
+        $this->app->resolve(Database::class)->disconnect();
     }
 
 }

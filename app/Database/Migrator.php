@@ -7,12 +7,9 @@ use app\Core\Database\Database;
 
 class Migrator
 {
-    protected Database $db;
-
-    public function __construct()
+    public function __construct(private Database $db)
     {
-        // todo: should we use App::resolve() or App::container()->resolve()? or app(Database::class) instead?
-        $this->db = App::container()->resolve(Database::class);
+        $this->db = app(Database::class);
     }
 
     public function migrate(): void
