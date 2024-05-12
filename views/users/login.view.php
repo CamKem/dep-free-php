@@ -36,5 +36,6 @@
 
         </form>
         <p class="general-text">Don't have an account? <a class="standard-link" href="<?= route('register.index') ?>">Register</a></p>
+        <p class="">Forgot your password? <a class="standard-link" href="<?= route('password.reset.show') ?>">Reset it</a></p>
     </div>
 </section>
