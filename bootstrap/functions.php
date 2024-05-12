@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\App;
+use App\Core\Authentication\Auth;
 use App\Core\Collecting\Collection;
 use App\Core\Config;
 use App\Core\Env;
@@ -135,14 +136,10 @@ function logger($message, $level = 'info', $context = []): void
     error_log("[$level] $message: " . print_r($context, true));
 }
 
-//// TODO: add login helpers
-//function auth(): mixed
-//{
-//    if (session()->has('user')) {
-//        return session()->get('user');
-//    }
-//    return Auth::user();
-//}
+function auth(): Auth
+{
+    return app(Auth::class);
+}
 
 /**
  * Resolve a class from the container, via the App class
