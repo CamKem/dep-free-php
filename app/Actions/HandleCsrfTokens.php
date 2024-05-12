@@ -23,14 +23,14 @@ class HandleCsrfTokens
     /**
      * Validate the CSRF token
      *
-     * @param Request $request
+     * @param string $token
      * @return true
      * @throws RuntimeException
      */
-    public function validateToken(Request $request): true
+    public function validateToken(string $token): true
     {
         if (!hash_equals(
-            $request->getBody()['csrf_token'],
+            $token,
             session()->get('csrf_token')
         )) {
             throw new RuntimeException("CSRF token mismatch");
