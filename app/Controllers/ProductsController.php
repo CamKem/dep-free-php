@@ -10,11 +10,17 @@ use App\Models\Product;
 class ProductsController extends Controller
 {
 
-    public function index(): View
+    public function index(Request $request): View
     {
+        $query = Product::with('category');
+
+        if ($request->has('search')){
+            $query->where('name', 'like', "%{$request->get('search')}%");
+        }
+
         return view("products.index", [
             'title' => 'Products',
-            'products' => Product::all(),
+            'products' => $query->get(),
         ]);
     }
 
@@ -22,15 +28,9 @@ class ProductsController extends Controller
     {
         return view("products.show", [
             'title' => 'Product',
-            'product' => Product::where('slug', $request->get('slug'))->get(),
-        ]);
-    }
-
-    public function search(Request $request): View
-    {
-        return view("products.index", [
-            'title' => 'Search',
-            'products' => Product::where('name', 'like', "%{$request->get('search')}%")->get(),
+            'product' => Product::with('category')
+                ->where('slug', $request->get('slug'))
+                ->get(),
         ]);
     }
 

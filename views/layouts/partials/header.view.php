@@ -53,8 +53,7 @@
             </a>
         </section>
 
-        <form class="search-form" action="<?= route('products.search')?>" method="post">
-            <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+        <form class="search-form" action="<?= route('products.index')?>" method="get">
             <label for="search-bar" class="sr-only">Search products</label>
             <input type="text" name="search" id="search-bar" placeholder="Search products">
             <button type="submit" id="search-button">
