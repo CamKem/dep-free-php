@@ -15,7 +15,7 @@ class CategoryService extends ServiceProvider
 
     public function boot(): void
     {
-        $categories = Category::class::all();
+        $categories = (new Category())->all();
         session()->set('categories', $categories->toArray());
     }
 }

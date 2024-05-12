@@ -30,7 +30,7 @@ class HasMany
 
     public function get(): ModelCollection
     {
-        return $this->related::where($this->foreignKey, $this->parent->id)->get();
+        return $this->related->where($this->foreignKey, $this->parent->id)->get();
     }
 
 }

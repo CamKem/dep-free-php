@@ -45,5 +45,5 @@ Route::get('/categories/{category}/products/{product}')
 // Dashboard Route
 Route::get('/dashboard')
     ->controller(DashboardController::class)
-    ->name('dashboard')
+    ->name('dashboard.index')
     ->middleware('auth');

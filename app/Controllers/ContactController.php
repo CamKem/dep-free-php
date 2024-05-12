@@ -42,7 +42,7 @@ class ContactController extends Controller
         ]);
 
         // store the contact
-        $contact = Contact::create([
+        $contact = (new Contact())->create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'contact' => $validated['contact'],

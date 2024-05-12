@@ -13,11 +13,15 @@ class Auth
     public function __construct()
     {
         if (session()->has('user')) {
-            $userExists = User::where('email', session()->get('user')->email)->exists();
+            $userExists = (new User())
+                ->where('email', session()->get('user')->email)
+                ->exists();
             if (!$userExists) {
                 session()->remove('user');
             }
-            $this->user = User::where('email', session()->get('user')->email)->first();
+            $this->user = (new User())
+                ->where('email', session()->get('user')->email)
+                ->first();
         }
     }
 
@@ -57,7 +61,9 @@ class Auth
 
     public static function getUserByEmail(#[SensitiveParameter] string $email): ?User
     {
-        return User::where('email', $email)->first();
+        return (new User())
+            ->where('email', $email)
+            ->first();
     }
 
 }

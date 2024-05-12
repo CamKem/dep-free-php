@@ -5,7 +5,6 @@ namespace app\Core\Database;
 class QueryBuilder
 {
 
-    protected static array $instances = [];
     protected string $query;
     protected array $conditions = [];
     protected array $orConditions = [];
@@ -18,49 +17,37 @@ class QueryBuilder
         $this->query = "select * from $this->table";
     }
 
-    public static function getInstance(): static
-    {
-        return static::$instances[static::class] ??= new static();
-    }
-
-    public static function setInstance(Model $instance): void
-    {
-        static::$instances[get_class($instance)] = $instance;
-    }
-
-    public static function where(string $column, mixed $operator, mixed $value = null): static
+    public function where(string $column, mixed $operator, mixed $value = null): static
     {
         if (func_num_args() === 2) {
             $value = $operator;
             $operator = "=";
         }
-        $queryBuilder = self::getInstance();
-        $queryBuilder->conditions[] = [$column, $operator, $value];
-        return $queryBuilder;
+        $this->conditions[] = [$column, $operator, $value];
+        return $this;
     }
 
-    public static function orWhere(string $column, mixed $operator, mixed $value = null): static
+    public function orWhere(string $column, mixed $operator, mixed $value = null): static
     {
         if (func_num_args() === 2) {
             $value = $operator;
             $operator = "=";
         }
-        $queryBuilder = self::getInstance();
-        $queryBuilder->orConditions[] = [$column, $operator, $value];
-        return $queryBuilder;
+        $this->orConditions[] = [$column, $operator, $value];
+        return $this;
     }
 
     // find method
-    public static function find(int $id): static
+    public function find(int $id): static
     {
-        return static::where('id', $id);
+        return $this->where('id', $id);
     }
 
-    public static function with(string $relation): static
+    public function with(string $relation): static
     {
-        $queryBuilder = self::getInstance();
-        $queryBuilder->with[] = $relation;
-        return $queryBuilder;
+
+        $this->with[] = $relation;
+        return $this;
     }
 
     public function toSql(): string
@@ -110,9 +97,9 @@ class QueryBuilder
         return $this->query;
     }
 
-    public static function create(array $data): static
+    public function create(array $data): static
     {
-        $instance = self::getInstance();
+        $instance = new static();
         $columns = implode(", ", array_keys($data));
         $placeholders = array_map(fn($key) => ":{$key}", array_keys($data));
         $values = implode(", ", $placeholders);

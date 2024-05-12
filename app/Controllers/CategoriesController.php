@@ -12,7 +12,7 @@ class CategoriesController extends Controller
 
     public function show(Request $request): View
     {
-        $category = Category::where('slug', $request->get('category'))->first();
+        $category = (new Category())->where('slug', $request->get('category'))->first();
 
         if (!$category) {
             abort();

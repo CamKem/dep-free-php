@@ -13,8 +13,10 @@ class HomeController extends Controller
     {
         return view("home", [
             'title' => 'Home',
-            'products' => Product::where('featured', true)
-                ->with('category')->get()
+            'products' => (new Product())
+                ->where('featured', true)
+                ->with('category')
+                ->get()
         ]);
     }
 

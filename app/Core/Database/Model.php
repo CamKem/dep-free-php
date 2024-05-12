@@ -37,7 +37,7 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
 
     public static function all(): ModelCollection
     {
-        $model = static::getInstance();
+        $model = new static();
         $results = $model->db->execute(
             $model->toSql(),
             $model->getBindings(),
@@ -123,7 +123,7 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
     public function hasMany(string $relatedModel): HasMany
     {
         $relatedModelInstance = new $relatedModel;
-        $this->setInstance($relatedModelInstance);
+//        $this->setInstance($relatedModelInstance);
         return new HasMany($this, $relatedModelInstance);
     }
 
