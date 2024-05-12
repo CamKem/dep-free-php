@@ -22,8 +22,8 @@ $app->registerProvider(new ConfigService($app));
 $app->registerProvider(new DatabaseService($app));
 $app->registerProvider(new RouterService($app));
 $app->registerProvider(new SessionService($app));
-$app->registerProvider(new CategoryService($app));
 $app->registerProvider(new AuthService($app));
+$app->registerProvider(new CategoryService($app));
 
 // Bind the Request & Response to the container
 $app->singleton(Request::class);
