@@ -2,7 +2,6 @@
     <h2>Register</h2>
     <script type="module">
         import FormValidator from './scripts/validation.js';
-
         window.onload = () => new FormValidator('registration-form');
     </script>
     <div class="flex-center">
