@@ -60,6 +60,14 @@ class Request
         return $this->bodyParameters;
     }
 
+    // only method returns only the values of the keys passed in the array
+    public function only(array $keys): array
+    {
+        return array_filter($this->getParameters(), static fn($key) =>
+            in_array($key, $keys, true), ARRAY_FILTER_USE_KEY
+        );
+    }
+
     public function has(string $key): bool
     {
         return isset($this->getParameters()[$key]);
