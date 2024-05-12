@@ -65,4 +65,10 @@
         line-height: 1.5;
         margin-bottom: 20px;
     }
+
+    .call-to-action {
+        font-size: 18px;
+        font-weight: bold;
+        color: #182f53;
+    }
 </style>
