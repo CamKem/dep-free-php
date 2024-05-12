@@ -29,10 +29,7 @@ class HandleCsrfTokens
      */
     public function validateToken(string $token): true
     {
-        if (!hash_equals(
-            $token,
-            session()->get('csrf_token')
-        )) {
+        if (!hash_equals($token, session()->get(('_token')))) {
             throw new RuntimeException("CSRF token mismatch");
         }
         return true;

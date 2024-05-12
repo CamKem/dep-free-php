@@ -24,11 +24,8 @@ class SessionService extends ServiceProvider
     public function boot(): void
     {
         $session = $this->app->resolve(Session::class);
-        // check if there is already a csrf token in the session
-        if (!$session->has('csrf_token')) {
-            // if not, generate a new one
-            $session->set('csrf_token', (new HandleCsrfTokens())->generateToken());
+        if (!$session->has('_token')) {
+            $session->set('_token', (new HandleCsrfTokens())->generateToken());
         }
-
     }
 }
