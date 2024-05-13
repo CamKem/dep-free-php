@@ -38,6 +38,14 @@ set_exception_handler(static function (Throwable $e) use ($app) {
         ->view('errors.exception', ['message' => $e->getMessage()]);
 });
 
+// Set the error handler
+if(config('app.env') === 'local') {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+
+
 // Route the request
 try {
     // Get the request from the container, bound in the service

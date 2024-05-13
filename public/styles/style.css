@@ -44,6 +44,8 @@ a {
 
 textarea,
 input[type="text"],
+input[type="number"],
+input[type="tel"],
 input[type="password"],
 input[type="email"] {
     width: 100%;
@@ -52,6 +54,11 @@ input[type="email"] {
     margin-bottom: 10px;
     border: 1px solid var(--light-grey-color);
     border-radius: 4px;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--mid-blue-color);
+    width: 18px;
 }
 
 button {
