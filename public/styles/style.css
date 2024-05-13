@@ -1,6 +1,7 @@
 :root {
     --white-color: #FFFFFF;
     --blue-color: #00ACED;
+    --link-blue-color: #3b82f6;
     --light-blue-color: #0079A6;
     --mid-blue-color: #006989;
     --dark-blue-color: #002936;
@@ -53,16 +54,18 @@ input[type="email"] {
 }
 
 button {
-    background-color: var(--orange-color);
-    color: white;
+    background-color: var(--mid-blue-color);
+    color: var(--white-color);
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: var(--mid-orange-color);
+    background-color: var(--dark-blue-color);
 }
 
 .button-padding {
@@ -74,8 +77,9 @@ button:hover {
     margin-top: 30px;
     margin-bottom: 30px;
 }
+
 .standard-link {
-    color: #3b82f6;
+    color: var(--link-blue-color);
     text-decoration: underline;
 }
 
@@ -87,8 +91,10 @@ button:hover {
 }
 
 .general-heading {
-    font-size: 24px;
     font-weight: 700;
+    font-size: 24px;
+    color: var(--mid-blue-color);
+    margin-bottom: 10px;
 }
 
 .flex-center {
@@ -96,6 +102,12 @@ button:hover {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+@media (min-width: 600px) {
+    .row {
+        flex-direction: row;
+    }
 }
 
 .error-message {
@@ -569,6 +581,11 @@ main > section > h2 {
     font-size: 15px;
 }
 
+.price {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
 .product-card .price {
     display: flex;
     flex-direction: column;
@@ -613,6 +630,39 @@ main > section > h2 {
     height: 300px;
     object-fit: cover;
     margin-bottom: 1rem;
+}
+
+/* Product page styles */
+.product-details-info {
+    flex: 2;
+    padding-left: 20px;
+}
+.product-details-image {
+    flex: 1;
+}
+.product-details-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+#quantity {
+    max-width: 50px;
+    text-align: center;
+}
+.quantity-selector {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+.quantity-selector label {
+    margin-right: 10px;
+}
+.quantity-selector button {
+    margin: 5px 5px 10px;
+    place-content: center;
+    place-items: center;
+    place-self: center;
 }
 
 /* Brand logo styles */
