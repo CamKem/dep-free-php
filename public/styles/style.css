@@ -86,6 +86,10 @@ button:hover {
     margin-bottom: 30px;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .standard-link {
     color: var(--link-blue-color);
     text-decoration: underline;

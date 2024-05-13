@@ -2,7 +2,6 @@
     <h2>Contact Us</h2>
     <script type="module">
         import FormValidator from './scripts/validation.js';
-
         window.onload = () => new FormValidator('contact-form');
     </script>
     <div class="flex-center row" style="gap: 20px">
@@ -76,7 +75,6 @@
                            data-validate=false
                     >
                 </div>
-
                 <button id="submit" type="submit">Send</button>
             </form>
         </div>
