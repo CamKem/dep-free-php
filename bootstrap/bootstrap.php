@@ -32,12 +32,6 @@ $app->bind(Response::class, static fn() => new Response());
 // Boot the Application
 $app->boot();
 
-// set the exception handler
-set_exception_handler(static function (Throwable $e) use ($app) {
-    return $app->resolve(Response::class)
-        ->view('errors.exception', ['message' => $e->getMessage()]);
-});
-
 // Set the error handler
 if(config('app.env') === 'local') {
     ini_set('display_errors', 1);
@@ -45,6 +39,11 @@ if(config('app.env') === 'local') {
     error_reporting(E_ALL);
 }
 
+// set the exception handler
+set_exception_handler(static function (Throwable $e) use ($app) {
+    return $app->resolve(Response::class)
+        ->view('errors.exception', ['message' => $e->getMessage()]);
+});
 
 // Route the request
 try {

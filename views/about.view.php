@@ -69,6 +69,6 @@
     .call-to-action {
         font-size: 18px;
         font-weight: bold;
-        color: #182f53;
+        color: var(--dark-blue-color);
     }
 </style>
