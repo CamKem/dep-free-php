@@ -1,6 +1,7 @@
 :root {
     --white-color: #FFFFFF;
-    --blue-color: #00ACED;
+    --pale-blue-color: #3eb7ff;
+    --blue-color: #00aced;
     --link-blue-color: #3b82f6;
     --light-blue-color: #0079A6;
     --mid-blue-color: #006989;
@@ -256,7 +257,7 @@ button:hover {
     }
 
     .login-link > i {
-        font-size: 25px;
+        font-size: 16px;
     }
 }
 
@@ -268,7 +269,7 @@ button:hover {
 }
 
 .cart-view i {
-    font-size: 20px;
+    font-size: 16px;
     font-style: normal;
     line-height: normal;
 }
@@ -333,7 +334,7 @@ button:hover {
     font-size: 16px;
 }
 
-.search-form > button {
+#search-button {
     width: 40px;
     height: 40px;
     border-radius: 50px;
@@ -341,6 +342,12 @@ button:hover {
     color: var(--white-color);
     border: 0;
     margin-left: 10px;
+    padding: 0;
+    font-size: 14px;
+}
+
+#search-button:hover {
+    background-color: var(--mid-blue-color);
 }
 
 /* Category navigation styles */
@@ -376,14 +383,14 @@ button:hover {
     }
 }
 
-.category-nav ul li {
+.category-nav ul a {
     width: 145px;
     border-radius: 5px;
     border: 1px solid var(--blue-color);
 }
 
 @media screen and (min-width: 885px) {
-    .category-nav ul li {
+    .category-nav ul a {
         width: auto;
         border-radius: 0;
         border: 0;
@@ -391,17 +398,31 @@ button:hover {
     }
 }
 
-.category-nav ul li:hover {
+.category-nav ul a:hover {
     background-color: var(--blue-color);
 }
 
+.category-active {
+    background-color: var(--light-blue-color);
+}
+
 @media screen and (min-width: 885px) {
-    .category-nav ul li:hover {
+    .category-active {
+        background-color: transparent;
+        text-decoration: underline;
+        text-decoration-color: var(--light-blue-color);
+        text-decoration-thickness: 2px;
+    }
+}
+
+
+@media screen and (min-width: 885px) {
+    .category-nav ul a:hover {
         border-radius: 50px 0 0 50px;
     }
 }
 
-.category-nav ul li a {
+.category-nav ul li {
     color: var(--white-color);
     padding: 8px;
     display: flex;
@@ -411,24 +432,25 @@ button:hover {
 }
 
 @media screen and (min-width: 885px) {
-    .category-nav ul li a {
+    .category-nav ul li {
         padding: 0;
+
     }
 }
 
-.category-nav ul li a::after {
+.category-nav ul li::after {
     content: "\f105";
     color: var(--blue-color);
     font-family: "FontAwesome", serif;
 }
 
 @media screen and (min-width: 885px) {
-    .category-nav ul li a::after {
+    .category-nav ul li::after {
         display: none;
     }
 }
 
-.category-nav ul li a:hover::after {
+.category-nav ul li:hover::after {
     color: var(--white-color);
 }
 

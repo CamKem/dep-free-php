@@ -1,3 +1,8 @@
+<?php
+
+use App\Core\Http\Request;
+
+?>
 <header class="header">
     <div class="top-bar">
         <div class="content-container">
@@ -62,8 +67,17 @@
     <nav class="category-nav content-container" aria-label="Product categories">
         <ul>
             <?php
+            // get the active categories to make it styled on active state
+            $active = app(Request::class)->get('category');
             foreach ($categories as $category) {
-                echo "<li><a aria-label=\"{$category['name']}\" href=\"" . route('categories.show', ['category' => $category['slug']]) . "\">{$category['name']}</a></li>";
+                echo "<a aria-label=\"{$category['name']}\"
+                         href=\"" . route('categories.show', ['category' => $category['slug']]) . "\"
+                         class=\"" . ($active === $category['slug'] ? 'category-active' : '') . "\"
+                      >
+                          <li class=\"" . ($active === $category['slug'] ? 'category-active' : '') . "\">
+                              {$category['name']}
+                          </li>
+                      </a>";
             }
             ?>
         </ul>
