@@ -1,7 +1,8 @@
 <ul class="product-grid">
     <?php foreach ($products->toArray() as $product): ?>
         <li>
-            <?= $product['category']['slug'] ?? $category->slug ?>
+            <?= $product['category']['slug'] ?>
+            <?= $category->slug ?>
             <a href="<?= route('products.show', [
                     'category' => $product['category']['slug'] ?? $category->slug,
                     'product' => $product['slug']]
