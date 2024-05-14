@@ -99,8 +99,6 @@ class App extends Container
 
     public function getProvider(ServiceProvider $provider): ServiceProvider|null
     {
-        // find the $provider instance in the $this->registeredProviders array
-        // then return the value of the first instance found without using the collect() helper
         return array_filter(
             $this->registeredProviders,
             static fn($registeredProvider) => $registeredProvider === $provider
@@ -124,7 +122,6 @@ class App extends Container
 
 }
 
-// TODO: test memory usage
-// echo 'Memory usage before loading config: ' . memory_get_usage() . "\n";
-// echo 'Memory usage after loading config: ' . memory_get_usage() . "\n";
-// echo 'Peak memory usage: ' . memory_get_peak_usage() . "\n";
+// NOTE: use these for memory usage testing
+//echo 'Memory usage now: ' . round((memory_get_usage() / 1024), 2) . "KB \n";
+//echo 'Peak memory usage: ' . round((memory_get_peak_usage() / 1024), 2) . " KB\n";
