@@ -57,7 +57,13 @@ use App\Core\Http\Request;
               method="get">
             <label for="search-bar" class="sr-only">Search products</label>
             <input type="text" name="search" id="search-bar"
-                   placeholder="Search products">
+                <?php
+                // get the value of the search query only if it's the correct route (products.index)
+                if (request()->getUri() === route('products.index')) {
+                    echo 'value="' . request()->get('search') . '"';
+                }
+                ?>
+                placeholder="Search products">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
