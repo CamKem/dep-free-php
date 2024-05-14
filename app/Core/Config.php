@@ -28,6 +28,8 @@ class Config
     protected function loadConfigFiles(array $filePaths): array
     {
         foreach ($filePaths as $filePath) {
+            // TODO: extract the file name from the path, and use it for the key in the array
+            //  so we don't have to nest the name in the array in the config file
             require $filePath;
         }
 

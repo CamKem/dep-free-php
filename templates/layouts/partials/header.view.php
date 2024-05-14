@@ -1,8 +1,3 @@
-<?php
-
-use App\Core\Http\Request;
-
-?>
 <header class="header">
     <div class="top-bar">
         <div class="content-container">
@@ -35,6 +30,7 @@ use App\Core\Http\Request;
                 <?php endif; ?>
                 <a class="cart-view" aria-label="View Cart Link" href="#">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                    <!-- TODO: set up the shopping card functionality -->
                     <span>View Cart</span>
                 </a>
                 <a class="cart-item-count" aria-label="Items in cart" href="#">
@@ -58,7 +54,6 @@ use App\Core\Http\Request;
             <label for="search-bar" class="sr-only">Search products</label>
             <input type="text" name="search" id="search-bar"
                 <?php
-                // get the value of the search query only if it's the correct route (products.index)
                 if (request()->getUri() === route('products.index')) {
                     echo 'value="' . request()->get('search') . '"';
                 }
@@ -74,7 +69,7 @@ use App\Core\Http\Request;
         <ul>
             <?php
             // get the active categories to make it styled on active state
-            $active = app(Request::class)->get('category');
+            $active = request()->get('category');
             foreach ($categories as $category) {
                 echo "<a aria-label=\"{$category['name']}\"
                          href=\"" . route('categories.show', ['category' => $category['slug']]) . "\"

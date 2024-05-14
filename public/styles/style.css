@@ -671,27 +671,33 @@ main > section > h2 {
     flex: 2;
     padding-left: 20px;
 }
+
 .product-details-image {
     flex: 1;
 }
+
 .product-details-image img {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
 }
+
 #quantity {
     max-width: 50px;
     text-align: center;
 }
+
 .quantity-selector {
     margin: 20px 0;
     display: flex;
     align-items: center;
     flex-direction: row;
 }
+
 .quantity-selector label {
     margin-right: 10px;
 }
+
 .quantity-selector button {
     margin: 5px 5px 10px;
     place-content: center;
@@ -906,8 +912,8 @@ main > section > h2 {
 /* Styling for the checkbox */
 .mail-list {
     display: flex;
-    place-self: end;
     gap: 10px;
+    align-items: center;
     margin-bottom: 10px;
 }
 
@@ -927,13 +933,25 @@ main > section > h2 {
 }
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateY(100%); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes slideOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0;transform: translateY(100%); }
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
 }
 
 .flash-message.slide-in {
