@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
-use App\Core\View;
+use App\Core\Template;
 use App\Models\Product;
 
 class ProductsController extends Controller
 {
 
-    public function index(Request $request): View
+    public function index(Request $request): Template
     {
         $query = (new Product())->with('category');
 
@@ -24,7 +24,7 @@ class ProductsController extends Controller
         ]);
     }
 
-    public function show(Request $request): View
+    public function show(Request $request): Template
     {
         $product = (new Product())->with('category')
             ->where('slug', $request->get('product'))

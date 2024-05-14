@@ -7,7 +7,7 @@ use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
-use App\Core\View;
+use App\Core\Template;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Services\PasswordResetService;
@@ -15,7 +15,7 @@ use App\Services\PasswordResetService;
 class PasswordResetController extends Controller
 {
 
-    public function show(): View
+    public function show(): Template
     {
         return view('users.password-reset.show', [
             'title' => 'Reset Password'
@@ -57,7 +57,7 @@ class PasswordResetController extends Controller
         return redirect(route('password.reset.show'));
     }
 
-    public function edit(Request $request): View|Response
+    public function edit(Request $request): Template|Response
     {
         // check the token exists in the database
         $exists = (new PasswordReset())->where('token', '=', $request->get('token'))->exists();

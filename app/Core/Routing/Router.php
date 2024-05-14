@@ -4,6 +4,7 @@ namespace App\Core\Routing;
 
 use App\Core\Exceptions\RouteException;
 use App\Core\Http\Request;
+use App\Core\Template;
 use Closure;
 
 class Router
@@ -97,14 +98,14 @@ class Router
     }
 
     /**
-     * Abort the request & Return the errors page
+     * Abort the request & Return the error page
      * @param int $code
-     * @return null
+     * @return Template
      */
-    protected function abort(int $code = 404)
+    protected function abort(int $code = 404): Template
     {
         http_response_code($code);
-        return view("errors.$code", ['title' => $code]);
+        return view("errors.{$code}", ['title' => $code]);
     }
 
     /**

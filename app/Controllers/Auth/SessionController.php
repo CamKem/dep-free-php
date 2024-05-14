@@ -7,19 +7,19 @@ use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
-use App\Core\View;
+use App\Core\Template;
 
 class SessionController extends Controller
 {
 
-    public function index(): View
+    public function index(): Template
     {
         return view("users.login", [
             'title' => 'Login',
         ]);
     }
 
-    public function store(Request $request): Response|View
+    public function store(Request $request): Response|Template
     {
         (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 

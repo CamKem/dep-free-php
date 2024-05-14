@@ -7,13 +7,13 @@ use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
-use App\Core\View;
+use App\Core\Template;
 use App\Models\Contact;
 
 class ContactController extends Controller
 {
 
-    public function index(): View
+    public function index(): Template
     {
         return view("contact", [
             'title' => 'Contact Us',

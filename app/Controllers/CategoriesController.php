@@ -4,13 +4,13 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
-use App\Core\View;
+use App\Core\Template;
 use App\Models\Category;
 
 class CategoriesController extends Controller
 {
 
-    public function show(Request $request): View
+    public function show(Request $request): Template
     {
         $category = (new Category())->where('slug', $request->get('category'))->first();
 

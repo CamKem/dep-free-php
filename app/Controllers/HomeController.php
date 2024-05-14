@@ -3,13 +3,13 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Core\View;
+use App\Core\Template;
 use App\Models\Product;
 
 class HomeController extends Controller
 {
 
-    public function __invoke(): View
+    public function __invoke(): Template
     {
         return view("home", [
             'title' => 'Home',

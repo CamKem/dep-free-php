@@ -3,7 +3,7 @@
 namespace App\Core\Http;
 
 use App\Core\Routing\Router;
-use App\Core\View;
+use App\Core\Template;
 
 class Response {
     const NOT_FOUND = 404;
@@ -46,7 +46,7 @@ class Response {
         exit;
     }
 
-    public function view(string $view, array $data = []): View
+    public function view(string $view, array $data = []): Template
     {
         return view($view, $data);
     }

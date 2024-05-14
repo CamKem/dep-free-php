@@ -9,7 +9,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\Session;
-use App\Core\View;
+use App\Core\Template;
 
 function dd(...$values): void
 {
@@ -49,7 +49,7 @@ function route(string $name, string|array|null $params = []): string
     return app(Router::class)->generate($name, $params ?? []);
 }
 
-function abort($code = 404): View
+function abort($code = 404): Template
 {
     http_response_code($code);
     return view("errors.$code",
@@ -154,20 +154,14 @@ function app(string|null $key = null): object
     return App::getContainer()->resolve($key);
 }
 
-/**
- * Render a view
- * @param string $path
- * @param array $data
- * @return View
- */
-function view(string $path, array $data = []): View
+function view(string $path, array $data = []): Template
 {
-    return View::make($path, $data);
+    return Template::make($path, $data);
 }
 
 function add(string $path, array $data = []): string
 {
-    return View::add($path, $data);
+    return Template::make($path, $data, true)->render();
 }
 
 function csrf_token(): string
