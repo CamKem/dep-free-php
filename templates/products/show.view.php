@@ -20,8 +20,8 @@
                     <?php endif; ?>
                 </p>
                 <p class="product-details-description"><?= $product->description ?></p>
-                <form action="#" method="post">
-                    <input type="hidden" name="itemId" value="2">
+                <form action="<?= route('cart.store') ?>" method="post">
+                    <input type="hidden" name="product_id" value="<?= $product->id ?>">
                     <div class="quantity-selector">
                         <label for="quantity">Quantity:</label>
                         <button type="button" onclick="changeQuantity(-1)" aria-label="Decrease quantity">-</button>
