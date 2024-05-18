@@ -5,6 +5,7 @@ namespace app\Core\Database;
 use App\Core\Arrayable;
 use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Relations\BelongsTo;
+use app\Core\Database\Relations\BelongsToMany;
 use app\Core\Database\Relations\HasMany;
 use JsonSerializable;
 
@@ -122,6 +123,11 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
     public function hasMany(string $relatedModel): HasMany
     {
         return new HasMany($this, new $relatedModel);
+    }
+
+    public function belongsToMany(string $relatedModel, string $pivotTable, string $foreignKey, string $relatedKey): BelongsToMany
+    {
+        return new BelongsToMany($this, new $relatedModel, $pivotTable, $foreignKey, $relatedKey);
     }
 
     /**
