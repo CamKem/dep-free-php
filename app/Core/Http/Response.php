@@ -41,14 +41,16 @@ class Response {
         return $this;
     }
 
-    public static function send(): void
-    {
-        exit;
-    }
-
     public function view(string $view, array $data = []): Template
     {
         return view($view, $data);
+    }
+
+    public function back(): static
+    {
+        return self::redirect(
+            session()->get('previous.url', '/')
+        );
     }
 
     public static function redirect(string $url): static
