@@ -9,20 +9,20 @@ class Request
 {
     protected string $method;
     protected string $uri;
+    protected string $url;
     protected array $routeParameters = [];
     protected array $headers;
     protected array $bodyParameters;
     protected array $queryParameters;
-    protected string|null $sessionId;
 
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $this->stripQueryString($_SERVER['REQUEST_URI']);
+        $this->url = $_SERVER['REQUEST_URI'];
         $this->headers = getallheaders();
         $this->bodyParameters = $_POST;
         $this->queryParameters = $_GET;
-        $this->sessionId = $_REQUEST['PHPSESSID'] ?? null;
     }
 
     public function getMethod(): string
@@ -78,11 +78,6 @@ class Request
         return $this->getParameters()[$key] ?? $default;
     }
 
-    public function getSessionId(): string
-    {
-        return $this->sessionId;
-    }
-
     public function stripQueryString(string $uri): string
     {
         if (str_contains($uri, '?')) {
@@ -90,6 +85,11 @@ class Request
         }
 
         return $uri;
+    }
+
+    public function url(): string
+    {
+        return $this->url;
     }
 
     public function route(): Route
