@@ -2,12 +2,15 @@
 
 namespace App\Core;
 
+use http\Exception\RuntimeException;
+use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionNamedType;
+
 class App extends Container
 {
     protected array $registeredProviders = [];
     protected array $bootedProviders = [];
-
-    protected array $aliases = [];
     protected bool $booted = false;
 
     public function __construct()
@@ -21,8 +24,7 @@ class App extends Container
             return true;
         }
 
-        array_walk($this->registeredProviders, fn($provider) =>
-            $this->bootProvider($provider)
+        array_walk($this->registeredProviders, fn($provider) => $this->bootProvider($provider)
         );
 
         return $this->booted = true;
@@ -107,17 +109,44 @@ class App extends Container
 
     public function alias(string $alias, string $class): void
     {
-        $this->aliases[$alias] = $class;
+        if ($this->has($alias)) {
+            throw new InvalidArgumentException(
+                "Alias {$alias} is already in use"
+            );
+        }
+        // to allow for dependency injection, we need to bind the alias to the class
+        $this->bind($alias, function () use ($class) {
+            // get the class constructor
+            $constructor = (new ReflectionClass($class))->getConstructor();
+
+            if ($constructor === null) {
+                // TODO: set up so that DI is handled for all classes and methods
+                //  not just in aliases but all bindings and resolutions
+                //  from the container, for now, we will just return a new instance of the class
+                return new $class;
+            }
+
+            // get the parameters of the constructor
+            $parameters = $constructor->getParameters();
+
+            // resolve each parameter from the container
+            $dependencies = array_map(static function ($parameter) use ($class) {
+                $type = $parameter->getType();
+                if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
+                    throw new RuntimeException(
+                        "Cannot resolve parameter \${$parameter->getName()} in {$class}"
+                    );
+                }
+                return static::getContainer()->resolve($type->getName());
+            }, $parameters);
+
+            return new $class(...$dependencies);
+        });
     }
 
-    public function hasAlias(string $alias): bool
+    public function has(string $alias): bool
     {
-        return array_key_exists($alias, $this->aliases);
-    }
-
-    public function getAlias(string $alias): string
-    {
-        return $this->aliases[$alias];
+        return $this->isBound($alias);
     }
 
 }
