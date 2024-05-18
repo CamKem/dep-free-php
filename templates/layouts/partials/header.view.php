@@ -28,13 +28,13 @@
                         <span>Login</span>
                     </a>
                 <?php endif; ?>
-                <a class="cart-view" aria-label="View Cart Link" href="#">
+                <a class="cart-view" aria-label="View Cart Link" href="<?= route('cart.show') ?>">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                     <!-- TODO: set up the shopping card functionality -->
                     <span>View Cart</span>
                 </a>
-                <a class="cart-item-count" aria-label="Items in cart" href="#">
-                    <span>0 items</span>
+                <a class="cart-item-count" aria-label="Items in cart" href="<?= route('cart.show') ?>">
+                    <span><?= count(session()->get('cart', [])) ?> items</span>
                 </a>
             </div>
         </div>
@@ -58,7 +58,7 @@
                     echo 'value="' . request()->get('search') . '"';
                 }
                 ?>
-                placeholder="Search products">
+                   placeholder="Search products">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>

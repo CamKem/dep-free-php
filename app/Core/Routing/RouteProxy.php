@@ -2,8 +2,6 @@
 
 namespace App\Core\Routing;
 
-use App\Core\App;
-
 /**
  * RouteProxy
  *
@@ -29,7 +27,7 @@ class RouteProxy
     public static function __callStatic($method, $parameters)
     {
         if (!isset(self::$router)) {
-            self::$router = App::getContainer()->resolve(Router::class);
+            self::$router = app()->resolve(Router::class);
         }
         return (new RouteRegistrar(self::$router))->{$method}(...$parameters);
     }

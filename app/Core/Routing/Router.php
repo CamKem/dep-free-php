@@ -4,11 +4,14 @@ namespace App\Core\Routing;
 
 use App\Core\Exceptions\RouteException;
 use App\Core\Http\Request;
+use App\Core\Middleware;
 use App\Core\Template;
 use Closure;
 
 class Router
 {
+    protected array $globalMiddleware = [];
+    private array $resolvedMiddleware = [];
     protected RouteCollection $routes;
 
     public function __construct()
@@ -33,8 +36,11 @@ class Router
             return $this->abort();
         }
 
-        // Apply the middleware to the route
-        $this->applyMiddleware($request, $route);
+        // resolve the route & global middleware
+        $this->resolveMiddleware($route);
+
+        // Apply the middleware stack
+        $this->applyMiddleware($request, $this->resolvedMiddleware);
 
         // Now the request has been matched to a route.
         // We should store the route parameters in the request object
@@ -59,13 +65,55 @@ class Router
         }
     }
 
-    protected function applyMiddleware(Request $request, Route $route): void
+    protected function resolveMiddleware(Route $route): void
     {
-        foreach ($route->getMiddleware() as $alias) {
-            if (app()->hasAlias($alias)) {
-                $middleware = app()->getAlias($alias);
-                (new $middleware())->handle($request);
+        $resolvedMiddleware = array_map(static function ($alias) {
+            return app()->resolve($alias);
+        }, $route->getMiddleware());
+
+        // merge the resolve route middleware with the global middleware
+        $this->resolvedMiddleware = array_merge($this->globalMiddleware, $resolvedMiddleware);
+    }
+
+    protected function applyMiddleware(Request $request, array $stack): mixed
+    {
+        $stackPointer = 0;
+
+        $next = function ($request) use (&$stack, &$stackPointer) {
+            $middleware = $stack[$stackPointer];
+            $stackPointer++;
+            return $middleware->handle($request, $this->getNextMiddleware($stack, $stackPointer));
+        };
+
+        return $next($request);
+    }
+
+    private function getNextMiddleware(array $stack, int $stackPointer): Closure
+    {
+        return function ($request) use (&$stackPointer, &$stack) {
+            if ($stackPointer < count($stack)) {
+                $middleware = $stack[$stackPointer];
+                $stackPointer++;
+                return $middleware->handle($request, $this->getNextMiddleware($stack, $stackPointer));
             }
+
+            // When no more middleware return request wrapped in closure
+            return static fn(Request $request) => $request;
+        };
+    }
+
+    public function getResolvedMiddleware(): array
+    {
+        return $this->resolvedMiddleware;
+    }
+
+    public function registerGlobalMiddleware(array $middleware): void
+    {
+        foreach ($middleware as $m) {
+            if (!$m instanceof Middleware) {
+                throw new RouteException("Middleware {$m} is not an instance of Middleware.");
+            }
+            $this->globalMiddleware[] = $m;
         }
     }
 
