@@ -5,8 +5,8 @@ namespace App\Controllers\Auth;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
-use App\Core\Validator;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Models\User;
 
 class RegistrationController extends Controller
@@ -30,7 +30,9 @@ class RegistrationController extends Controller
 
         $errors = [];
 
-        $existingUser= (new User())->where('email', $validated['email'])
+        $existingUser = (new User())
+            ->query()
+            ->where('email', $validated['email'])
             ->orWhere('username', $validated['username'])
             ->first();
 
@@ -47,13 +49,24 @@ class RegistrationController extends Controller
                 ->withErrors($errors);
         }
 
-        $user = (new User())->create([
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => password_hash($validated['password'], PASSWORD_DEFAULT)
-        ]);
+        $user = (new User())
+            ->query()
+            ->create([
+                'username' => $validated['username'],
+                'email' => $validated['email'],
+                'password' => password_hash($validated['password'], PASSWORD_DEFAULT)
+            ])->save();
 
-        $user->save();
+        if (!$user) {
+            session()->flash('flash-message', 'There was an error creating your account. Please try again.');
+            return redirect(route('register.index'))
+                ->withInput($validated);
+        }
+
+        $user = (new User())
+            ->query()
+            ->where('email', $validated['email'])
+            ->first();
 
         auth()->login($user);
 

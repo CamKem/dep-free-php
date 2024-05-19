@@ -6,8 +6,8 @@ use App\Actions\HandleCsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
-use App\Core\Validator;
 use App\Core\Template;
+use App\Core\Validator;
 
 class SessionController extends Controller
 {
@@ -24,9 +24,13 @@ class SessionController extends Controller
         (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 
         $validated = (new Validator())->validate(
-            $request->only(['email', 'password']), [
+            array_merge(
+                $request->only(['email', 'password']),
+                ['remember' => $request->get('remember', false)]
+            ), [
             'email' => ['required', 'email'],
-            'password' => ['required']
+            'password' => ['required'],
+            'remember' => ['boolean'],
         ]);
 
         $login = auth()->attempt($validated);
