@@ -30,7 +30,6 @@
                 <?php endif; ?>
                 <a class="cart-view" aria-label="View Cart Link" href="<?= route('cart.show') ?>">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                    <!-- TODO: set up the shopping card functionality -->
                     <span>View Cart</span>
                 </a>
                 <a class="cart-item-count" aria-label="Items in cart" href="<?= route('cart.show') ?>">
