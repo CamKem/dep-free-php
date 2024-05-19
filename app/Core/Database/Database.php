@@ -55,4 +55,9 @@ class Database
         return $this->connection->lastInsertId();
     }
 
+    public function __destruct()
+    {
+        $this->disconnect();
+    }
+
 }
