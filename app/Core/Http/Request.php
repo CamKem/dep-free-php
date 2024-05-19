@@ -60,11 +60,16 @@ class Request
         return $this->bodyParameters;
     }
 
-    // only method returns only the values of the keys passed in the array
+    // only method returns only the values of the keys passed in the array, if they exist
+    // if the don't exist it should return an empty key
+    // to return an empty key you can use the null coalescing operator
+    // like this $this->getParameters()[$key] ?? null
     public function only(array $keys): array
     {
-        return array_filter($this->getParameters(), static fn($key) =>
-            in_array($key, $keys, true), ARRAY_FILTER_USE_KEY
+        $parameters = $this->getParameters();
+        return array_merge(
+            array_fill_keys($keys, null),
+            array_intersect_key($parameters, array_flip($keys))
         );
     }
 
@@ -85,6 +90,11 @@ class Request
         }
 
         return $uri;
+    }
+
+    public function all(): array
+    {
+        return $this->getParameters();
     }
 
     public function url(): string
