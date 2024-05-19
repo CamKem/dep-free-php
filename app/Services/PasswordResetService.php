@@ -23,17 +23,16 @@ class PasswordResetService
         $token = bin2hex(random_bytes(20));
 
         // Save the token and email in the password_resets table
-        $passwordReset = (new PasswordReset())->create([
-            'email' => $email,
-            'token' => $token,
-        ]);
-        $passwordReset->save();
+        $passwordReset = (new PasswordReset())
+            ->query()
+            ->create(compact('email', 'token'))
+            ->save();
 
         if (!$passwordReset) {
             throw new RuntimeException('Failed to create password reset token.');
         }
 
-        // Send an email to the user with a link to reset their password
+        // Email the user with a link to reset their password
         $this->mailer->sendPasswordResetEmail($email, $token);
 
         return true;
@@ -42,25 +41,34 @@ class PasswordResetService
     public function resetPassword(
         #[SensitiveParameter] string $token,
         #[SensitiveParameter] string $password
-    ): void
+    ): bool
     {
         // Validate the token and get the associated email
-        $passwordReset = (new PasswordReset())->where('token', $token)->first();
+        $passwordReset = (new PasswordReset())
+            ->query()
+            ->where('token', $token)
+            ->first();
         if (!$passwordReset) {
             throw new RuntimeException('Invalid token.');
         }
 
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
         // Update the user's password in the users table
-        $user = (new User())->where('email', $passwordReset->email)->update([
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-        ]);
+        $user = (new User())
+            ->query()
+            ->where('email', $passwordReset->email)
+            ->update([
+                'password' => $hashedPassword
+            ])->save();
+
+        // if the update returns false, throw an exception
         if (!$user) {
-            throw new RuntimeException('User not found.');
+            throw new RuntimeException('Failed to reset password.');
         }
 
-        $user->save();
-
+        //dd($passwordReset);
         // Delete the token from the password_resets table
-        $passwordReset->delete()->save();
+        return $passwordReset->query()->delete()->save();
     }
 }

@@ -4,6 +4,7 @@ namespace app\Core\Database\Relations;
 
 use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Model;
+use app\Core\Database\QueryBuilder;
 
 class HasMany
 {
@@ -28,9 +29,9 @@ class HasMany
         return $this->foreignKey;
     }
 
-    public function get(): ModelCollection
+    public function query(): QueryBuilder
     {
-        return $this->related->where($this->foreignKey, $this->parent->id)->get();
+        return $this->related->query()->where($this->foreignKey, $this->parent->id);
     }
 
 }

@@ -12,7 +12,10 @@ class CategoriesController extends Controller
 
     public function show(Request $request): Template
     {
-        $category = (new Category())->where('slug', $request->get('category'))->first();
+        $category = (new Category())
+            ->query()
+            ->where('slug', $request->get('category'))
+            ->first();
 
         if (!$category) {
             abort();
@@ -21,7 +24,7 @@ class CategoriesController extends Controller
         return view("categories.show", [
             'title' => $category->name,
             'category' => $category,
-            'products' => $category->products()->get(),
+            'products' => $category->products()->query()->all(),
         ]);
     }
 

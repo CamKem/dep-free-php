@@ -14,6 +14,7 @@ class HomeController extends Controller
         return view("home", [
             'title' => 'Home',
             'products' => (new Product())
+                ->query()
                 ->where('featured', true)
                 ->with('category')
                 ->get()

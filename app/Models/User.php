@@ -3,14 +3,20 @@
 namespace App\Models;
 
 use app\Core\Database\Model;
+use app\Core\Database\Relations\HasManyThrough;
 
 class User extends Model
 {
     protected string $table = 'users';
 
-    public function roles(): BelongsToMany
+    public function role(): HasManyThrough
     {
-        return $this->belongsToMany(Role::class, 'role_user');
+        return $this->hasManyThrough(
+            Role::class,
+            RoleUser::class,
+            'user_id',
+            'role_id'
+        );
     }
 
 }

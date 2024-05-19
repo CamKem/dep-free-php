@@ -11,9 +11,17 @@ class OrderProduct extends Model
 
     // TODO: set up a relationship in the query builder
     //  that allows for these pivot tables to be used
-    public function category(): BelongsTo
+    //  Or do we use HasManyThrough? Or do we use a
+    //  different method?
+
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Product::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 
 }

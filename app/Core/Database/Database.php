@@ -20,9 +20,6 @@ class Database
             config('database.password'),
             config('database.options')
         );
-        new PDO($dsn, config('database.username'), config('database.password'), [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
     }
 
     public function disconnect(): void
