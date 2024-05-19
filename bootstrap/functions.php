@@ -178,3 +178,8 @@ function error($key): ?string
 {
     return session()->error($key);
 }
+
+function cookie($key): ?string
+{
+    return $_COOKIE[$key] ?? null;
+}
