@@ -7,6 +7,7 @@ use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
+use app\Core\Database\Relations\HasOne;
 use JsonSerializable;
 
 class Model implements Arrayable, JsonSerializable
@@ -70,6 +71,11 @@ class Model implements Arrayable, JsonSerializable
     public function belongsTo(string $relatedModel): BelongsTo
     {
         return new BelongsTo($this, new $relatedModel);
+    }
+
+    public function hasOne(string $relatedModel): HasOne
+    {
+        return new HasOne($this, new $relatedModel);
     }
 
     public function hasMany(string $relatedModel): HasMany

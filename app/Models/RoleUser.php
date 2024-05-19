@@ -4,6 +4,7 @@ namespace App\Models;
 
 use app\Core\Database\Model;
 use app\Core\Database\Relations\BelongsTo;
+use app\Core\Database\Relations\HasOne;
 
 class RoleUser extends Model
 {
@@ -16,10 +17,9 @@ class RoleUser extends Model
         return $this->belongsTo(User::class);
     }
 
-    // TODO: set up a HasOne relationship in the query builder
     public function role(): HasOne
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasOne(Role::class);
     }
 
 }
