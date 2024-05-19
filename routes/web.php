@@ -1,14 +1,22 @@
 <?php
 
 use App\Controllers\AboutController;
+use App\Controllers\CartController;
 use App\Controllers\CategoriesController;
 use App\Controllers\ContactController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
+use App\Controllers\OrdersController;
 use App\Controllers\ProductsController;
 use App\Core\Routing\RouteProxy as Route;
 
+// Auth Routes
 include base_path('routes/auth.php');
+
+// TODO: implement admin routes
+// Admin Routes
+include base_path('routes/admin.php');
+
 
 // Home Route
 Route::get('/')
@@ -47,3 +55,49 @@ Route::get('/dashboard')
     ->controller(DashboardController::class)
     ->name('dashboard.index')
     ->middleware('auth');
+
+// TODO: implement orders feature
+// Order Routes
+Route::get('/orders')
+    ->controller([OrdersController::class, 'index'])
+    ->name('orders.index')
+    ->middleware('auth');
+
+Route::get('/orders/create')
+    ->controller([OrdersController::class, 'create'])
+    ->name('orders.create')
+    ->middleware('auth');
+
+Route::post('/orders')
+    ->controller([OrdersController::class, 'store'])
+    ->name('orders.store')
+    ->middleware('auth');
+
+Route::get('/orders/{order}')
+    ->controller([OrdersController::class, 'show'])
+    ->name('orders.show')
+    ->middleware('auth');
+
+Route::delete('/orders/{order}')
+    ->controller([OrdersController::class, 'destroy'])
+    ->name('orders.destroy')
+    ->middleware('auth');
+
+// TODO implement cart feature;
+// Cart Routes
+Route::get('/cart')
+    ->controller([CartController::class, 'show'])
+    ->name('cart.show')
+    ->middleware('auth');
+
+Route::post('/cart')
+    ->controller([CartController::class, 'store'])
+    ->name('cart.store')
+    ->middleware('auth');
+
+Route::delete('/cart/{product}')
+    ->controller([CartController::class, 'destroy'])
+    ->name('cart.destroy')
+    ->middleware('auth');
+
+// Checkout Routes
