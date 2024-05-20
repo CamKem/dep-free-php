@@ -9,7 +9,7 @@ class User extends Model
 {
     protected string $table = 'users';
 
-    public function role(): HasManyThrough
+    public function roles(): HasManyThrough
     {
         return $this->hasManyThrough(
             Role::class,
@@ -17,6 +17,11 @@ class User extends Model
             'user_id',
             'role_id'
         );
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->roles()->query()->where('name', '=', 'admin')->exists();
     }
 
 }
