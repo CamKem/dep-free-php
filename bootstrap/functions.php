@@ -129,9 +129,9 @@ function request($key = null, $default = null): mixed
  * Find the logs by using: echo ini_get('error_log');
  * @param string $message
  * @param string $level
- * @param array $context
+ * @param array|null $context
  */
-function logger($message, $level = 'info', $context = []): void
+function logger(string $message, string $level = 'info', ?array $context = null): void
 {
     error_log("[$level] $message: " . print_r($context, true));
 }
