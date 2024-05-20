@@ -1,19 +1,18 @@
 <?php
 
 use App\Controllers\AboutController;
-use App\Controllers\CartController;
-use App\Controllers\CategoriesController;
+use App\Controllers\CategoryController;
 use App\Controllers\ContactController;
-use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
-use App\Controllers\OrdersController;
-use App\Controllers\ProductsController;
+use App\Controllers\ProductController;
+use app\Controllers\User\CartController;
+use app\Controllers\User\DashboardController;
+use app\Controllers\User\OrderController;
 use App\Core\Routing\RouteProxy as Route;
 
 // Auth Routes
 include base_path('routes/auth.php');
 
-// TODO: implement admin routes
 // Admin Routes
 include base_path('routes/admin.php');
 
@@ -38,16 +37,16 @@ Route::post('/contact')
 
 // Category Routes (show the products of a category)
 Route::get('/categories/{category}')
-    ->controller([CategoriesController::class, 'show'])
+    ->controller([CategoryController::class, 'show'])
     ->name('categories.show');
 
 // Products Routes
 Route::get('/products')
-    ->controller([ProductsController::class, 'index'])
+    ->controller([ProductController::class, 'index'])
     ->name('products.index');
 
 Route::get('/categories/{category}/products/{product}')
-    ->controller([ProductsController::class, 'show'])
+    ->controller([ProductController::class, 'show'])
     ->name('products.show');
 
 // Dashboard Route
@@ -59,27 +58,27 @@ Route::get('/dashboard')
 // TODO: implement orders feature
 // Order Routes
 Route::get('/orders')
-    ->controller([OrdersController::class, 'index'])
+    ->controller([OrderController::class, 'index'])
     ->name('orders.index')
     ->middleware('auth');
 
 Route::get('/orders/create')
-    ->controller([OrdersController::class, 'create'])
+    ->controller([OrderController::class, 'create'])
     ->name('orders.create')
     ->middleware('auth');
 
 Route::post('/orders')
-    ->controller([OrdersController::class, 'store'])
+    ->controller([OrderController::class, 'store'])
     ->name('orders.store')
     ->middleware('auth');
 
 Route::get('/orders/{order}')
-    ->controller([OrdersController::class, 'show'])
+    ->controller([OrderController::class, 'show'])
     ->name('orders.show')
     ->middleware('auth');
 
 Route::delete('/orders/{order}')
-    ->controller([OrdersController::class, 'destroy'])
+    ->controller([OrderController::class, 'destroy'])
     ->name('orders.destroy')
     ->middleware('auth');
 
@@ -95,9 +94,9 @@ Route::post('/cart')
     ->name('cart.store')
     ->middleware('auth');
 
-Route::delete('/cart/{product}')
+Route::delete('/cart')
     ->controller([CartController::class, 'destroy'])
     ->name('cart.destroy')
     ->middleware('auth');
 
-// Checkout Routes
+// TODO: Checkout & Order Routes
