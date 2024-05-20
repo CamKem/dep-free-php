@@ -104,6 +104,9 @@ class Model implements Arrayable, JsonSerializable
                         $relations[] = $relation;
                         $model->$relation = [];
 
+                        // TODO: work out how to handle mapping the related model as a Model instance
+                        //  in it's own sub-collection
+
                         foreach ($result as $relatedKey => $relatedValue) {
                             if (str_starts_with($relatedKey, $relation . '_')) {
                                 $attribute = str_replace($relation . '_', '', $relatedKey);

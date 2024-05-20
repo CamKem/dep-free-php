@@ -34,4 +34,9 @@ class HasMany
         return $this->related->query()->where($this->foreignKey, $this->parent->id);
     }
 
+    public function getRelationName(): string
+    {
+        return strtolower(class_basename($this->related)) . 's';
+    }
+
 }

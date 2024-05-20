@@ -3,13 +3,15 @@
 namespace app\Core\Database;
 
 use App\Core\Collecting\ModelCollection;
+use app\Core\Database\Relations\BelongsTo;
+use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
 use RuntimeException;
 
 class QueryBuilder
 {
 
-    private Database $db;
+    public Database $db;
     protected string $query;
     protected string $table;
     protected string $select = "*";
@@ -58,19 +60,24 @@ class QueryBuilder
         return $this;
     }
 
-
     // TODO ensure that the limit method works as expected
-    //  it's current NOT so we need to fix it before going further
+    public function limit(int $limit): static
+    {
+        $this->query .= " LIMIT {$limit}";
+        return $this;
+    }
+
     public function whereIn(string $column, array $values): static
     {
-        $placeholders = [];
-        foreach ($values as $index => $value) {
-            $placeholders[] = ":{$column}{$index}";
-            $this->conditions[] = [$column, $value];
+        if (empty($values)) {
+            $this->conditions[] = [$column, "IN", "NULL"];
+            return $this;
         }
-        // TODO: fix the whereIn method, currently not working...
-        $placeholders = implode(", ", $placeholders);
-        $this->conditions[] = [$column, 'IN', $values, $placeholders];
+        // Create a placeholder for each value
+        $placeholders = implode(", ", array_fill(0, count($values), "?"));
+
+        // Add the condition with the placeholders
+        $this->conditions[] = [$column, "IN", "({$placeholders})", $values];
         return $this;
     }
 
@@ -108,51 +115,54 @@ class QueryBuilder
         if (!empty($this->with)) {
             $modelInstance = new $this->model();
             foreach ($this->with as $relation) {
-                if ($relation instanceof HasManyThrough) {
-                    $relatedTable = $relation->getRelatedTable();
-                    $pivotTable = $relation->getPivotTable();
-                    $foreignColumn = $relation->getForeignKey();
-                    $relatedColumn = $relation->getRelatedKey();
+                if (method_exists($modelInstance, $relation)) {
+                    $relation = $modelInstance->{$relation}();
+                    if ($relation instanceof HasManyThrough) {
+                        $relatedTable = $relation->getRelatedTable();
+                        $pivotTable = $relation->getPivotTable();
+                        $foreignColumn = $relation->getForeignKey();
+                        $relatedColumn = $relation->getRelatedKey();
 
-                    // get the columns of the related table
-                    $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
+                        // get the columns of the related table
+                        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
 
+                        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
+                            return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
+                        }, $columns);
 
-                    $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-                        return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
-                    }, $columns);
+                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                        $this->query .= " INNER JOIN {$pivotTable} ON {$this->table}.id = {$pivotTable}.{$foreignColumn}";
+                        $this->query .= " INNER JOIN {$relatedTable} ON {$pivotTable}.{$relatedColumn} = {$relatedTable}.id";
+                    }
+                    if ($relation instanceof BelongsTo) {
+                        $relatedTable = $relation->getRelatedTable();
+                        $foreignColumn = $relation->getForeignKey();
+                        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
 
-                    $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-                    $this->query .= " INNER JOIN {$pivotTable} ON {$this->table}.id = {$pivotTable}.{$foreignColumn}";
-                    $this->query .= " INNER JOIN {$relatedTable} ON {$pivotTable}.{$relatedColumn} = {$relatedTable}.id";
-                } else {
-                    $related = $modelInstance->$relation();
-                    $relatedTable = $related->getRelatedTable();
-                    $foreignColumn = $related->getForeignKey();
+                        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
+                            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
+                        }, $columns);
 
-                    $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
+                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                        $this->query .= " INNER JOIN {$relatedTable} ON {$this->table}.{$foreignColumn} = {$relatedTable}.id";
+                    }
+                    if ($relation instanceof HasMany) {
+                        $relatedTable = $relation->getRelatedTable();
+                        $foreignColumn = $relation->getForeignKey();
+                        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
 
-                    $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-                        return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
-                    }, $columns);
+                        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
+                            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
+                        }, $columns);
 
-                    $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-                    $this->query .= " INNER JOIN {$relatedTable} ON {$this->table}.{$foreignColumn} = {$relatedTable}.id";
+                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                        $this->query .= " INNER JOIN {$relatedTable} ON {$relatedTable}.{$foreignColumn} = {$this->table}.id";
+                    }
                 }
             }
         }
 
-        // handle whereIn clause
-//        if (!empty($this->conditions)) {
-//            $this->query .= " WHERE ";
-//            foreach ($this->conditions as $index => $condition) {
-//                if ($index > 0) {
-//                    $this->query .= " AND ";
-//                }
-//                $this->withCheck($condition);
-//            }
-//        }
-
+        // handle where clause
         if (!empty($this->conditions)) {
             $this->query .= " WHERE ";
             foreach ($this->conditions as $index => $condition) {
@@ -163,6 +173,7 @@ class QueryBuilder
             }
         }
 
+        // handle orWhere clause
         if (!empty($this->orConditions)) {
             $this->query .= " OR ";
             foreach ($this->orConditions as $index => $condition) {
@@ -223,9 +234,9 @@ class QueryBuilder
     public function save(): bool
     {
         return $this->db->execute(
-            $this->toSql(),
-            $this->getBindings(),
-        )->count() >= 1;
+                $this->toSql(),
+                $this->getBindings(),
+            )->count() >= 1;
     }
 
     public function getBindings(): array
@@ -233,15 +244,13 @@ class QueryBuilder
         $bindings = [];
         $conditions = array_merge($this->conditions, $this->orConditions, $this->updateValues) ?? [];
         foreach ($conditions as $condition) {
-            if (is_array($condition[1])) {
-                foreach ($condition[1] as $index => $value) {
-                    $bindings["{$condition[0]}{$index}"] = $value;
+            if (isset($condition[3]) && is_array($condition[3])) {
+                foreach ($condition[3] as $key => $value) {
+                    $bindings[$key+1] = $value;
                 }
-            } else {
-                //dd($condition);
-                $bindings[$condition[0]] = $condition[2];
+                return $bindings;
             }
-            //$bindings[$condition[0]] = $condition[2];
+            $bindings[$condition[0]] = $condition[2];
         }
         return $bindings;
     }
@@ -249,7 +258,15 @@ class QueryBuilder
     public function withCheck(mixed $condition): void
     {
         if (!empty($this->with)) {
-            $this->query .= "{$this->table}.{$condition[0]} {$condition[1]} :{$condition[0]}";
+            $this->query .= "{$this->table}.";
+        }
+        $this->positionalCheck($condition);
+    }
+
+    public function positionalCheck(mixed $condition): void
+    {
+        if ($condition[1] === "IN" && str_contains($condition[2], '?')) {
+            $this->query .= "{$condition[0]} {$condition[1]} {$condition[2]}";
         } else {
             $this->query .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
         }
@@ -267,10 +284,12 @@ class QueryBuilder
 
     public function get(): ModelCollection
     {
+        $sql = $this->toSql();
+        logger("Query: {$this->db->raw($sql, $this->getBindings())->queryString}");
         return $this->model->hydrate(
             $this->db->execute(
-                $this->toSql(),
-                $this->getBindings(),
+                $sql,
+                $this->getBindings()
             )->get()
         );
     }
@@ -294,6 +313,5 @@ class QueryBuilder
                 $this->getBindings(),
             )->count()) > 0;
     }
-
 
 }
