@@ -70,7 +70,8 @@ class QueryBuilder
     public function whereIn(string $column, array $values): static
     {
         if (empty($values)) {
-            $this->conditions[] = [$column, "IN", "NULL"];
+            $this->conditions[] = [$column, '=', 'NULL'];
+            // $this->conditions[] = [$column, "IN", "(?)", ['NULL']];
             return $this;
         }
         // Create a placeholder for each value
