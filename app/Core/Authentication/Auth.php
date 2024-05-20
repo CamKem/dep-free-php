@@ -61,7 +61,9 @@ class Auth
         return (new User())
             ->query()
             ->where('email', $email)
-            ->first();
+            // TODO add in after we fix the hasManyThrough relation
+           // ->with('roles')->toRawSql());
+           ->first();
     }
 
     public function remember(User $user): void
@@ -98,7 +100,11 @@ class Auth
         $parts = explode(':', $cookie);
         if (count($parts) === 2) {
             [$userId, $token] = $parts;
-            $user = (new User())->query()->find($userId)->first();
+            $user = (new User())->query()
+                // TODO add in after we fix the hasManyThrough relation
+                //->with('roles')
+                ->find($userId)
+                ->first();
             if (password_verify($token, $user->remember_token)) {
                 $this->login($user);
             }
