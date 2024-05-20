@@ -6,6 +6,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\ServiceProvider;
+use App\Middleware\AdminMiddleware;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\GuestMiddleware;
 use App\Middleware\PreviousUrlMiddleware;
@@ -14,21 +15,17 @@ use Override;
 class MiddlewareService extends ServiceProvider
 {
 
-    private array $requestMiddleware = [
+    private array $middleware = [
         'auth' => AuthMiddleware::class,
-        'guest' => GuestMiddleware::class
-    ];
-
-    private array $responseMiddleware = [
+        'guest' => GuestMiddleware::class,
+        'admin' => AdminMiddleware::class,
         'previous.url' => PreviousUrlMiddleware::class
     ];
 
     #[Override]
     public function register(): void
     {
-        // Merge and register both request and response middleware
-        $middlewares = array_merge($this->requestMiddleware, $this->responseMiddleware);
-        foreach ($middlewares as $alias => $middleware) {
+        foreach ($this->middleware as $alias => $middleware) {
             $this->app->alias($alias, $middleware);
         }
     }
