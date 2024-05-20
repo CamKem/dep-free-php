@@ -7,7 +7,7 @@ use App\Core\Http\Request;
 use App\Core\Template;
 use App\Models\Product;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
 
     public function index(Request $request): Template
@@ -33,6 +33,12 @@ class ProductsController extends Controller
             ->with('category')
             ->where('slug', $request->get('product'))
             ->first();
+
+//        dd(
+//            $product->toSql(),
+//            $product->getBindings(),
+//            $product->db->raw($product->toSql(), $product->getBindings())->queryString,
+//        );
 
         if (! $product) {
             return abort();
