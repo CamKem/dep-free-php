@@ -158,20 +158,7 @@ class Route
 
     public function generate(array $params = []): string
     {
-        $uri = $this->getUri();
-
-        // if params are empty, return the URI as is
-        if (!empty($params) && count($params) === count($this->parameters)) {
-            // Replace the placeholders with their corresponding values
-            foreach ($this->getParameters() as $key => $name) {
-                if (!isset($params[$key])) {
-                    throw new InvalidArgumentException("Missing parameter: {$key}");
-                }
-                $uri = str_replace('{' . $key . '}', $params[$key], $uri);
-            }
-        }
-
-        return $uri;
+        return (new UrlResolver)->resolve($this, $params);
     }
 
 }

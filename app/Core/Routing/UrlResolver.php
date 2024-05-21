@@ -2,43 +2,33 @@
 
 namespace App\Core\Routing;
 
-use RouteNotFoundException;
+use InvalidArgumentException;
 
 class UrlResolver
 {
-    private array $routes;
 
-    /**
-     * @param $name
-     * @param array $params
-     * @param bool $absolute
-     * @return String
-     */
-    public function route($name, $params = [], $absolute = true): string
+    public function resolve(Route $route, $params = []): string
     {
-        if (!is_null($route = $this->getRoute($name))) {
-            return $this->getRouteUrl($name, $params, $absolute);
-        }
-
-        throw new RouteNotFoundException("Route not found: {$name}");
-
-    }
-
-    public function getRouteUrl(Route $route, $params = [], $absolute = true)
-    {
-        $url = $route->getUrl();
-
         if (count($params) > 0) {
-            $url = $this->addParamsToUrl($url, $params);
+            return $this->addParamsToUrl($route, $params);
         }
-
-        if ($absolute) {
-            $url = $this->getAbsoluteUrl($url);
-        }
-
-        return $url;
+        return $route->getUri();
     }
 
-
+    private function addParamsToUrl(Route $route, mixed $params): string
+    {
+        $uri = $route->getUri();
+        // if params are empty, return the URI as is
+        if (!empty($params) && count($params) === count($route->getParameters())) {
+            // Replace the placeholders with their corresponding values
+            foreach ($route->getParameters() as $key => $name) {
+                if (!isset($params[$key])) {
+                    throw new InvalidArgumentException("Missing parameter: {$key}");
+                }
+                $uri = str_replace('{' . $key . '}', $params[$key], $uri);
+            }
+        }
+        return $uri;
+    }
 
 }
