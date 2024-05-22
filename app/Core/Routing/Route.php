@@ -26,7 +26,7 @@ class Route
     private function extractParameters($uri): string
     {
 
-        preg_match_all('/\{([a-z]+)\}/', $uri, $matches);
+        preg_match_all('/\{([a-z]+)}/', $uri, $matches);
 
         foreach ($matches[1] as $match) {
             $this->parameters[$match] = '([a-z0-9-]+)';
