@@ -26,7 +26,6 @@ class FlashMessage {
         this.manager = manager;
         this.flash = this.createFlashMessage();
         this.flash.innerHTML = text;
-        console.log(this.manager);
         this.flashIn();
         this.flashOut();
     }
