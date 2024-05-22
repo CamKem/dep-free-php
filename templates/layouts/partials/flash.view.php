@@ -1,5 +1,5 @@
 <script type="module">
-    import Flash from "/scripts/flash.js";
+    import FlashManager from "/scripts/flash.js";
 
-    new Flash('<?= session()->get('flash-message') ?>');
+    new FlashManager('<?= session()->get('flash-message') ?>');
 </script>

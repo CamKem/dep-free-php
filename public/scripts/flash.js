@@ -1,30 +1,47 @@
-export default class Flash {
+export default class FlashManager {
     constructor(text) {
-        this.flash = this.createFlashMessage();
-        this.flashText = text;
-        if (this.flashText !== '') {
-            this.flashIn(this.flashText);
-            this.flashOut();
+        this.flashMessages = [];
+        if (text !== '') {
+            const flashMessage = new FlashMessage(text, this);
+            this.flashMessages.push(flashMessage);
         }
         document.addEventListener('flashToggle', (event) => {
             if (event.detail.message) {
-                this.flashIn(event.detail.message);
-                this.flashOut();
+                const flashMessage = new FlashMessage(event.detail.message, this);
+                this.flashMessages.push(flashMessage);
             }
         });
     }
 
+    removeMessage(message) {
+        const index = this.flashMessages.indexOf(message);
+        if (index > -1) {
+            this.flashMessages.splice(index, 1);
+        }
+    }
+}
+
+class FlashMessage {
+    constructor(text, manager) {
+        this.manager = manager;
+        this.flash = this.createFlashMessage();
+        this.flash.innerHTML = text;
+        console.log(this.manager);
+        this.flashIn();
+        this.flashOut();
+    }
+
     createFlashMessage() {
         const flash = document.createElement('div');
-        flash.id = 'flash';
         flash.className = 'hidden flash-message';
+        const index = this.manager.flashMessages.length;
+        const position = index === 0 ? 20 : index * 55 + 20;
+        flash.style.bottom = `${position}px`;
         document.body.appendChild(flash);
         return flash;
     }
 
-    flashIn(text) {
-        this.flash.innerHTML = '';
-        this.flash.innerHTML = text;
+    flashIn() {
         this.flash.classList.remove('hidden');
         this.flash.classList.add('slide-in');
     }
@@ -34,6 +51,7 @@ export default class Flash {
             this.flash.classList.remove('slide-out');
             this.flash.classList.add('hidden');
             this.flash.removeEventListener('animationend', handleAnimationEnd);
+            this.manager.removeMessage(this);
         }
         setTimeout(() => {
             this.flash.addEventListener('animationend', handleAnimationEnd);
