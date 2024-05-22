@@ -99,4 +99,9 @@ Route::delete('/cart')
     ->name('cart.destroy')
     ->middleware('auth');
 
+Route::put('/cart')
+    ->controller([CartController::class, 'update'])
+    ->name('cart.update')
+    ->middleware('auth');
+
 // TODO: Checkout & Order Routes
