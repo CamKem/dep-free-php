@@ -12,12 +12,9 @@ class CartController extends Controller
 {
     public function show(): Template
     {
-        // get the unique product ids from the cart
-        $items = array_filter(array_unique(
-            array_map(static fn($item) => 
+        $items = array_map(static fn($item) =>
                 $item['product_id'], session()->get('cart', [])
-            )
-        ));
+        );
 
         $products = (new Product)
             ->query()
@@ -25,7 +22,6 @@ class CartController extends Controller
             ->with('category')
             ->get();
 
-        // add in the quantity for each product from the cart
         $products->map(static function ($product) {
             $product->quantity = session()->get('cart')[$product->id]['quantity'];
             return $product;
@@ -34,6 +30,8 @@ class CartController extends Controller
         return view('cart.show', [
             'title' => 'Shopping Cart',
             'cart' => $products,
+            'shipping' => 10.00,
+            'taxRate' => .10,
         ]);
     }
 
@@ -67,23 +65,42 @@ class CartController extends Controller
         return redirect()->back();
     }
 
+    public function update(Request $request): Response
+    {
+        $productId = $request->get('product_id');
+        $quantity = $request->get('quantity', 1);
+
+        if ($quantity < 1 || !is_numeric($quantity)) {
+            return response()->status(400)
+                ->json(['message' => 'Invalid quantity']);
+        }
+
+        $cart = session()->get('cart', []);
+
+        if (!array_key_exists($productId, $cart)) {
+            return response()->status(404)
+                ->json(['message' => 'Product not found in cart']);
+        }
+
+        $cart[$productId]['quantity'] = $quantity;
+        session()->set('cart', $cart);
+
+        return response()->json([
+                'product_id' => (int)$productId,
+                'quantity' => (int)$quantity,
+                'message' => 'Product quantity updated'
+            ]);
+    }
+
     public function destroy(Request $request): Response
     {
-        // either the product_id or the 'all' key
-        $key = $request->only(['product_id', 'all']);
+        $key = $request->only(['product_id']);
 
         if ($key['product_id']) {
             $cart = session()->get('cart', []);
             unset($cart[$key['product_id']]);
             session()->set('cart', $cart);
-            $message = 'Product removed from cart successfully';
-        } elseif ($key['all'] !== null) {
-            session()->remove('cart');
-            $message = 'Cart cleared successfully';
-        }
-
-        if (isset($message)) {
-            session()->flash('flash-message', $message);
+            session()->flash('flash-message', 'Product removed from cart');
         }
 
         return redirect()->back();
