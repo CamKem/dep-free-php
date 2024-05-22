@@ -120,6 +120,12 @@
     <?php endif; ?>
 </section>
 
+<?php
+// TODO: Add the following styles to the main.css file
+//  make sure the cart styling is consistent with the rest of the site
+//  and that im happy with the design
+?>
+
 <style>
     .cf:before,
     .cf:after {
