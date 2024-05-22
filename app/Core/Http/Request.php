@@ -21,7 +21,7 @@ class Request
         $this->uri = $this->stripQueryString($_SERVER['REQUEST_URI']);
         $this->url = $_SERVER['REQUEST_URI'];
         $this->headers = getallheaders();
-        $this->bodyParameters = $_POST;
+        $this->bodyParameters = $this->getJsonBody() ?? $_POST;
         $this->queryParameters = $_GET;
     }
 
@@ -110,6 +110,15 @@ class Request
     public function setRouteParameters(): array
     {
         return $this->routeParameters = $this->route()->getRequestParams($this->uri);
+    }
+
+    private function getJsonBody(): ?array
+    {
+        if (!str_contains($this->headers['Content-Type'], 'application/json')) {
+            return null;
+        }
+        $body = file_get_contents('php://input');
+        return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
     }
 
 }

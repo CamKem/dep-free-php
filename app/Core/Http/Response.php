@@ -4,6 +4,7 @@ namespace App\Core\Http;
 
 use App\Core\Routing\Router;
 use App\Core\Template;
+use JsonException;
 
 class Response {
     const NOT_FOUND = 404;
@@ -11,16 +12,18 @@ class Response {
     const UNAUTHORIZED = 401;
     const OK = 200;
 
-    public static function status(int $code): bool|int
+    public static function status(int $code): static
     {
-        return http_response_code($code);
+        http_response_code($code);
+        return new static;
     }
 
-    public static function json(array $data): void
+    /** @throws JsonException */
+    public static function json(array $data): static
     {
         header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
+        echo json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
+        return new static;
     }
 
     public static function body(string $body): void
