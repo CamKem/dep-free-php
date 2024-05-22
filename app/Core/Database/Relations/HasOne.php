@@ -2,11 +2,10 @@
 
 namespace app\Core\Database\Relations;
 
-use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Model;
 use app\Core\Database\QueryBuilder;
 
-class HasMany
+class HasOne
 {
     protected Model $parent;
     protected Model $related;
@@ -32,11 +31,6 @@ class HasMany
     public function query(): QueryBuilder
     {
         return $this->related->query()->where($this->foreignKey, $this->parent->id);
-    }
-
-    public function getRelationName(): string
-    {
-        return strtolower(class_basename($this->related)) . 's';
     }
 
 }

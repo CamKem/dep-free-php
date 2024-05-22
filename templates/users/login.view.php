@@ -32,6 +32,11 @@
                 <?= error('password') ?>
             </p>
 
+            <label for="remember" class="mail-list">
+                <input type="checkbox" id="remember" name="remember" <?= old('remember') ? 'checked' : '' ?>>
+                <span>Remember me</span>
+            </label>
+
             <button class="button-padding" id="submit" type="submit">Login</button>
 
         </form>

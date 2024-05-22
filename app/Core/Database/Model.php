@@ -6,19 +6,15 @@ use App\Core\Arrayable;
 use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasMany;
+use app\Core\Database\Relations\HasManyThrough;
+use app\Core\Database\Relations\HasOne;
 use JsonSerializable;
 
-class Model extends QueryBuilder implements Arrayable, JsonSerializable
+class Model implements Arrayable, JsonSerializable
 {
-
-    protected Database $db;
+    protected string $table;
+    protected string $primaryKey = 'id';
     protected array $attributes = [];
-
-    public function __construct()
-    {
-        $this->db = app(Database::class);
-        parent::__construct($this->table);
-    }
 
     public function __get(string $name): mixed
     {
@@ -35,56 +31,19 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         return isset($this->attributes[$name]);
     }
 
-    public function all(): ModelCollection
+    public function query(): QueryBuilder
     {
-        $model = new static();
-        $results = $model->db->execute(
-            $model->toSql(),
-            $model->getBindings(),
-        )->get();
-        return $model->mapResultsToModel($results);
+        return new QueryBuilder($this);
     }
 
-    public function save(): void
+    public function getTable(): string
     {
-        $this->db->execute(
-            $this->toSql(),
-            $this->getBindings(),
-        );
+        return $this->table;
     }
 
-    public function get(): ModelCollection
+    public function hydrate(array $results): ModelCollection
     {
-        $results = $this->db->execute(
-            $this->toSql(),
-            $this->getBindings(),
-        )->get();
         return $this->mapResultsToModel($results);
-    }
-
-    public function first(): ?self
-    {
-        $results = $this->db->execute(
-            $this->toSql(),
-            $this->getBindings(),
-        )->get();
-        if (empty($results)) {
-            return null;
-        }
-        $model = new static();
-        foreach ($results[0] as $key => $value) {
-            $model->$key = $value;
-        }
-        return $model;
-    }
-
-    public function exists(): bool
-    {
-        $count = $this->db->execute(
-            $this->toSql(),
-            $this->getBindings(),
-        )->count();
-        return $count > 0;
     }
 
     public function mapResultsToModel(array $results): ModelCollection
@@ -109,19 +68,24 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         return $this->attributes;
     }
 
-    public function getTable(): string
-    {
-        return $this->table;
-    }
-
     public function belongsTo(string $relatedModel): BelongsTo
     {
         return new BelongsTo($this, new $relatedModel);
     }
 
+    public function hasOne(string $relatedModel): HasOne
+    {
+        return new HasOne($this, new $relatedModel);
+    }
+
     public function hasMany(string $relatedModel): HasMany
     {
         return new HasMany($this, new $relatedModel);
+    }
+
+    public function hasManyThrough(string $relatedModel, string $pivotTable, string $foreignKey, string $relatedKey): HasManyThrough
+    {
+        return new HasManyThrough($this, new $relatedModel, $pivotTable, $foreignKey, $relatedKey);
     }
 
     /**
@@ -139,6 +103,9 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
                     if (method_exists($model, $relation)) {
                         $relations[] = $relation;
                         $model->$relation = [];
+
+                        // TODO: work out how to handle mapping the related model as a Model instance
+                        //  in it's own sub-collection
 
                         foreach ($result as $relatedKey => $relatedValue) {
                             if (str_starts_with($relatedKey, $relation . '_')) {
@@ -168,13 +135,22 @@ class Model extends QueryBuilder implements Arrayable, JsonSerializable
         }, $results);
     }
 
+    // TODO: work out why this is not ensuring that only the attributes are serialized
+    //  the base class is being serialized as well, which is not what we want
+    // NOTE: URGENT
+    //  url: https://www.php.net/manual/en/language.oop5.magic.php#object.serialize
     public function __serialize(): array
     {
-        return $this->attributes;
+        return $this->getAttributes();
     }
 
     public function __unserialize(array $data): void
     {
         $this->attributes = $data;
+    }
+
+    public function getPrimaryKey()
+    {
+        return $this->primaryKey;
     }
 }

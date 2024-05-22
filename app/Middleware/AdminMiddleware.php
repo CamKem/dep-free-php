@@ -7,12 +7,12 @@ use App\Core\Middleware;
 use Closure;
 use Override;
 
-class AuthMiddleware extends Middleware
+class AdminMiddleware extends Middleware
 {
     #[Override]
     public function handle(Request $request, Closure $next): Closure
     {
-        if (!auth()->check()) {
+        if (!auth()->check() || !auth()->user()?->isAdmin()) {
             abort(403);
         }
 

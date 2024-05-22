@@ -7,12 +7,14 @@ use App\Core\Http\Request;
 use App\Core\Template;
 use App\Models\Product;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
 
     public function index(Request $request): Template
     {
-        $query = (new Product())->with('category');
+        $query = (new Product())
+            ->query()
+            ->with('category');
 
         if ($request->has('search')){
             $query->where('name', 'like', "%{$request->get('search')}%");
@@ -26,9 +28,17 @@ class ProductsController extends Controller
 
     public function show(Request $request): Template
     {
-        $product = (new Product())->with('category')
+        $product = (new Product())
+            ->query()
+            ->with('category')
             ->where('slug', $request->get('product'))
             ->first();
+
+//        dd(
+//            $product->toSql(),
+//            $product->getBindings(),
+//            $product->db->raw($product->toSql(), $product->getBindings())->queryString,
+//        );
 
         if (! $product) {
             return abort();

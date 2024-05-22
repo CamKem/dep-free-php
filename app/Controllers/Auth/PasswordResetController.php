@@ -6,8 +6,8 @@ use App\Actions\HandleCsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
-use App\Core\Validator;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Services\PasswordResetService;
@@ -33,10 +33,13 @@ class PasswordResetController extends Controller
         ]);
 
         // check the email exists in the database
-        $exists = (new User())->where('email', $validated['email'])->exists();
+        $exists = (new User())
+            ->query()
+            ->where('email', $validated['email'])
+            ->exists();
 
         if (!$exists) {
-            return redirect(route('password.reset.index'))
+            return redirect(route('password.reset.show'))
                 ->withInput($validated)
                 ->withErrors(['email' => 'The provided email does not exist in our records.']);
         }
@@ -44,8 +47,9 @@ class PasswordResetController extends Controller
         // send the password reset email
         $sent = (new PasswordResetService())->createPasswordReset($validated['email']);
 
+        // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
-            return redirect(route('password.reset.index'))
+            return redirect(route('password.reset.show'))
                 ->withInput($validated)
                 ->withErrors(['email' => 'Failed to send the password reset email.']);
         }
@@ -60,7 +64,10 @@ class PasswordResetController extends Controller
     public function edit(Request $request): Template|Response
     {
         // check the token exists in the database
-        $exists = (new PasswordReset())->where('token', '=', $request->get('token'))->exists();
+        $exists = (new PasswordReset())
+            ->query()
+            ->where('token', '=', $request->get('token'))
+            ->exists();
 
         // if the token does not exist, redirect back
         if (!$exists) {
@@ -86,7 +93,12 @@ class PasswordResetController extends Controller
         ]);
 
         // reset the user's password
-        (new PasswordResetService())->resetPassword($request->get('token'), $validated['password']);
+        $reset = (new PasswordResetService())->resetPassword($request->get('token'), $validated['password']);
+
+        if (!$reset) {
+            return redirect(route('password.reset.show'))
+                ->withErrors(['email' => 'Failed to reset the password.']);
+        }
 
         // flash a success message
         session()->flash('flash-message', 'Your password has been reset. Please log in.');

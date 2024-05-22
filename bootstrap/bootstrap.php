@@ -10,6 +10,7 @@ use App\Services\CategoryService;
 use App\Services\ConfigService;
 use App\Services\DatabaseService;
 use App\Services\EnvService;
+use App\Services\MiddlewareService;
 use App\Services\RouterService;
 use App\Services\SessionService;
 
@@ -20,14 +21,16 @@ $app = new App();
 $app->registerProvider(new EnvService($app));
 $app->registerProvider(new ConfigService($app));
 $app->registerProvider(new DatabaseService($app));
-$app->registerProvider(new RouterService($app));
 $app->registerProvider(new SessionService($app));
 $app->registerProvider(new AuthService($app));
 $app->registerProvider(new CategoryService($app));
+$app->registerProvider(new RouterService($app));
 
 // Bind the Request & Response to the container
 $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
+
+$app->registerProvider(new MiddlewareService($app));
 
 // Boot the Application
 $app->boot();
@@ -55,6 +58,7 @@ try {
     // Get the router from the container, bound in the service
     $router = $app->resolve(Router::class);
     // Route the request
+    /** @var Router $router */
     $router->dispatch($request);
 } catch (RouteException $e) {
     die($e->getMessage());

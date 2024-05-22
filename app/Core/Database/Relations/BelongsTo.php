@@ -27,4 +27,9 @@ class BelongsTo
         return $this->foreignKey;
     }
 
+    public function getRelationName(): string
+    {
+        return strtolower(class_basename($this->related));
+    }
+
 }

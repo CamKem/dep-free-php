@@ -2,6 +2,7 @@
 
 namespace App\Core\Routing;
 
+use App\Core\Middleware;
 use Closure;
 use InvalidArgumentException;
 
@@ -25,7 +26,7 @@ class Route
     private function extractParameters($uri): string
     {
 
-        preg_match_all('/\{([a-z]+)\}/', $uri, $matches);
+        preg_match_all('/\{([a-z]+)}/', $uri, $matches);
 
         foreach ($matches[1] as $match) {
             $this->parameters[$match] = '([a-z0-9-]+)';
@@ -92,6 +93,15 @@ class Route
     public function setMiddleware(array $middleware): void
     {
         foreach ($middleware as $m) {
+            if (!is_string($m)) {
+                throw new InvalidArgumentException('Middleware must be a string');
+            }
+            if (!app()->has($m)) {
+                throw new InvalidArgumentException("Middleware {$m} is not registered");
+            }
+            if (!app()->resolve($m) instanceof Middleware) {
+                throw new InvalidArgumentException("Middleware {$m} is not an instance of Middleware");
+            }
             $this->middleware[] = $m;
         }
     }
@@ -148,20 +158,7 @@ class Route
 
     public function generate(array $params = []): string
     {
-        $uri = $this->getUri();
-
-        // if params are empty, return the URI as is
-        if (!empty($params) && count($params) === count($this->parameters)) {
-            // Replace the placeholders with their corresponding values
-            foreach ($this->getParameters() as $key => $name) {
-                if (!isset($params[$key])) {
-                    throw new InvalidArgumentException("Missing parameter: {$key}");
-                }
-                $uri = str_replace('{' . $key . '}', $params[$key], $uri);
-            }
-        }
-
-        return $uri;
+        return (new UrlResolver)->resolve($this, $params);
     }
 
 }

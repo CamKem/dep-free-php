@@ -9,20 +9,20 @@ class Request
 {
     protected string $method;
     protected string $uri;
+    protected string $url;
     protected array $routeParameters = [];
     protected array $headers;
     protected array $bodyParameters;
     protected array $queryParameters;
-    protected string|null $sessionId;
 
     public function __construct()
     {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->uri = $this->stripQueryString($_SERVER['REQUEST_URI']);
+        $this->url = $_SERVER['REQUEST_URI'];
         $this->headers = getallheaders();
-        $this->bodyParameters = $_POST;
+        $this->bodyParameters = $this->getJsonBody() ?? $_POST;
         $this->queryParameters = $_GET;
-        $this->sessionId = $_REQUEST['PHPSESSID'] ?? null;
     }
 
     public function getMethod(): string
@@ -60,11 +60,16 @@ class Request
         return $this->bodyParameters;
     }
 
-    // only method returns only the values of the keys passed in the array
+    // only method returns only the values of the keys passed in the array, if they exist
+    // if the don't exist it should return an empty key
+    // to return an empty key you can use the null coalescing operator
+    // like this $this->getParameters()[$key] ?? null
     public function only(array $keys): array
     {
-        return array_filter($this->getParameters(), static fn($key) =>
-            in_array($key, $keys, true), ARRAY_FILTER_USE_KEY
+        $parameters = $this->getParameters();
+        return array_merge(
+            array_fill_keys($keys, null),
+            array_intersect_key($parameters, array_flip($keys))
         );
     }
 
@@ -78,11 +83,6 @@ class Request
         return $this->getParameters()[$key] ?? $default;
     }
 
-    public function getSessionId(): string
-    {
-        return $this->sessionId;
-    }
-
     public function stripQueryString(string $uri): string
     {
         if (str_contains($uri, '?')) {
@@ -90,6 +90,16 @@ class Request
         }
 
         return $uri;
+    }
+
+    public function all(): array
+    {
+        return $this->getParameters();
+    }
+
+    public function url(): string
+    {
+        return $this->url;
     }
 
     public function route(): Route
@@ -100,6 +110,15 @@ class Request
     public function setRouteParameters(): array
     {
         return $this->routeParameters = $this->route()->getRequestParams($this->uri);
+    }
+
+    private function getJsonBody(): ?array
+    {
+        if (!str_contains($this->headers['Content-Type'], 'application/json')) {
+            return null;
+        }
+        $body = file_get_contents('php://input');
+        return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
     }
 
 }

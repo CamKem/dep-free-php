@@ -8,16 +8,13 @@ use Closure;
 /**
  * Methods that can be chained onto a route definition.
  *
- * @method get(string $uri, Callable|array|null $action = null)
- * @method post(string $uri, Callable|array|null $action = null)
- * @method put(string $uri, Callable|array|null $action = null)
- * @method patch(string $uri, Callable|array|null $action = null)
- * @method delete(string $uri, Callable|array|null $action = null)
- * @method options(string $uri, Callable|array|null $action = null)
- * @method any(string $uri, Callable|array|null $action = null)
- * @method match(array|string $methods, string $uri, Callable|array|null $action = null)
- * @method group(array $attributes, Callable $callback)
- * @method where(array $where)
+ * @method get(string $uri)
+ * @method post(string $uri)
+ * @method put(string $uri)
+ * @method patch(string $uri)
+ * @method delete(string $uri)
+ * @method options(string $uri)
+ * @method any(string $uri)
  */
 
 class RouteRegistrar
@@ -48,6 +45,8 @@ class RouteRegistrar
         return $this;
     }
 
+    // TODO: Implement the where method
+    //  it will be used to add a constraint to the parameters of the route
 //    public function where(array $where): self
 //    {
 //        $this->route->setWhere($where);
