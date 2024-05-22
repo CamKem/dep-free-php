@@ -3,22 +3,16 @@
 namespace App\Core\Routing;
 
 /**
- * RouteProxy
+ * RouteProxy: static proxy for the Route Registrar
+ * Used in registering routes in the application
  *
- * This class is a proxy for the RouteRegistrar class. It allows you to call methods on the RouteRegistrar class
- * statically, without having to instantiate the RouteRegistrar class. This is useful because the RouteRegistrar
- * class is used to define routes in the routes/web.php file, and the routes/web.php file is loaded before the
- * App/Container is instantiated. This means that we can't use dependency injection to inject the Router instance
- * into the RouteRegistrar class. Instead, we use the RouteProxy class to create a new instance of the RouteRegistrar
- * class and call methods on it statically.
- *
- * @method static get(string $uri, Callable|array|null $action = null)
- * @method static post(string $uri, Callable|array|null $action = null)
- * @method static put(string $uri, Callable|array|null $action = null)
- * @method static patch(string $uri, Callable|array|null $action = null)
- * @method static delete(string $uri, Callable|array|null $action = null)
- * @method static options(string $uri, Callable|array|null $action = null)
- * @method static any(string $uri, Callable|array|null $action = null)
+ * @method static get(string $uri)
+ * @method static post(string $uri)
+ * @method static put(string $uri)
+ * @method static patch(string $uri)
+ * @method static delete(string $uri)
+ * @method static options(string $uri)
+ * @method static any(string $uri)
  */
 class RouteProxy
 {
