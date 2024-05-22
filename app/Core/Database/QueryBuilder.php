@@ -136,27 +136,11 @@ class QueryBuilder
                         $this->query .= " INNER JOIN {$relatedTable} ON {$pivotTable}.{$relatedColumn} = {$relatedTable}.id";
                     }
                     if ($relation instanceof BelongsTo) {
-                        $relatedTable = $relation->getRelatedTable();
-                        $foreignColumn = $relation->getForeignKey();
-                        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
-
-                        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-                            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
-                        }, $columns);
-
-                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                        [$relatedTable, $foreignColumn] = $this->commonRelated($relation);
                         $this->query .= " INNER JOIN {$relatedTable} ON {$this->table}.{$foreignColumn} = {$relatedTable}.id";
                     }
                     if ($relation instanceof HasMany) {
-                        $relatedTable = $relation->getRelatedTable();
-                        $foreignColumn = $relation->getForeignKey();
-                        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
-
-                        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-                            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
-                        }, $columns);
-
-                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+                        [$relatedTable, $foreignColumn] = $this->commonRelated($relation);
                         $this->query .= " INNER JOIN {$relatedTable} ON {$relatedTable}.{$foreignColumn} = {$this->table}.id";
                     }
                 }
@@ -208,6 +192,20 @@ class QueryBuilder
         $this->query = "UPDATE {$this->table} SET {$setClause}";
         $this->updateValues = array_map(fn($column) => [$column, '=', $data[$column]], $columns);
         return $this;
+    }
+
+    public function commonRelated(BelongsTo|HasMany $relation): array
+    {
+        $relatedTable = $relation->getRelatedTable();
+        $foreignColumn = $relation->getForeignKey();
+        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
+
+        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
+            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
+        }, $columns);
+
+        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+        return array($relatedTable, $foreignColumn);
     }
 
     protected function getConditionsFromAttributes(): void
