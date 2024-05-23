@@ -71,29 +71,53 @@ export class Cart {
     }
 }
 
-export class RemoveConfirmation {
+export class RemoveManager {
     constructor() {
+        this.removeConfirmations = [];
         this.handleRemove()
     }
 
     handleRemove() {
         document.addEventListener('DOMContentLoaded', () => {
-            let removeForm = document.getElementById('remove-form');
-            if (removeForm) {
-                removeForm.addEventListener('submit', function (event) {
-                    event.preventDefault()
-                    let openModalEvent = new CustomEvent('openModal', {
-                        bubbles: true,
-                        detail: {action: 'open'}
-                    })
-                    removeForm.dispatchEvent(openModalEvent)
-                })
-                document.addEventListener('confirmed', function (event) {
-                    if (event.detail.action === 'remove') {
-                        removeForm.submit()
-                    }
-                })
+            let removeForms = Array.from(document.getElementsByName('remove-form'));
+            removeForms.forEach((removeForm) => {
+                const removeConfirmation = new RemoveConfirmation(removeForm);
+                this.removeConfirmations.push(removeConfirmation);
+                console.log(this.removeConfirmations)
             }
+            )
         })
+    }
+
+    /* This method is for if we decide to use fetch to remove items from the cart */
+    removeConfirmation(removeForm) {
+        const index = this.removeConfirmations.findIndex(rc => rc.removeForm === removeForm);
+        if (index > -1) {
+            this.removeConfirmations.splice(index, 1);
+        }
+    }
+
+}
+
+class RemoveConfirmation {
+    constructor(removeForm) {
+        this.removeForm = removeForm;
+        this.handleRemove()
+    }
+
+    handleRemove() {
+        this.removeForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            let openModalEvent = new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: 'open'}
+            });
+            this.removeForm.dispatchEvent(openModalEvent);
+        });
+        document.addEventListener('confirmed', (event) => {
+            if (event.detail.action === 'remove') {
+                this.removeForm.submit();
+            }
+        });
     }
 }
