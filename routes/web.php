@@ -82,26 +82,22 @@ Route::delete('/orders/{order}')
     ->name('orders.destroy')
     ->middleware('auth');
 
-// TODO implement cart feature;
 // Cart Routes
 Route::get('/cart')
     ->controller([CartController::class, 'show'])
-    ->name('cart.show')
-    ->middleware('auth');
+    ->name('cart.show');
 
 Route::post('/cart')
     ->controller([CartController::class, 'store'])
-    ->name('cart.store')
-    ->middleware('auth');
+    ->name('cart.store');
 
 Route::delete('/cart')
     ->controller([CartController::class, 'destroy'])
-    ->name('cart.destroy')
-    ->middleware('auth');
+    ->name('cart.destroy');
 
 Route::put('/cart')
     ->controller([CartController::class, 'update'])
-    ->name('cart.update')
-    ->middleware('auth');
+    ->name('cart.update');
 
 // TODO: Checkout & Order Routes
+//  customer must be logged in to place an order at checkout
