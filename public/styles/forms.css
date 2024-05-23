@@ -1,0 +1,62 @@
+.error-message {
+    color: #cc0000;
+    font-size: var(--font-extra-small);
+    margin-bottom: var(--default-margin);
+    height: 1rem;
+}
+
+.user-form {
+    align-items: flex-start;
+    padding: 2rem;
+    background-color: var(--very-light-grey-color);
+    border-radius: var(--medium-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    min-width: 300px;
+}
+
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: var(--small-padding);
+    margin-top: var(--small-margin);
+    margin-bottom: var(--default-margin);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+}
+
+input[type="checkbox"] {
+    accent-color: var(--mid-blue-color);
+    width: 18px;
+}
+
+button {
+    background-color: var(--mid-blue-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: var(--small-radius);
+    padding: var(--small-padding) 20px;
+    font-size: var(--font-small);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--dark-blue-color);
+}
+
+.button-padding {
+    padding: var(--small-padding) 50px;
+}
+
+/* Styling for the checkbox */
+.checkbox-container {
+    /*display: flex;*/
+    /*gap: 10px;*/
+    /*align-items: center;*/
+}

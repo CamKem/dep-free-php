@@ -1,0 +1,48 @@
+.close-button {
+    color: var(--mid-grey-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--dark-grey-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--very-light-grey-color);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid var(--mid-grey-color);
+    width: 100%;
+    max-width: 350px;
+}
+
+.modal-text {
+    margin: var(--default-margin) 0;
+}
+
+.confirm-button {
+    padding: var(--small-padding) var(--default-padding);
+    margin: var(--default-margin) 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}

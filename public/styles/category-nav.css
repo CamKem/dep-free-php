@@ -1,0 +1,102 @@
+.category-nav {
+    background-color: var(--dark-blue-color);
+    color: var(--white-color);
+    padding: 18px 28px;
+    width: 100%;
+}
+
+@media screen and (min-width: 885px) {
+    .category-nav {
+        align-items: center;
+        border-radius: calc(var(--medium-radius) * 5) 0 0 calc(var(--medium-radius) * 5);
+        padding: 13px var(--large-padding);
+    }
+}
+
+.category-nav ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(145px, 2fr));
+    align-items: center;
+    justify-items: center;
+    gap: var(--large-gap);
+}
+
+@media screen and (min-width: 885px) {
+    .category-nav ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 0;
+    }
+}
+
+.category-nav ul a {
+    width: 145px;
+    border-radius: var(--small-margin);
+    border: var(--thin-border) solid var(--blue-color);
+}
+
+@media screen and (min-width: 885px) {
+    .category-nav ul a {
+        width: auto;
+        border-radius: 0;
+        border: 0;
+        padding: var(--extra-small-padding) var(--default-padding) var(--extra-small-padding) var(--large-padding);
+    }
+}
+
+.category-nav ul a:hover {
+    background-color: var(--blue-color);
+}
+
+.category-active {
+    background-color: var(--light-blue-color);
+}
+
+@media screen and (min-width: 885px) {
+    .category-active {
+        background-color: transparent;
+        text-decoration: underline;
+        text-decoration-color: var(--light-blue-color);
+        text-decoration-thickness: var(--thick-border);
+    }
+}
+
+
+@media screen and (min-width: 885px) {
+    .category-nav ul a:hover {
+        border-radius: 50px 0 0 50px;
+    }
+}
+
+.category-nav ul li {
+    color: var(--white-color);
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+@media screen and (min-width: 885px) {
+    .category-nav ul li {
+        padding: 0;
+
+    }
+}
+
+.category-nav ul li::after {
+    content: "\f105";
+    color: var(--blue-color);
+    font-family: "FontAwesome", serif;
+}
+
+@media screen and (min-width: 885px) {
+    .category-nav ul li::after {
+        display: none;
+    }
+}
+
+.category-nav ul li:hover::after {
+    color: var(--white-color);
+}

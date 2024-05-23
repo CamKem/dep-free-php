@@ -1,0 +1,14 @@
+main > section > h2 {
+    background-color: var(--orange-color);
+    color: var(--white-color);
+    padding: var(--small-padding) 0 var(--small-padding) var(--large-padding);
+    margin: var(--large-margin) 0 var(--large-margin) var(--extra-large-margin);
+    border-radius: calc(var(--medium-radius) * 5) 0 0 calc(var(--medium-radius) * 5);
+    font-size: var(--font-default);
+}
+
+@media screen and (min-width: 885px) {
+    main > section > h2 {
+        margin: calc(var(--large-margin) * 2) 0;
+    }
+}

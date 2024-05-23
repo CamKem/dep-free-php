@@ -1,0 +1,44 @@
+:root {
+    --white-color: #FFFFFF;
+    --pale-blue-color: #3eb7ff;
+    --blue-color: #00aced;
+    --link-blue-color: #3b82f6;
+    --light-blue-color: #0079A6;
+    --mid-blue-color: #006989;
+    --dark-blue-color: #002936;
+    --very-light-grey-color: #f4f4f4;
+    --light-grey-color: #D0CFCF;
+    --mid-grey-color: #8C8C8C;
+    --grey-color: #595959;
+    --dark-grey-color: #1e1e1e;
+    --button-orange-color: #f69679;
+    --mid-orange-color: #E55D1B;
+    --orange-color: #FB6806;
+
+    --small-radius: 5px;
+    --medium-radius: 10px;
+    --large-radius: 15px;
+
+    --thin-border: 1px;
+    --thick-border: 2px;
+
+    --font-extra-small: 12px;
+    --font-small: 15px;
+    --font-default: 18px;
+    --font-large: 25px;
+
+    --extra-small-padding: 5px;
+    --small-padding: 10px;
+    --default-padding: 15px;
+    --large-padding: 20px;
+    --extra-large-padding: 30px;
+
+    --small-margin: 5px;
+    --default-margin: 10px;
+    --large-margin: 15px;
+    --extra-large-margin: 20px;
+
+    --small-gap: 5px;
+    --default-gap: 10px;
+    --large-gap: 15px;
+}

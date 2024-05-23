@@ -1,0 +1,141 @@
+/* Product grid styles */
+.product-grid {
+    display: grid;
+    /*grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); !* Responsive grid columns *!*/
+    grid-template-columns: repeat(auto-fill, minmax(155px, 2fr));
+    /*align-items: center;*/
+    place-items: center;
+    justify-content: space-evenly;
+    gap: var(--large-gap);
+    margin: 0 var(--large-margin) 0 var(--large-margin);
+    list-style: none;
+}
+
+.product-link {
+    display: flex;
+    padding: var(--small-padding);
+    border: 1px solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+    max-width: 155px;
+    height: 250px;
+}
+
+@media screen and (min-width: 885px) {
+    .product-link {
+        max-width: 180px;
+    }
+}
+
+.product-link:hover {
+    box-shadow: 1px 1px 5px 0 rgba(255, 105, 12, 0.75);
+}
+
+.product-card {
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--grey-color);
+}
+
+.product-card img {
+    width: 125px;
+    height: 125px;
+    object-fit: cover;
+}
+
+.product-card .short-desc {
+    color: var(--mid-blue-color);
+    text-align: center;
+    font-size: var(--font-small);
+}
+
+.price {
+    margin-bottom: var(--default-margin);
+    margin-top: var(--default-margin);
+}
+
+.product-card .price {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (min-width: 885px) {
+    .product-card .price {
+        flex-direction: row;
+    }
+}
+
+.product-card .price strong {
+    font-size: 22px;
+}
+
+.price-sale {
+    color: var(--orange-color);
+}
+
+.original-price-group .was-text {
+    font-size: 12px;
+    padding-right: 4px;
+}
+
+@media screen and (min-width: 885px) {
+    .original-price-group .was-text {
+        padding-right: 2px;
+        padding-left: 2px;
+    }
+}
+
+.original-price-group del {
+    text-decoration: line-through;
+    font-size: var(--font-small);
+}
+
+/* product details styles */
+.product img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+/* Product page styles */
+.product-details-info {
+    flex: 2;
+    padding-left: 20px;
+}
+
+.product-details-image {
+    flex: 1;
+}
+
+.product-details-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--small-radius);
+}
+
+#quantity {
+    max-width: 50px;
+    text-align: center;
+}
+
+.quantity-selector {
+    margin: var(--extra-large-margin) 0;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.quantity-selector label {
+    margin-right: var(--default-margin);
+}
+
+.quantity-selector button {
+    margin: var(--small-margin) var(--small-margin) var(--default-margin);
+    place-content: center;
+    place-items: center;
+    place-self: center;
+}
