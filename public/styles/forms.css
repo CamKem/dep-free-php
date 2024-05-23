@@ -53,10 +53,3 @@ button:hover {
 .button-padding {
     padding: var(--small-padding) 50px;
 }
-
-/* Styling for the checkbox */
-.checkbox-container {
-    /*display: flex;*/
-    /*gap: 10px;*/
-    /*align-items: center;*/
-}
