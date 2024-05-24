@@ -94,7 +94,7 @@
 }
 
 .footer .contact-info-icons i {
-    font-size: 44px;
+    font-size: calc(var(--font-large) * 1.76);
     height: 80px;
     width: 80px;
     display: flex;
@@ -102,7 +102,7 @@
     place-content: center;
     place-self: center;
     border-radius: 50%;
-    border: 1px solid var(--white-color);
+    border: var(--thin-border) solid var(--white-color);
     margin-bottom: var(--large-margin);
 }
 

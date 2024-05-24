@@ -15,75 +15,76 @@
     <?php else: ?>
         <?php $total = 0; ?>
         <div class="wrap cf">
-            <div class="cart">
-                <ul class="cartWrap">
-                    <?php foreach ($cart->toArray() as $index => $item): ?>
-                        <li class="items <?= $index % 2 === 0 ? '' : 'even' ?>">
-                            <div class="infoWrap">
-                                <div class="cartSection">
-                                    <img src="/images/products/<?= $item['image'] ?>"
-                                         alt="<?= $item['name'] ?>"
-                                         class="itemImg">
-                                    <p class="itemNumber">
-                                        #QUE-007544-00<?= $index ?>
-                                    </p>
-                                    <h3>
-                                        <a href="<?= route('products.show', [
-                                            'category' => $item['category']['slug'],
-                                            'product' => $item['slug']
-                                        ]) ?>">
-                                            <?= ucwords($item['name']) ?>
-                                        </a>
-                                    </h3>
+            <ul class="cart flex-center">
+                <?php foreach ($cart->toArray() as $index => $item): ?>
+                    <li class="items <?= $index % 2 === 0 ? '' : 'even' ?>">
+                        <div class="cartSection product-details-section">
+                            <img src="/images/products/<?= $item['image'] ?>"
+                                 alt="<?= $item['name'] ?>"
+                                 class="itemImg">
+                            <p class="itemNumber">
+                                #QUE-007544-00<?= $index ?>
+                            </p>
+                        </div>
 
-                                    <p>
-                                        <input type="hidden" name="product_id"
-                                               value="<?= $item['id'] ?>">
-                                        <input type="text" class="qty"
-                                               value="<?= $item['quantity'] ?>"/>
-                                    </p>
-                                    <p id="price" class="price">
-                                        <span>x </span>
-                                        <span>$<?= $item['price'] ?></span>
-                                    </p>
+                        <div class="cartSection product-title-section">
+                            <h3>
+                                <a href="<?= route('products.show', [
+                                    'category' => $item['category']['slug'],
+                                    'product' => $item['slug']
+                                ]) ?>">
+                                    <?= ucwords($item['name']) ?>
+                                </a>
+                            </h3>
+                        </div>
 
-                                    <p class="stockStatus">In Stock</p>
-                                    <!--                                    <p class="stockStatus out">Stock Out</p>-->
-                                </div>
-
-                                <div class="prodTotal cartSection"
-                                     id="prodTotal">
-                                    <?php
-                                    $line = ($item['price'] * $item['quantity']);
-                                    $total += $line;
-                                    ?>
-                                    <p class="line-price" id="line-price">
-                                        <span>$<?= number_format($line, 2) ?></span>
-                                    </p>
-                                </div>
-                                <div class="cartSection removeWrap">
-                                    <form action="<?= route('cart.destroy') ?>"
-                                          method="post"
-                                          name="remove-form"
-                                          id="remove-form"
-                                    >
-                                        <input type="hidden" name="_method"
-                                               value="DELETE">
-                                        <input type="hidden" name="product_id"
-                                               value="<?= $item['id'] ?>">
-                                        <button type="submit"
-                                                class="remove"
-                                                aria-label="remove from cart">
-                                            <i class="fas fa-xmark"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                        <div class="cartSection quantity-price-section">
+                            <div>
+                                <input type="hidden" name="product_id"
+                                       value="<?= $item['id'] ?>">
+                                <input type="number" class="qty"
+                                       value="<?= $item['quantity'] ?>"/>
+                                <p id="price" class="price">
+                                    <span>x </span>
+                                    <span>$<?= $item['price'] ?></span>
+                                </p>
                             </div>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+
+                            <p class="stockStatus">In Stock</p>
+                            <!--                                    <p class="stockStatus out">Stock Out</p>-->
+                        </div>
+
+                        <div class="prodTotal cartSection"
+                             id="prodTotal">
+                            <?php
+                            $line = ($item['price'] * $item['quantity']);
+                            $total += $line;
+                            ?>
+                            <p class="line-price" id="line-price">
+                                <span>$<?= number_format($line, 2) ?></span>
+                            </p>
+                        </div>
+                        <div class="cartSection removeWrap">
+                            <form action="<?= route('cart.destroy') ?>"
+                                  method="post"
+                                  name="remove-form"
+                                  id="remove-form"
+                            >
+                                <input type="hidden" name="_method"
+                                       value="DELETE">
+                                <input type="hidden" name="product_id"
+                                       value="<?= $item['id'] ?>">
+                                <button type="submit"
+                                        class="remove"
+                                        aria-label="remove from cart">
+                                    <i class="fas fa-xmark"
+                                       aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
 
             <div class="promoCode"><label for="promo">Have A Promo Code?</label>
                 <input type="text" name="promo" placeholder="Enter Code"/>
@@ -116,7 +117,7 @@
                               class="value">$<?= number_format(($total + $tax + $shipping), 2) ?></span>
                     </li>
                     <li class="totalRow">
-                        <a href="#" class="btn continue">Checkout</a>
+                        <a href="<?= route('checkout.show') ?>" class="btn continue">Checkout</a>
                     </li>
                 </ul>
             </div>

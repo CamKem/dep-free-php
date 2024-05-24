@@ -71,11 +71,11 @@
     font-size: var(--font-small);
     padding: var(--small-padding) var(--large-padding);
     width: 296px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: var(--thin-border) solid rgba(255, 255, 255, 0.5);
 }
 
 .mobile-nav ul li:hover {
-    border-bottom: 1px solid var(--white-color);
+    border-bottom: var(--thin-border) solid var(--white-color);
 }
 
 .mobile-nav-login::before {
