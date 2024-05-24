@@ -87,7 +87,9 @@
             </ul>
 
             <div class="promoCode"><label for="promo">Have A Promo Code?</label>
-                <input type="text" name="promo" placeholder="Enter Code"/>
+                <label for="promo" aria-label="promo code input field">
+                    <input type="text" name="promo" placeholder="Enter Code"/>
+                </label>
                 <a href="#" class="btn"></a>
             </div>
 
