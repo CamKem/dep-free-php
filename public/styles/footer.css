@@ -1,4 +1,3 @@
-/* Footer styles */
 .footer-top {
     background-color: var(--blue-color);
 }
@@ -64,7 +63,7 @@
     height: 6px;
     background-color: var(--light-blue-color);
     margin-right: var(--small-margin);
-    border-radius: 50px 0 0 50px;
+    border-radius: calc(var(--medium-radius) * 5) 0 0 calc(var(--medium-radius) * 5);
 }
 
 @media screen and (min-width: 885px) {

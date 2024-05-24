@@ -1,7 +1,7 @@
 .category-nav {
     background-color: var(--dark-blue-color);
     color: var(--white-color);
-    padding: 18px 28px;
+    padding: var(--default-padding) var(--extra-large-padding);
     width: 100%;
 }
 
@@ -9,7 +9,7 @@
     .category-nav {
         align-items: center;
         border-radius: calc(var(--medium-radius) * 5) 0 0 calc(var(--medium-radius) * 5);
-        padding: 13px var(--large-padding);
+        padding: var(--default-padding) var(--large-padding);
     }
 }
 
@@ -71,7 +71,7 @@
 
 .category-nav ul li {
     color: var(--white-color);
-    padding: 8px;
+    padding: var(--small-padding);
     display: flex;
     justify-content: space-between;
     width: 100%;

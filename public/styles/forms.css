@@ -40,7 +40,7 @@ button {
     color: var(--white-color);
     border: none;
     border-radius: var(--small-radius);
-    padding: var(--small-padding) 20px;
+    padding: var(--small-padding) var(--large-padding);
     font-size: var(--font-small);
     cursor: pointer;
     transition: background-color 0.3s;
@@ -51,5 +51,5 @@ button:hover {
 }
 
 .button-padding {
-    padding: var(--small-padding) 50px;
+    padding: var(--small-padding) calc(var(--large-padding) * 2.5);
 }

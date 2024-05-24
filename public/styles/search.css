@@ -13,7 +13,6 @@
     }
 }
 
-/* Search bar styles */
 .search-form {
     display: flex;
     align-items: center;
@@ -21,19 +20,19 @@
 }
 
 #search-bar {
-    border: 1px solid var(--grey-color);
+    border: var(--thin-border) solid var(--grey-color);
     color: var(--grey-color);
     width: 220px;
     height: 40px;
-    border-radius: 50px;
-    padding: 0 20px;
+    border-radius: calc(var(--medium-radius) * 5);
+    padding: 0 var(--large-padding);
     font-size: var(--font-small);
 }
 
 #search-button {
     width: 40px;
     height: 40px;
-    border-radius: 50px;
+    border-radius: calc(var(--medium-radius) * 5);
     background-color: var(--dark-blue-color);
     color: var(--white-color);
     border: 0;
