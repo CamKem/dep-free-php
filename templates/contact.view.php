@@ -68,7 +68,8 @@
                           data-validate=false
                 ></textarea>
 
-                <div class="flex-center row" style="justify-content: space-between">
+                <div class="flex-center row"
+                     style="justify-content: space-between">
                     <button id="submit" type="submit">Send</button>
                     <div class="flex-center row standard-gap">
                         <label for="mailing_list">Join the mailing list:</label>
