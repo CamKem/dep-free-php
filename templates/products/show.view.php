@@ -1,6 +1,5 @@
 <section>
     <h2>Product Details</h2>
-
     <div class="standard-container flex-center">
         <div class="flex-center row">
             <div class="product-details-image">
@@ -8,7 +7,7 @@
             </div>
             <div class="product-details-info">
                 <div class="general-heading"><?= $product->name ?></div>
-                <p class="price">
+                <p class="price price-main" aria-label="price">
                     <?php if ($product->sale_price): ?>
                         <strong class="price-sale">$<?= $product->sale_price ?></strong>
                         <span class="original-price-group">

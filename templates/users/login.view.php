@@ -2,6 +2,7 @@
     <h2>Login</h2>
     <script type="module">
         import FormValidator from './scripts/validation.js';
+
         window.onload = () => new FormValidator('login-form');
     </script>
     <div class="flex-center">
@@ -12,7 +13,7 @@
             <input type="email"
                    id="email"
                    name="email"
-                     value="<?= old('email') ?>"
+                   value="<?= old('email') ?>"
                    placeholder="Your email address"
                    data-validate=true
             >
@@ -32,15 +33,23 @@
                 <?= error('password') ?>
             </p>
 
-            <label for="remember" class="mail-list">
-                <input type="checkbox" id="remember" name="remember" <?= old('remember') ? 'checked' : '' ?>>
-                <span>Remember me</span>
-            </label>
-
-            <button class="button-padding" id="submit" type="submit">Login</button>
+            <div class="flex-center row"
+                 style="justify-content: space-between; width: 100%;">
+                <label for="remember">
+                    <input type="checkbox" id="remember"
+                           name="remember" <?= old('remember') ? 'checked' : '' ?>>
+                    <span>Remember me</span>
+                </label>
+                <button class="button-padding" id="submit" type="submit">Login
+                </button>
+            </div>
 
         </form>
-        <p class="general-text">Don't have an account? <a class="standard-link" href="<?= route('register.index') ?>">Register</a></p>
-        <p class="">Forgot your password? <a class="standard-link" href="<?= route('password.reset.show') ?>">Reset it</a></p>
+        <p class="general-text">Don't have an account? <a class="standard-link"
+                                                          href="<?= route('register.index') ?>">Register</a>
+        </p>
+        <p class="">Forgot your password? <a class="standard-link"
+                                             href="<?= route('password.reset.show') ?>">Reset
+                it</a></p>
     </div>
 </section>

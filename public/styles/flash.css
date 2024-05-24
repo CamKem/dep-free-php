@@ -1,0 +1,43 @@
+.flash-message {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: var(--dark-blue-color);
+    color: var(--white-color);
+    border-radius: var(--large-radius);
+    box-shadow: 0 0 5px 0 var(--dark-grey-color);
+    border: var(--thin-border) solid var(--blue-color);
+    padding: var(--default-padding) calc(var(--small-margin) * 5);
+    text-align: center;
+    z-index: 1000;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}
+
+.flash-message.slide-in {
+    animation: slideIn 0.5s ease-in-out;
+}
+
+.flash-message.slide-out {
+    animation: slideOut 0.5s ease-in-out;
+}

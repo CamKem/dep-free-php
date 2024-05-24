@@ -1,0 +1,50 @@
+/* Brand logo styles */
+@media screen and (min-width: 885px) {
+    .brand-logo-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand-text {
+        font-size: var(--font-small);
+        line-height: 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin-bottom: calc(var(--large-margin) * 2);
+    }
+
+    .brand-text p {
+        text-align: left;
+    }
+
+    .brand-text p + p {
+        color: var(--blue-color);
+    }
+}
+
+.brand-logo-container {
+    background-color: var(--dark-blue-color);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: var(--default-padding) calc(var(--default-padding) * 2);
+    row-gap: var(--large-gap);
+    align-items: center;
+    justify-items: center;
+}
+
+@media screen and (min-width: 885px) {
+    .brand-logo-container {
+        display: flex;
+        width: 660px;
+        height: 95px;
+        padding: var(--large-padding) var(--small-padding) var(--large-padding) calc(var(--large-padding) * 2);
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        border-radius: calc(var(--medium-radius) * 5) 0 0 calc(var(--medium-radius) * 5);
+        margin-bottom: calc(var(--large-margin) * 2);
+    }
+}

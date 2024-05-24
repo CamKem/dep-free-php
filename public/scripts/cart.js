@@ -9,9 +9,14 @@ export class Cart {
     handleQuantityChange() {
         const inputs = Array.from(document.querySelectorAll('.qty'));
         inputs.forEach((input) => {
-            input.addEventListener('change', (event) => {
+            input.addEventListener('input', (event) => {
                 const productId = event.target.parentNode.querySelector('input[name="product_id"]').value
                 const quantity = event.target.value
+                if (quantity < 1) {
+                    event.target.value = 1
+                    this.updateQuantity(input, 1)
+                    return
+                }
                 fetch('/cart', {
                     method: 'PUT',
                     headers: {
@@ -45,14 +50,23 @@ export class Cart {
         const taxPrice = runningTotal * this.taxRate
         const totalPrice = runningTotal + taxPrice + this.shippingRate
 
-        document.getElementById('subTotalPrice').textContent = `$${runningTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-        document.getElementById('taxPrice').textContent = `$${taxPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-        document.getElementById('totalPrice').textContent = `$${totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        document.getElementById('subTotalPrice').textContent = `$${Number(
+            runningTotal.toFixed(2))
+            .toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+        }`;
+        document.getElementById('taxPrice').textContent = `$${Number(
+            taxPrice.toFixed(2))
+            .toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+        }`;
+        document.getElementById('totalPrice').textContent = `$${Number(
+            totalPrice.toFixed(2))
+            .toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+        }`;
     }
 
     static calcRunningTotal(runningTotal) {
         Array.from(document.querySelectorAll('.items')).forEach((row) => {
-            let price = row.children[0].children.namedItem('prodTotal').children.namedItem('line-price').children[0].textContent.slice(1)
+            let price = row.children.namedItem('prodTotal').children.namedItem('line-price').children[0].textContent.slice(1)
             runningTotal += parseFloat(price.replace(/,/g, ''))
 
         })
@@ -61,7 +75,7 @@ export class Cart {
 
     updateQuantity(input, quantity) {
         const productRow = input.parentNode.parentNode
-        let textPrice = productRow.children.namedItem('price').children[1].textContent
+        let textPrice = productRow.children[0].children.namedItem('price').children[1].textContent
         textPrice = textPrice.slice(1)
         const price = parseFloat(textPrice)
         const newLinePrice = price * quantity
@@ -71,29 +85,52 @@ export class Cart {
     }
 }
 
-export class RemoveConfirmation {
+export class RemoveManager {
     constructor() {
+        this.removeConfirmations = [];
         this.handleRemove()
     }
 
     handleRemove() {
         document.addEventListener('DOMContentLoaded', () => {
-            let removeForm = document.getElementById('remove-form');
-            if (removeForm) {
-                removeForm.addEventListener('submit', function (event) {
-                    event.preventDefault()
-                    let openModalEvent = new CustomEvent('openModal', {
-                        bubbles: true,
-                        detail: {action: 'open'}
-                    })
-                    removeForm.dispatchEvent(openModalEvent)
-                })
-                document.addEventListener('confirmed', function (event) {
-                    if (event.detail.action === 'remove') {
-                        removeForm.submit()
-                    }
-                })
-            }
+            let removeForms = Array.from(document.getElementsByName('remove-form'));
+            removeForms.forEach((removeForm) => {
+                    const removeConfirmation = new RemoveConfirmation(removeForm);
+                    this.removeConfirmations.push(removeConfirmation);
+                }
+            )
         })
+    }
+
+    /* Note: This method is for if we decide to use fetch to remove items from the cart */
+    removeConfirmation(removeForm) {
+        const index = this.removeConfirmations.findIndex(rc => rc.removeForm === removeForm);
+        if (index > -1) {
+            this.removeConfirmations.splice(index, 1);
+        }
+    }
+
+}
+
+class RemoveConfirmation {
+    constructor(removeForm) {
+        this.removeForm = removeForm;
+        this.handleRemove()
+    }
+
+    handleRemove() {
+        this.removeForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            let openModalEvent = new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: 'open'}
+            });
+            this.removeForm.dispatchEvent(openModalEvent);
+        });
+        document.addEventListener('confirmed', (event) => {
+            if (event.detail.action === 'remove') {
+                this.removeForm.submit();
+            }
+        });
     }
 }
