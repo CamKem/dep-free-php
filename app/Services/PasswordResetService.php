@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Core\Mailer;
+use app\Core\Mailing\PasswordResetMail;
 use App\Models\PasswordReset;
 use App\Models\User;
 use RuntimeException;
@@ -10,14 +10,14 @@ use SensitiveParameter;
 
 class PasswordResetService
 {
-    protected Mailer $mailer;
+    protected PasswordResetMail $mailer;
 
     public function __construct()
     {
-        $this->mailer = new Mailer();
+        $this->mailer = new PasswordResetMail();
     }
 
-    public function createPasswordReset(#[SensitiveParameter] string $email): bool
+    public function createPasswordReset(#[SensitiveParameter] string $email, string $username): bool
     {
         // Generate a unique token
         $token = bin2hex(random_bytes(20));
@@ -33,7 +33,11 @@ class PasswordResetService
         }
 
         // Email the user with a link to reset their password
-        $this->mailer->sendPasswordResetEmail($email, $token);
+        $emailed = $this->mailer->sendPasswordResetEmail($email, $username, $token);
+
+        if (!$emailed) {
+            return false;
+        }
 
         return true;
     }
@@ -67,7 +71,6 @@ class PasswordResetService
             throw new RuntimeException('Failed to reset password.');
         }
 
-        //dd($passwordReset);
         // Delete the token from the password_resets table
         return $passwordReset->query()->delete()->save();
     }

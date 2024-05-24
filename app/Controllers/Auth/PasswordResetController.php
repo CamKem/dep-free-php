@@ -44,8 +44,15 @@ class PasswordResetController extends Controller
                 ->withErrors(['email' => 'The provided email does not exist in our records.']);
         }
 
+        // get the user's username
+        $username = (new User())
+            ->query()
+            ->where('email', $validated['email'])
+            ->first()
+            ->username;
+
         // send the password reset email
-        $sent = (new PasswordResetService())->createPasswordReset($validated['email']);
+        $sent = (new PasswordResetService())->createPasswordReset($validated['email'], $username);
 
         // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
