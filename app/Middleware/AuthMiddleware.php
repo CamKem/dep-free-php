@@ -13,7 +13,7 @@ class AuthMiddleware extends Middleware
     public function handle(Request $request, Closure $next): Closure
     {
         if (!auth()->check()) {
-            abort(403);
+            redirect()->route('login.index');
         }
 
         return $next($request);
