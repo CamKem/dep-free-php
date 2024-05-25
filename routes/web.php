@@ -5,9 +5,10 @@ use App\Controllers\CategoryController;
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
 use App\Controllers\ProductController;
-use app\Controllers\User\CartController;
+use app\Controllers\Shop\CartController;
+use app\Controllers\Shop\CheckoutController;
+use app\Controllers\Shop\OrderController;
 use app\Controllers\User\DashboardController;
-use app\Controllers\User\OrderController;
 use App\Core\Routing\RouteProxy as Route;
 
 // Auth Routes
@@ -103,6 +104,11 @@ Route::put('/cart')
 //  customer must be logged in to place an order at checkout
 
 Route::get('/checkout')
-    ->controller([CheckoutController::class, 'show'])
-    ->name('checkout.show')
+    ->controller(CheckoutController::class)
+    ->name('checkout')
+    ->middleware('auth');
+
+Route::post('/orders')
+    ->controller([OrderController::class, 'store'])
+    ->name('orders.store')
     ->middleware('auth');

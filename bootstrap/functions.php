@@ -87,7 +87,6 @@ function config($key): mixed
     return app(Config::class)->get($key);
 }
 
-// a function that accepts a callable to define a configuration array, to be used by a service provider for setting up configuration values
 function configure(callable $config): callable
 {
     return app(Config::class)::storeConfigClosure($config);
