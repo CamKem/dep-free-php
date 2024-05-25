@@ -1,7 +1,8 @@
 <?php
 
-namespace app\Core\Mailing;
+namespace app\Mailing;
 
+use App\Core\Mailer;
 use SensitiveParameter;
 
 
@@ -14,13 +15,6 @@ class PasswordResetMail extends Mailer
         #[SensitiveParameter] string $token
     ): bool
     {
-//        logger("Sending password reset email to {$email}, token: {$token}");
-//        // log the reset link
-//        logger("link is: " . route('password.reset.edit', compact('token')));
-//
-//        $message = "To reset your password, click on the following link: ";
-//        $message .= "<a href='" . route('password.reset.edit', compact('token')) . "'>Reset Password</a>";
-
         return $this->send(
             to: $email,
             name: $username,

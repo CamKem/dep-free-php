@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use app\Core\Mailing\PasswordResetMail;
+use app\Mailing\PasswordResetMail;
 use App\Models\PasswordReset;
 use App\Models\User;
 use RuntimeException;
@@ -10,7 +10,7 @@ use SensitiveParameter;
 
 class PasswordResetService
 {
-    protected PasswordResetMail $mailer;
+    private PasswordResetMail $mailer;
 
     public function __construct()
     {
