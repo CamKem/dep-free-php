@@ -101,3 +101,8 @@ Route::put('/cart')
 
 // TODO: Checkout & Order Routes
 //  customer must be logged in to place an order at checkout
+
+Route::get('/checkout')
+    ->controller([CheckoutController::class, 'show'])
+    ->name('checkout.show')
+    ->middleware('auth');
