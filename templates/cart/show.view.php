@@ -5,9 +5,6 @@
     new RemoveManager();
 </script>
 <?= add('modals.confirmation', ['action' => 'remove']) ?>
-
-<!-- TODO: fix the cart style so that it's all aligned properly-->
-
 <section>
     <h2>Shopping Cart</h2>
     <?php if ($cart->count() === 0): ?>
