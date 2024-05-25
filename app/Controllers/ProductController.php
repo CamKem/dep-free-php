@@ -34,12 +34,6 @@ class ProductController extends Controller
             ->where('slug', $request->get('product'))
             ->first();
 
-//        dd(
-//            $product->toSql(),
-//            $product->getBindings(),
-//            $product->db->raw($product->toSql(), $product->getBindings())->queryString,
-//        );
-
         if (! $product) {
             return abort();
         }
