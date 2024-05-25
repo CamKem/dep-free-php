@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Mailing;
+namespace App\Core;
 
 abstract class Mailer
 {
@@ -26,7 +26,7 @@ abstract class Mailer
         $this->encryption = config('mail.encryption');
     }
 
-    public function send($to, $name, $subject, $message): bool
+    public function send(string $to, string $name, string $subject, string $message): bool
     {
         $this->connect();
 
@@ -82,6 +82,7 @@ abstract class Mailer
 
     protected function sendMail($to, $name, $subject, $message): bool
     {
+
         $response = $this->sendCommand("MAIL FROM: <" . $this->from . ">");
         if(!$this->checkError($response, "250")) {
             $this->isSuccessful = false;
