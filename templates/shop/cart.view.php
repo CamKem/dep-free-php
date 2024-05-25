@@ -48,7 +48,7 @@
                             </div>
 
                             <p class="stockStatus">In Stock</p>
-                            <!--                                    <p class="stockStatus out">Stock Out</p>-->
+                            <!-- <p class="stockStatus out">Stock Out</p> -->
                         </div>
 
                         <div class="prodTotal cartSection"
@@ -116,7 +116,7 @@
                               class="value">$<?= number_format(($total + $tax + $shipping), 2) ?></span>
                     </li>
                     <li class="totalRow">
-                        <a href="<?= route('checkout.show') ?>" class="btn continue">Checkout</a>
+                        <a href="<?= route('checkout') ?>" class="btn continue">Checkout</a>
                     </li>
                 </ul>
             </div>
