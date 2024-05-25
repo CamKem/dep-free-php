@@ -1,0 +1,124 @@
+.checkout-form {
+    width: 95%;
+    margin: 0 auto;
+    padding: var(--default-padding);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+}
+
+.checkout-form h3 {
+    margin-bottom: var(--default-margin);
+}
+
+.checkout-form label {
+    display: block;
+    margin-bottom: var(--small-margin);
+}
+
+.checkout-form input {
+    width: 100%;
+    padding: var(--small-padding);
+    margin-bottom: var(--default-margin);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+}
+
+.checkout-form .btn {
+    display: block;
+    margin-top: var(--default-margin);
+}
+
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--default-gap);
+}
+
+.order-summary {
+    border: var(--thin-border) solid var(--light-grey-color);
+    padding: var(--default-padding);
+    border-radius: var(--small-radius);
+}
+
+.order-item {
+    margin-bottom: var(--default-margin);
+}
+
+.order-total {
+    font-weight: bold;
+    margin-top: var(--default-margin);
+}
+
+/* On mobile, switch to a single column layout */
+@media (max-width: 768px) {
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Form Progress */
+.progress {
+    width: 1000px;
+    margin: 20px auto;
+    text-align: center;
+}
+.progress .circle,
+.progress .bar {
+    display: inline-block;
+    background: #fff;
+    width: 40px; height: 40px;
+    border-radius: 40px;
+    border: 1px solid #d5d5da;
+}
+.progress .bar {
+    position: relative;
+    width: 80px;
+    height: 6px;
+    top: -33px;
+    margin-left: -5px;
+    margin-right: -5px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+}
+.progress .circle .label {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 32px;
+    margin-top: 3px;
+    color: #b5b5ba;
+    font-size: 17px;
+}
+.progress .circle .title {
+    color: #b5b5ba;
+    font-size: 13px;
+    line-height: 30px;
+    margin-left: -5px;
+}
+
+/* Done / Active */
+.progress .bar.done,
+.progress .circle.done {
+    background: #eee;
+}
+.progress .bar.active {
+    background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+}
+.progress .circle.done .label {
+    color: #FFF;
+    background: #8bc435;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.progress .circle.done .title {
+    color: #444;
+}
+.progress .circle.active .label {
+    color: #FFF;
+    background: #0c95be;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.2);
+}
+.progress .circle.active .title {
+    color: #0c95be;
+}
