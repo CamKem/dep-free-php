@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Core\Collecting\Collection;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
@@ -11,26 +12,21 @@ use App\Models\User;
 class RegisterNewUser
 {
 
-    private NewUserMail $newUserMail;
+    private Collection $validated;
 
-    public function __construct()
+    public function handle(Request $request): bool
     {
-        $this->newUserMail = new NewUserMail();
-    }
+        $this->validate($request);
 
-    public function register(Request $request): bool
-    {
-        $validated = $this->validate($request);
-        $created = $this->createUser($validated);
-
+        $created = $this->createUser();
         if (!$created) {
             return false;
         }
-        $this->sendWelcomeEmail($validated);
-        return true;
+
+        return $this->sendWelcomeEmail();
     }
 
-    private function validate(Request $request): Response|array
+    private function validate(Request $request): Response|Collection
     {
         $validated = (new Validator())->validate(
             $request->only(['username', 'email', 'password']), [
@@ -60,17 +56,17 @@ class RegisterNewUser
                 ->withErrors($errors);
         }
 
-        return $validated;
+        return $this->validated = collect($validated);
     }
 
-    private function createUser(array $validated): bool|Response
+    private function createUser(): bool|Response
     {
         $user = (new User())
             ->query()
             ->create([
-                'username' => $validated['username'],
-                'email' => $validated['email'],
-                'password' => password_hash($validated['password'], PASSWORD_DEFAULT),
+                'username' => $this->validated->get('username'),
+                'email' => $this->validated->get('email'),
+                'password' => password_hash($this->validated->get('password'), PASSWORD_DEFAULT),
             ])->save();
 
         if (!$user) {
@@ -80,11 +76,11 @@ class RegisterNewUser
         return true;
     }
 
-    private function sendWelcomeEmail(array $validated): void
+    private function sendWelcomeEmail(): bool
     {
-        $this->newUserMail->sendWelcomeMessage(
-            email: $validated['email'],
-            username: $validated['username']
+        return (new newUserMail())->sendWelcomeMessage(
+            email: $this->validated->get('email'),
+            username: $this->validated->get('username')
         );
     }
 
