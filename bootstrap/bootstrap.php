@@ -44,7 +44,14 @@ if(config('app.env') === 'local') {
 
 // set the exception handler
 set_exception_handler(static function (Throwable $e) use ($app) {
-    return $app->resolve(Response::class)
+    $request = $app->resolve(Request::class);
+    $response = $app->resolve(Response::class);
+    if ($request->isJson()) {
+        return $response->json([
+            'error' => $e->getMessage()
+        ]);
+    }
+    return $response->resolve(Response::class)
         ->view('errors.exception', [
             'title' => 'Exception',
             'message' => $e->getMessage()
