@@ -23,7 +23,14 @@ class RegisterNewUser
             return false;
         }
 
-        return $this->sendWelcomeEmail();
+        $sent = $this->sendWelcomeEmail();
+
+        if (!$sent) {
+            $this->deleteUser();
+            return false;
+        }
+
+        return true;
     }
 
     private function validate(Request $request): Response|Collection
@@ -82,6 +89,15 @@ class RegisterNewUser
             email: $this->validated->get('email'),
             username: $this->validated->get('username')
         );
+    }
+
+    private function deleteUser(): void
+    {
+        (new User())
+            ->query()
+            ->where('email', $this->validated->get('email'))
+            ->delete()
+            ->save();
     }
 
 }
