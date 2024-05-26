@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AboutController;
+use App\Controllers\Admin\SnsController;
 use App\Controllers\CategoryController;
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
@@ -112,3 +113,12 @@ Route::post('/orders')
     ->controller([OrderController::class, 'store'])
     ->name('orders.store')
     ->middleware('auth');
+
+// Routes for handling SNS notifications
+Route::post('/sns/bounce')
+    ->controller([SnsController::class, 'handleBounce'])
+    ->name('sns.bounce');
+
+Route::post('/sns/complaint')
+    ->controller([SnsController::class, 'handleComplaint'])
+    ->name('sns.complaint');
