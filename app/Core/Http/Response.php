@@ -7,26 +7,27 @@ use App\Core\Template;
 use JsonException;
 
 class Response {
-    const NOT_FOUND = 404;
-    const FORBIDDEN = 403;
-    const UNAUTHORIZED = 401;
-    const OK = 200;
+    const int NOT_FOUND = 404;
+    const int FORBIDDEN = 403;
+    const int UNAUTHORIZED = 401;
+    const int OK = 200;
+    const int INTERNAL_SERVER_ERROR = 500;
 
-    public static function status(int $code): static
+    public function status(int $code): self
     {
         http_response_code($code);
-        return new static;
+        return new self;
     }
 
     /** @throws JsonException */
-    public static function json(array $data): static
+    public function json(array $data): self
     {
         header('Content-Type: application/json');
         echo json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
-        return new static;
+        return new self;
     }
 
-    public static function body(string $body): void
+    public function body(string $body): void
     {
         echo $body;
         exit;
