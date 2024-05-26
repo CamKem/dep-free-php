@@ -4,6 +4,7 @@ namespace App\Core\Http;
 
 use App\Core\Routing\Route;
 use App\Core\Routing\Router;
+use JsonException;
 
 class Request
 {
@@ -112,12 +113,16 @@ class Request
         return $this->routeParameters = $this->route()->getRequestParams($this->uri);
     }
 
+    /** @throws JsonException */
     private function getJsonBody(): ?array
     {
         if (!str_contains($this->headers['Content-Type'], 'application/json')) {
             return null;
         }
         $body = file_get_contents('php://input');
+        if (empty($body)) {
+            return null;
+        }
         return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
     }
 
