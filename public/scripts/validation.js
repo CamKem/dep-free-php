@@ -10,6 +10,17 @@ export default class FormValidator {
         this.form.addEventListener('input', this.debouncedValidation.bind(this));
     }
 
+    validateFor(fields) {
+        fields.forEach(field => {
+            console.log(field);
+            this.validateField(field);
+        });
+        if (this.errors.length) {
+            return false;
+        }
+        return true;
+    }
+
     debounce(func, delay) {
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => func.apply(this), delay);

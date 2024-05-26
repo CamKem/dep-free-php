@@ -19,9 +19,12 @@
                     class="map"></iframe>
         </div>
         <div class="flex-center">
-            <form method="POST" action="/contact" id="contact-form"
+            <form method="POST"
+                  action="<?= route('contact') ?>"
+                  id="contact-form"
                   aria-label="Contact form"
-                  class="user-form">
+                  class="user-form"
+            >
                 <input type="hidden" name="csrf_token"
                        value="<?= csrf_token() ?>">
                 <label for="first_name"><span>First name</span></label>

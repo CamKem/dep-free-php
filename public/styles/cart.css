@@ -218,11 +218,19 @@
     transition: all .25s linear;
 }
 
-.btn:after {
+.btn:not(.prev):after {
     content: "\276f";
     padding: var(--small-padding);
     position: relative;
     right: 0;
+    transition: all .15s linear;
+}
+
+.btn.prev:before {
+    content: "\276e";
+    padding: var(--small-padding);
+    position: relative;
+    left: 0;
     transition: all .15s linear;
 }
 
