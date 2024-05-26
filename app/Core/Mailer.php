@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use SensitiveParameter;
+
 abstract class Mailer
 {
     protected string $host;
@@ -14,7 +16,7 @@ abstract class Mailer
     protected string $newLine = "\r\n";
     protected array $responses = [];
     protected bool $isSuccessful = true;
-    protected $connection;
+    protected mixed $connection;
 
     public function __construct()
     {
@@ -142,7 +144,7 @@ abstract class Mailer
         return true;
     }
 
-    protected function checkError($response, $code): bool
+    protected function checkError($response, #[SensitiveParameter] $code): bool
     {
         if (!str_contains($response, $code)) {
             $this->mailLogger();
