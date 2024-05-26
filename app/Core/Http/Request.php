@@ -126,7 +126,7 @@ class Request
         return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function isJson(): bool
+    public function wantsJson(): bool
     {
         return str_contains($this->headers['Content-Type'], 'application/json');
     }
