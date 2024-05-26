@@ -72,6 +72,7 @@ abstract class Mailer
         $response = $this->sendCommand("HELO {$this->host}");
         if (!$this->checkError($response, "250")) {
             $this->isSuccessful = false;
+            return;
         }
 
         $this->checkForMoreResponses("HELO {$this->host}");
@@ -79,6 +80,14 @@ abstract class Mailer
 
     protected function authenticate(): void
     {
+        if ($this->encryption === 'tls') {
+            $response = $this->sendCommand("HELO {$this->host}");
+            if (!$this->checkError($response, "250")) {
+                $this->isSuccessful = false;
+            }
+        }
+
+
         $response = $this->sendCommand("AUTH LOGIN");
         if (!$this->checkError($response, "334")) {
             $this->isSuccessful = false;

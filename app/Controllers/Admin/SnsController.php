@@ -6,10 +6,11 @@ namespace App\Controllers\Admin;
 
 use App\Core\Http\Request;
 use App\Core\Http\Response;
+use Throwable;
 
 class SnsController
 {
-    
+
     /** @throws */
     public function handleBounce(Request $request): Response
     {
@@ -20,6 +21,7 @@ class SnsController
             $this->processBounce($notification);
         }
         return response()->json(['message' => 'Bounce handled']);
+
     }
 
     /** @throws */
@@ -63,11 +65,22 @@ class SnsController
 
     protected function confirmSubscription(string $subscribeUrl): void
     {
-        $ch = curl_init($subscribeUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        logger("Subscription confirmation response: " . $response);
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $subscribeUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+
+            if ($response === false) {
+                logger('Curl error: ' . curl_error($ch));
+            } else {
+                logger("Subscription Confirmation Response: " . $response);
+            }
+            curl_close($ch);
+        } catch (Throwable $e) {
+            logger('Exception in confirmSubscription: ' . $e->getMessage());
+        }
     }
+
 
 }
