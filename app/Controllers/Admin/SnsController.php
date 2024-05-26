@@ -61,7 +61,7 @@ class SnsController
         // Extract relevant data from $notification and take action
     }
 
-    protected function confirmSubscription(string $subscribeUrl): void
+    protected function confirmSubscription(string $subscribeUrl)
     {
         $ch = curl_init($subscribeUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
