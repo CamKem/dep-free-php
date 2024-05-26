@@ -32,7 +32,26 @@ input[type="email"] {
 
 input[type="checkbox"] {
     accent-color: var(--mid-blue-color);
-    width: 18px;
+    width: 15px;
+    height: 15px;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--mid-blue-color);
+}
+
+.form-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--default-margin);
+    width: 100%;
+}
+
+.checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: var(--default-gap);
 }
 
 button {

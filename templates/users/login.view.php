@@ -33,23 +33,25 @@
                 <?= error('password') ?>
             </p>
 
-            <div class="flex-center row"
-                 style="justify-content: space-between; width: 100%;">
-                <label for="remember">
+            <div class="form-bottom">
+                <button class="button-padding" id="submit" type="submit">Login
+                </button>
+                <label for="remember" class="checkbox-label">
                     <input type="checkbox" id="remember"
                            name="remember" <?= old('remember') ? 'checked' : '' ?>>
                     <span>Remember me</span>
                 </label>
-                <button class="button-padding" id="submit" type="submit">Login
-                </button>
             </div>
 
         </form>
-        <p class="general-text">Don't have an account? <a class="standard-link"
-                                                          href="<?= route('register.index') ?>">Register</a>
-        </p>
-        <p class="">Forgot your password? <a class="standard-link"
-                                             href="<?= route('password.reset.show') ?>">Reset
-                it</a></p>
+        <div>
+            <p class="general-text">Don't have an account? <a
+                        class="standard-link"
+                        href="<?= route('register.index') ?>">Register</a>
+            </p>
+            <p class="">Forgot your password? <a class="standard-link"
+                                                 href="<?= route('password.reset.show') ?>">Reset
+                    it</a></p>
+        </div>
     </div>
 </section>

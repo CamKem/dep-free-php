@@ -21,9 +21,7 @@ class RegistrationController extends Controller
 
     public function store(Request $request): Response
     {
-
-        $registered = (new RegisterNewUser())->register($request);
-
+        $registered = (new RegisterNewUser())->handle($request);
         if (!$registered) {
             session()->flash('flash-message', 'There was an error creating your account. Please try again.');
             return redirect(route('register.index'))
@@ -34,7 +32,6 @@ class RegistrationController extends Controller
             ->query()
             ->where('email', $request->get('email'))
             ->first();
-
         auth()->login($user);
 
         session()->flash('flash-message', 'You have successfully registered!');

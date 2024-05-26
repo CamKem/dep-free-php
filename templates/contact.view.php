@@ -5,7 +5,7 @@
 
         window.onload = () => new FormValidator('contact-form');
     </script>
-    <div class="flex-center row" style="gap: 20px">
+    <div class="flex-center row" style="gap: var(--large-gap)">
         <div class="desktop-only flex-center">
             <h3 class="general-heading">Visit our store</h3>
             <p class="general-text" style="text-align: left">Our premises are
@@ -68,18 +68,17 @@
                           data-validate=false
                 ></textarea>
 
-                <div class="flex-center row"
-                     style="justify-content: space-between">
+                <div class="form-bottom">
                     <button id="submit" type="submit">Send</button>
-                    <div class="flex-center row standard-gap">
-                        <label for="mailing_list">Join the mailing list:</label>
+                    <label for="mailing_list" class="checkbox-label">
+                        Join mailing list:
                         <input type="checkbox"
                                aria-label="Join mailing list"
                                id="mailing_list"
                                name="mailing_list"
                                data-validate=false
                         >
-                    </div>
+                    </label>
                 </div>
             </form>
         </div>

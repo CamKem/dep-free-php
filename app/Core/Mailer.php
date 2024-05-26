@@ -30,9 +30,22 @@ abstract class Mailer
     {
         $this->connect();
 
+        $this->encrypt();
+
         $this->authenticate();
 
         return $this->sendMail($to, $name, $subject, $message);
+    }
+
+    private function encrypt(): void
+    {
+        if ($this->encryption === 'tls') {
+            $response = $this->sendCommand("STARTTLS");
+            if (!$this->checkError($response, "220")) {
+                $this->isSuccessful = false;
+            }
+            stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+        }
     }
 
     protected function connect(): void
@@ -54,12 +67,12 @@ abstract class Mailer
             $this->isSuccessful = false;
         }
 
-        $response = $this->sendCommand("EHLO {$this->host}");
+        $response = $this->sendCommand("HELO {$this->host}");
         if (!$this->checkError($response, "250")) {
             $this->isSuccessful = false;
         }
 
-        $this->checkForMoreResponses("EHLO {$this->host}");
+        $this->checkForMoreResponses("HELO {$this->host}");
     }
 
     protected function authenticate(): void
@@ -123,20 +136,16 @@ abstract class Mailer
         fclose($this->connection);
 
         if (!$this->isSuccessful) {
-        	$this->responses['SUCCESS'] = "FALSE";
             return false;
         }
 
-        $this->responses['SUCCESS'] = "TRUE";
         return true;
     }
 
     protected function checkError($response, $code): bool
     {
         if (!str_contains($response, $code)) {
-            $this->responses['SUCCESS'] = "FALSE";
-            fclose($this->connection);
-            logger(implode("\n", $this->responses), 'mailer');
+            $this->mailLogger();
             return false;
         }
         return true;
@@ -150,12 +159,7 @@ abstract class Mailer
         $this->responses[$command][] = fgets($this->connection, 515);
 
         if (str_contains(end($this->responses[$command]), "421")) {
-            fclose($this->connection);
-            logger(
-                'failed to send command',
-                implode("\n", $this->responses),
-                'mailer'
-            );
+            $this->mailLogger();
         }
 
         return end($this->responses[$command]);
@@ -171,10 +175,18 @@ abstract class Mailer
             $i++;
         }
         if ($i = 0) {
-            $this->responses['SUCCESS'] = "FALSE";
-            fclose($this->connection);
-            logger(implode("\n", $this->responses));
+            $this->mailLogger();
         }
+    }
+
+    private function mailLogger(): void
+    {
+        $this->responses['SUCCESS'] = "FALSE";
+        logger(
+            message: 'failed to send command',
+            level: 'mailer',
+            context: $this->responses,
+        );
     }
 
 }

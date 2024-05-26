@@ -1,7 +1,8 @@
 <?php
 
-namespace app\Controllers\User;
+namespace app\Controllers\Shop;
 
+use app\Actions\RetrieveCartProducts;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -12,24 +13,9 @@ class CartController extends Controller
 {
     public function show(): Template
     {
-        $items = array_map(static fn($item) =>
-                $item['product_id'], session()->get('cart', [])
-        );
-
-        $products = (new Product)
-            ->query()
-            ->whereIn('id', array_values($items))
-            ->with('category')
-            ->get();
-
-        $products->map(static function ($product) {
-            $product->quantity = session()->get('cart')[$product->id]['quantity'];
-            return $product;
-        });
-
-        return view('cart.show', [
+        return view('shop.cart', [
             'title' => 'Shopping Cart',
-            'cart' => $products,
+            'cart' => (new RetrieveCartProducts())->get(),
             'shipping' => 10.00,
             'taxRate' => .10,
         ]);

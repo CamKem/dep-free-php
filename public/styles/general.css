@@ -6,6 +6,15 @@
     font-weight: 400;
     line-height: normal;
     text-decoration: none;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 ul {
@@ -76,7 +85,7 @@ a {
     flex-direction: column;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 700px) {
     .row {
         flex-direction: row;
     }
