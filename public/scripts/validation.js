@@ -12,13 +12,9 @@ export default class FormValidator {
 
     validateFor(fields) {
         fields.forEach(field => {
-            console.log(field);
             this.validateField(field);
         });
-        if (this.errors.length) {
-            return false;
-        }
-        return true;
+        return !this.errors.length;
     }
 
     debounce(func, delay) {
@@ -82,9 +78,11 @@ export default class FormValidator {
     }
 
     displayError(field, message) {
-        const el = field.nextElementSibling;
+        const el = field.nextElementSibling === null
+            ? field.parentElement.nextElementSibling
+            : field.nextElementSibling;
         el.id = field.id + '-error';
-        message = '⚠ '+message.charAt(0).toUpperCase() + message.slice(1);
+        message = '⚠ ' + message.charAt(0).toUpperCase() + message.slice(1);
         el.textContent = message;
     }
 
@@ -118,12 +116,12 @@ export default class FormValidator {
             let errorMessage = null;
             if (!field.value) {
                 this.addInvalidClass(field);
-                errorMessage = `${field.placeholder} is required`;
+                errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
             if (field.value.length < 3) {
                 this.addInvalidClass(field);
-                errorMessage = `${field.placeholder} must be at least 3 characters long`;
+                errorMessage = `${field.title} must be at least 3 characters long`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
             if (field.type === 'email') {
@@ -154,6 +152,24 @@ export default class FormValidator {
                 if (!numberRegex.test(field.value)) {
                     this.addInvalidClass(field);
                     errorMessage = 'Please enter a valid number'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // add one for the field.id === 'postcode' condition
+            if (field.id === 'post_code') {
+                // postcode regex must be 4 numbers long without spaces or characters other than numbers
+                const postcodeRegex = /^\d{4}$/;
+                if (!postcodeRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter valid post code'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            if (field.id === 'card_number') {
+                const cardNumberRegex = /^\d{16}$/;
+                if (!cardNumberRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid card number'
                     return this.updateAndDisplayErrors(field.id, errorMessage);
                 }
             }
