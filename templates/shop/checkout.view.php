@@ -15,6 +15,9 @@
         new CardHandler(cardNumberInputs, expiryDateInput);
     };
 
+    // TODO: fix the styling on the order summary
+    //  also need to style the end confirmation page
+
 </script>
 <section>
     <h2>Checkout</h2>

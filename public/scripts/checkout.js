@@ -152,21 +152,10 @@ export class CardHandler {
             });
         });
 
-        // // Add 'input' event listener to expiry date field
-        // this.expiryDateInput.addEventListener('input', (event) => {
-        //     // Get the value of the input field
-        //     let value = event.target.value;
-        //     // If the value is 2 characters long and does not already contain a slash
-        //     if (value.length === 2 && !value.includes('/')) {
-        //         // Append a slash to the value
-        //         event.target.value += '/';
-        //     }
-        // });
-        // Modify 'input' event listener for expiry date field
         this.expiryDateInput.addEventListener('input', (event) => {
             // Get the value of the input field
             let value = event.target.value;
-            // If the value is 2 characters long and does not already contain a slash
+            // If the value is 2 characters long and does not yet contain a slash
             if (value.length === 2 && !value.includes('/')) {
                 // Append a slash to the value
                 event.target.value += '/';
