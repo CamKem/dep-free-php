@@ -3,6 +3,7 @@
 namespace app\Controllers\Shop;
 
 use App\Core\Controller;
+use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Models\Order;
@@ -15,8 +16,9 @@ class OrderController extends Controller
         return view('order.show', compact('order'));
     }
 
-    public function store(): Response
+    public function store(Request $request): Response
     {
+        dd($request->all());
         $new = (new Order())
             ->query()
             ->create([
