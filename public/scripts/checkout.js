@@ -120,8 +120,9 @@ export class Progress {
 }
 
 export class CardHandler {
-    constructor(inputs) {
-        this.inputs = inputs;
+    constructor(cardNumberInputs, expiryDateInput) {
+        this.inputs = cardNumberInputs;
+        this.expiryDateInput = expiryDateInput;
         this.fullCardNumberInput = document.getElementById('card_number');
         this.setUp();
     }
@@ -149,6 +150,32 @@ export class CardHandler {
             input.addEventListener('focus', () => {
                 input.select();
             });
+        });
+
+        // // Add 'input' event listener to expiry date field
+        // this.expiryDateInput.addEventListener('input', (event) => {
+        //     // Get the value of the input field
+        //     let value = event.target.value;
+        //     // If the value is 2 characters long and does not already contain a slash
+        //     if (value.length === 2 && !value.includes('/')) {
+        //         // Append a slash to the value
+        //         event.target.value += '/';
+        //     }
+        // });
+        // Modify 'input' event listener for expiry date field
+        this.expiryDateInput.addEventListener('input', (event) => {
+            // Get the value of the input field
+            let value = event.target.value;
+            // If the value is 2 characters long and does not already contain a slash
+            if (value.length === 2 && !value.includes('/')) {
+                // Append a slash to the value
+                event.target.value += '/';
+            }
+            // If the value is 3 characters long and ends with a slash
+            else if (value.length === 3 && value.endsWith('/')) {
+                // Remove the slash
+                event.target.value = value.slice(0, -1);
+            }
         });
 
         this.inputs.forEach(input => {
