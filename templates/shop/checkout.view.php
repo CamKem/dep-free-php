@@ -1,6 +1,6 @@
 <script type="module">
     import FormValidator from '/scripts/validation.js';
-    import Progress from '/scripts/progress.js';
+    import { Progress, CardHandler } from "/scripts/checkout.js";
 
     window.onload = () => {
         const circles = document.querySelectorAll('.progress .circle');
@@ -8,11 +8,13 @@
         const sections = Array.from(document.querySelectorAll('.checkout-form-container fieldset'));
         const nextButtons = Array.from(document.querySelectorAll('.next'));
         const prevButtons = Array.from(document.querySelectorAll('.prev'));
-        const validator = new FormValidator('checkout-form');
-        window.progress = new Progress(circles, bars, prevButtons, nextButtons, sections, validator);
-        window.progress.setUp();
-        window.progress.forward();
+        const validator = new FormValidator('checkout-form', false);
+        new Progress(circles, bars, prevButtons, nextButtons, sections, validator)
+        const cardNumberInputs = Array.from(document.querySelectorAll('.card-segment'));
+        const expiryDateInput = document.getElementById('expiry_date');
+        new CardHandler(cardNumberInputs, expiryDateInput);
     };
+
 </script>
 <section>
     <h2>Checkout</h2>
@@ -35,8 +37,8 @@
                 </div>
             </div>
         </div>
-        <div class="order-summary">
-            <h2>Order Summary</h2>
+        <div class="order-summary card">
+            <h3 class="general-heading">Order Summary</h3>
             <?php $total = 0; ?>
             <?php foreach ($cart->toArray() as $index => $item): ?>
                 <div class="order-item">
@@ -55,14 +57,14 @@
                 $<?= number_format($total, 2) ?></p>
         </div>
 
-        <div class="checkout-form-container">
+        <div class="checkout-form-container card">
             <form action="<?= route('orders.store') ?>"
                   method="post"
                   id="checkout-form"
                   class="checkout-form"
             >
                 <fieldset id="step-1">
-                    <h3>Shipping Information</h3>
+                    <h3 class="general-heading">Shipping Information</h3>
                     <label for="name">Full Name:
                     </label>
                     <input type="text"
@@ -134,24 +136,28 @@
                     </div>
                 </fieldset>
                 <fieldset id="step-2" class="hidden">
-                    <h3>Payment Information</h3>
-                    <label for="cardName">Name on Card</label>
-                    <input type="text" id="cardName"
-                           name="cardName"
+                    <h3 class="general-heading">Payment Information</h3>
+                    <label for="card_name">Name on Card:</label>
+                    <input type="text"
+                           id="card_name"
+                           name="card_name"
                            title="Cardholder Name"
                            placeholder="Cardholder Name"
                            data-validate=true>
                     <p class="error-message"></p>
 
-                    <label for="cardNumber">Card Number</label>
-                    <div class="card-number" id="cardNumber">
+                    <label for="card_number">Card Number:</label>
+                    <input type="hidden" name="card_number" id="card_number">
+                    <div class="card-number" id="card_number">
                         <input
                                 type="text"
                                 class="card-segment"
                                 id="card-number-1"
+                                title="Card Number"
                                 maxlength="4"
                                 inputmode="numeric"
                                 pattern="\d{4}"
+                                autocomplete="cc-number"
                                 placeholder="####"
                                 data-validate=true
                         >
@@ -159,6 +165,7 @@
                                 type="text"
                                 class="card-segment"
                                 id="card-number-2"
+                                title="Card Number"
                                 maxlength="4"
                                 inputmode="numeric"
                                 pattern="\d{4}"
@@ -169,6 +176,7 @@
                                 type="text"
                                 class="card-segment"
                                 id="card-number-3"
+                                title="Card Number"
                                 maxlength="4"
                                 inputmode="numeric"
                                 pattern="\d{4}"
@@ -178,6 +186,7 @@
                         <input type="text"
                                class="card-segment"
                                id="card-number-4"
+                               title="Card Number"
                                maxlength="4"
                                inputmode="numeric"
                                pattern="\d{4}"
@@ -189,13 +198,13 @@
 
                     <div class="form-bottom">
                         <div class="flex-center align-start">
-                            <label for="expDate">
+                            <label for="expiry_date">
                                 Expiry Date:
                             </label>
                             <input type="text"
-                                   id="expDate"
+                                   id="expiry_date"
                                    title="Expiry"
-                                   name="expDate"
+                                   name="expiry_date"
                                    inputmode="numeric"
                                    pattern="(?:0[1-9]|1[0-2])\/[0-9]{2}"
                                    placeholder="MM/YY"
@@ -206,11 +215,12 @@
                         <div class="flex-center align-start">
                             <label for="cvv">CVV:
                             </label>
-                            <input type="number"
+                            <input type="text"
                                    id="cvv"
                                    title="CVV"
                                    name="cvv"
                                    inputmode="numeric"
+                                   maxlength="3"
                                    pattern="[0-9]{3}"
                                    placeholder="CVV"
                                    data-validate=true
@@ -225,7 +235,7 @@
                     </div>
                 </fieldset>
                 <fieldset id="step-3" class="hidden">
-                    <h3>Order Confirmation</h3>
+                    <h3 class="general-heading">Order Confirmation</h3>
                     <p>Shipping Info:</p>
                     <p id="shipping-info"></p>
                     <p>Payment Info:</p>
