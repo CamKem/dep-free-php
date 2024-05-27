@@ -85,6 +85,10 @@ a {
     flex-direction: column;
 }
 
+.align-start {
+    align-items: flex-start;
+}
+
 @media (min-width: 700px) {
     .row {
         flex-direction: row;

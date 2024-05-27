@@ -7,7 +7,7 @@
 
 .user-form {
     align-items: flex-start;
-    padding: 2rem;
+    padding: var(--extra-large-padding);
     background-color: var(--very-light-grey-color);
     border-radius: var(--medium-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,6 +46,7 @@ input[type="checkbox"]:checked {
     align-items: center;
     margin-top: var(--default-margin);
     width: 100%;
+    gap: var(--default-gap);
 }
 
 .checkbox-label {
