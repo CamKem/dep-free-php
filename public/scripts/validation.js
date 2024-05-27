@@ -1,11 +1,14 @@
 export default class FormValidator {
-    constructor(formId) {
+    constructor(formId, onSubmit = true) {
         this.form = document.getElementById(formId);
         this.fields = Array.from(this.form.querySelectorAll('input, textarea, select'));
+        this.fields = this.fields.filter(field => !field.hasAttribute('hidden'));
         this.errors = [];
         this.submitted = false;
         this.debounceTimer = null;
-        this.form.addEventListener('submit', this.validateForm.bind(this));
+        if (onSubmit) {
+            this.form.addEventListener('submit', this.validateForm.bind(this));
+        }
         this.form.addEventListener('focusin', this.removeInvalidClass.bind(this), true);
         this.form.addEventListener('input', this.debouncedValidation.bind(this));
     }
@@ -170,6 +173,46 @@ export default class FormValidator {
                 if (!cardNumberRegex.test(field.value)) {
                     this.addInvalidClass(field);
                     errorMessage = 'Please enter a valid card number'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card expiry date
+            if (field.id === 'expiry_date') {
+                const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryDateRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid expiry date'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card cvv
+            if (field.id === 'cvv') {
+                const cvvRegex = /^\d{3}$/;
+                if (!cvvRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid cvv'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card number with the luhn algorithm
+            if (field.id.startsWith('card-number-1')) {
+                // Concatenate the values of all the card number inputs
+                let value = '';
+                this.fields.forEach(field => {
+                    if (field.id.startsWith('card-number-')) {
+                        value += field.value;
+                    }
+                });
+
+                // Check if the value is a valid number
+                if (isNaN(value)) {
+                    errorMessage = 'Card number should be a number';
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+
+                // Check if the total length is 16
+                if (value.length !== 16) {
+                    errorMessage = 'Card number should be 16 digits';
                     return this.updateAndDisplayErrors(field.id, errorMessage);
                 }
             }
