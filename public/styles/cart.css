@@ -208,7 +208,7 @@
     font-family: 'Montserrat', sans-serif;
     letter-spacing: -.015em;
     font-size: var(--font-small);
-    padding: var(--default-padding) 3em;
+    padding: var(--default-padding) var(--large-padding);
     color: var(--white-color);
     background: #82ca9c;
     font-weight: bold;
@@ -244,6 +244,12 @@
 .btn:focus:after,
 .btn:active:after {
     right: -10px;
+}
+
+.btn.prev:hover:before,
+.btn.prev:focus:before,
+.btn.prev:active:before {
+    left: -10px;
 }
 
 .promoCode .btn {

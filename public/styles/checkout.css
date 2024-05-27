@@ -5,18 +5,18 @@
     margin: 20px auto;
     display: grid;
     grid-template-areas:
-        "form form form progress"
-        "form form form order-summary"
-        "form form form order-summary"
-        "form form form order-summary"
-        "form form form order-summary"
-        "form form form order-summary";
+        "form progress"
+        "form order-summary";
+    grid-template-columns: 1fr 325px;
+    grid-template-rows: 60px auto;
+    height: 100%;
     gap: var(--default-gap);
 }
 
 /* On mobile, switch to a single column layout */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     .checkout-container {
+        grid-template-columns: 1fr;
         grid-template-areas:
             "progress"
             "order-summary"
@@ -24,19 +24,67 @@
     }
 }
 
+.card-number {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    gap: var(--default-gap);
+}
+
+#card-number-1 {
+    max-width: 100%;
+    grid-column: 1;
+}
+
+#card-number-2 {
+    max-width: 100%;
+    grid-column: 2;
+}
+
+#card-number-3 {
+    max-width: 100%;
+    grid-column: 3;
+}
+
+#card-number-4 {
+    max-width: 100%;
+    grid-column: 4;
+}
+
+.card-segment {
+}
+
 .checkout-form-container {
     grid-area: form;
+    width: 100%;
+}
+
+@media (min-width: 700px) {
+    .checkout-form-container {
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
 }
 
 fieldset {
     border: none;
+    height: 100%;
+    width: 100%;
+}
+
+.card {
+    padding: var(--extra-large-padding);
+    background-color: var(--very-light-grey-color);
+    border-radius: var(--medium-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .checkout-form {
-    background-color: var(--very-light-grey-color);
-    padding: var(--extra-large-padding);
-    border: var(--thin-border) solid var(--light-grey-color);
-    border-radius: var(--small-radius);
+    width: 100%;
 }
 
 .checkout-form h3 {
@@ -62,11 +110,19 @@ fieldset {
 }
 
 .order-summary {
-    background-color: var(--very-light-grey-color);
     grid-area: order-summary;
-    border: var(--thin-border) solid var(--light-grey-color);
-    padding: var(--extra-large-padding);
-    border-radius: var(--small-radius);
+    width: 325px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: auto;
+}
+
+@media (max-width: 700px) {
+    .order-summary {
+        width: 100%;
+    }
 }
 
 .order-item {
@@ -83,6 +139,7 @@ fieldset {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: min-content;
 }
 
 /* Form Progress */
@@ -102,7 +159,7 @@ fieldset {
 
 .progress .bar {
     position: relative;
-    width: 80px;
+    width: 60px;
     height: 6px;
     top: -33px;
     margin-left: -5px;
@@ -111,6 +168,13 @@ fieldset {
     border-right: none;
     border-radius: 0;
 }
+
+@media (max-width: 700px) {
+    .progress .bar {
+        width: 100px;
+    }
+}
+
 
 .progress .circle .label {
     display: inline-block;
@@ -142,7 +206,7 @@ fieldset {
 
 .progress .circle.done .label {
     color: #FFF;
-    background: #8bc435;
+    background: #82ca9c;
     box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
 }
 
