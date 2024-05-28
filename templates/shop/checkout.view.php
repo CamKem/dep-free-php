@@ -274,6 +274,20 @@
                             </div>
                         </div>
 
+                        <label for="contact_number">
+                            Contact Number:
+                            <input type="tel"
+                                   id="contact_number"
+                                   name="contact_number"
+                                   title="Contact Number"
+                                   inputmode="numeric"
+                                   pattern="[0-9]{10}"
+                                   placeholder="Contact Number"
+                                   data-validate=true
+                            >
+                        </label>
+                        <p class="error-message"></p>
+
                         <div class="form-bottom">
                             <button type="button" class="btn prev">Previous
                             </button>
