@@ -36,12 +36,16 @@ export class Progress {
                             this.sections[index + 1].classList.remove('hidden');
                             this.forward();
                         }
+                        if (index === this.sections.length - 2) {
+                            const event = new Event('summary');
+                            window.dispatchEvent(event);
+                        }
                     });
                 }
             }
         });
+
         this.nextButtons[0].form.addEventListener('submit', (event) => {
-            console.log('submit');
             event.preventDefault();
             this.forward();
             setTimeout(() => {
