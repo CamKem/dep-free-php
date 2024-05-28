@@ -78,7 +78,7 @@
 }
 
 .items .quantity-price-section .stockStatus {
-    color: #82CA9C;
+    color: var(--checkout-green-color);
     font-weight: bold;
     padding: var(--extra-small-padding) 0 0 var(--small-padding);
     text-transform: uppercase;
@@ -195,7 +195,7 @@
     margin-bottom: var(--default-margin);
     border-radius: 0 var(--large-radius) var(--large-radius) 0;
     text-align: center;
-    border: var(--thick-border) solid #82ca9c;
+    border: var(--thick-border) solid var(--checkout-green-color);
 }
 
 .promoCode a.btn:hover {
@@ -207,10 +207,9 @@
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
     letter-spacing: -.015em;
-    font-size: var(--font-small);
-    padding: var(--default-padding) var(--large-padding);
+    padding: var(--small-padding) var(--default-padding);
     color: var(--white-color);
-    background: #82ca9c;
+    background: var(--checkout-green-color);
     font-weight: bold;
     border-radius: calc(var(--medium-radius) * 5);
     float: right;
@@ -237,7 +236,7 @@
 .btn:hover,
 .btn:focus,
 .btn:active {
-    background: #f69679;
+    background: var(--button-orange-color);
 }
 
 .btn:hover:after,

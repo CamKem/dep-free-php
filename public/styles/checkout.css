@@ -51,9 +51,6 @@
     grid-column: 4;
 }
 
-.card-segment {
-}
-
 .checkout-form-container {
     grid-area: form;
     width: 100%;
@@ -93,15 +90,6 @@ fieldset {
 
 .checkout-form label {
     display: block;
-    margin-bottom: var(--small-margin);
-}
-
-.checkout-form input {
-    width: 100%;
-    padding: var(--small-padding);
-    margin-bottom: var(--default-margin);
-    border: var(--thin-border) solid var(--light-grey-color);
-    border-radius: var(--small-radius);
 }
 
 .checkout-form .btn {
@@ -109,6 +97,8 @@ fieldset {
     margin-top: var(--default-margin);
 }
 
+
+/* Order Summary Styles */
 .order-summary {
     grid-area: order-summary;
     width: 325px;
@@ -126,14 +116,29 @@ fieldset {
 }
 
 .order-item {
+    border-bottom: var(--thin-border) solid var(--light-grey-color);
+    padding: var(--extra-small-padding) 0;
+    font-size: calc(var(--font-small) / 1.25);
     margin-bottom: var(--default-margin);
 }
 
+.order-item > a {
+    color: var(--mid-blue-color);
+    text-decoration: none;
+}
+
+.order-detail {
+    font-size: calc(var(--font-small) / 1.25);
+}
+
 .order-total {
+    border-top: var(--thin-border) solid var(--light-grey-color);
+    padding: var(--extra-small-padding) 0;
     font-weight: bold;
     margin-top: var(--default-margin);
 }
 
+/* Progress Bar Styles */
 .progress-wrapper {
     grid-area: progress;
     display: flex;
@@ -142,7 +147,6 @@ fieldset {
     height: min-content;
 }
 
-/* Form Progress */
 .progress {
     text-align: center;
 }
@@ -183,12 +187,12 @@ fieldset {
     line-height: 32px;
     border-radius: 32px;
     margin-top: 3px;
-    color: #b5b5ba;
+    color: var(--light-grey-color);
     font-size: 17px;
 }
 
 .progress .circle .title {
-    color: #b5b5ba;
+    color: var(--light-grey-color);
     font-size: 13px;
     line-height: 30px;
     margin-left: -5px;
@@ -197,29 +201,53 @@ fieldset {
 /* Done / Active */
 .progress .bar.done,
 .progress .circle.done {
-    background: #eee;
+    background: var(--light-grey-color);
 }
 
 .progress .bar.active {
-    background: linear-gradient(to right, #EEE 40%, #FFF 60%);
+    background: linear-gradient(to right, var(--light-grey-color) 40%, var(--white-color) 60%);
 }
 
 .progress .circle.done .label {
-    color: #FFF;
-    background: #82ca9c;
+    color: var(--white-color);
+    background: var(--checkout-green-color);
     box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
 }
 
 .progress .circle.done .title {
-    color: #444;
+    color: var(--grey-color);
 }
 
 .progress .circle.active .label {
-    color: #FFF;
-    background: #0c95be;
+    color: var(--white-color);
+    background: var(--light-blue-color);
     box-shadow: inset 0 0 2px rgba(0, 0, 0, .2);
 }
 
 .progress .circle.active .title {
-    color: #0c95be;
+    color: var(--light-blue-color);
+}
+
+/* Confirmation Page Styles */
+.confirmation-title {
+    font-weight: bold;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.confirmation-detail {
+    color: var(--grey-color);
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+.title {
+    grid-column: 1;
+}
+
+.value {
+    grid-column: 2;
 }
