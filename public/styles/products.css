@@ -156,7 +156,7 @@
 }
 
 .quantity-selector button {
-    margin: var(--small-margin) var(--small-margin) var(--default-margin);
+    margin: var(--small-margin);
     place-content: center;
     place-items: center;
     place-self: center;
