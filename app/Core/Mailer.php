@@ -69,13 +69,19 @@ abstract class Mailer
             $this->isSuccessful = false;
         }
 
-        $response = $this->sendCommand("HELO {$this->host}");
+        $command = "EHLO";
+        $response = $this->sendCommand("{$command} {$this->host}");
         if (!$this->checkError($response, "250")) {
-            $this->isSuccessful = false;
-            return;
+            // if EHLO fails, try HELO
+            $command = "HELO";
+            $response = $this->sendCommand("{$command} {$this->host}");
+            if (!$this->checkError($response, "250")) {
+                $this->isSuccessful = false;
+                return;
+            }
         }
 
-        $this->checkForMoreResponses("HELO {$this->host}");
+        $this->checkForMoreResponses("{$command} {$this->host}");
     }
 
     protected function authenticate(): void
