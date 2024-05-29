@@ -17,8 +17,11 @@ class QueryBuilder
     protected string $select = "*";
     protected array $conditions = [];
     protected array $orConditions = [];
+    protected array $orderBy = [];
+    protected array $limit = [];
     protected array $updateValues = [];
     protected array $with = [];
+    protected ?Relation $relation = null;
 
     public function __construct(protected Model $model)
     {
