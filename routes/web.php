@@ -57,7 +57,6 @@ Route::get('/dashboard')
     ->name('dashboard.index')
     ->middleware('auth');
 
-// TODO: implement orders feature
 // Order Routes
 Route::get('/orders')
     ->controller([OrderController::class, 'index'])
