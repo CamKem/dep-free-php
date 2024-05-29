@@ -109,17 +109,30 @@
                 >
                     <fieldset id="step-1">
                         <h3 class="general-heading">Shipping Information</h3>
-                        <label for="name">Full Name:
-                        </label>
-                        <input type="text"
-                               id="name"
-                               name="name"
-                               title="Full Name"
-                               autocomplete="name"
-                               placeholder="Full Name"
-                               data-validate=true
-                        >
-                        <p class="error-message"></p>
+                        <div class="form-bottom">
+                            <div class="flex-center align-start">
+                                <label for="first_name">First Name:</label>
+                                <input type="text"
+                                       id="first_name"
+                                       title="First Name"
+                                       name="first_name"
+                                       placeholder="First Name"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                            <div class="flex-center align-start">
+                                <label for="cvv">Last Name:</label>
+                                <input type="text"
+                                       id="last_name"
+                                       title="Last Name"
+                                       name="last_name"
+                                       placeholder="Last Name"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                        </div>
 
                         <label for="address">Address:
                             <input type="text"
@@ -157,10 +170,10 @@
                                 <p class="error-message"></p>
                             </div>
                             <div class="flex-center align-start">
-                                <label for="post_code">Post Code:</label>
+                                <label for="postcode">Post Code:</label>
                                 <input type="text"
-                                       id="post_code"
-                                       name="post_code"
+                                       id="postcode"
+                                       name="postcode"
                                        title="Post Code"
                                        placeholder="Post Code"
                                        data-validate=true
@@ -258,16 +271,16 @@
                                 <p class="error-message"></p>
                             </div>
                             <div class="flex-center align-start">
-                                <label for="cvv">CVV:
+                                <label for="ccv">CCV:
                                 </label>
                                 <input type="text"
-                                       id="cvv"
-                                       title="CVV"
-                                       name="cvv"
+                                       id="ccv"
+                                       title="CCV"
+                                       name="ccv"
                                        inputmode="numeric"
                                        maxlength="3"
                                        pattern="[0-9]{3}"
-                                       placeholder="CVV"
+                                       placeholder="CCV"
                                        data-validate=true
                                 >
                                 <p class="error-message"></p>
