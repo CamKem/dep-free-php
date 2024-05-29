@@ -101,8 +101,7 @@ Route::put('/cart')
     ->controller([CartController::class, 'update'])
     ->name('cart.update');
 
-// TODO: Checkout & Order Routes
-//  customer must be logged in to place an order at checkout
+// Checkout Routes
 
 Route::get('/checkout')
     ->controller(CheckoutController::class)
@@ -113,12 +112,3 @@ Route::post('/orders')
     ->controller([OrderController::class, 'store'])
     ->name('orders.store')
     ->middleware('auth');
-
-// Routes for handling SNS notifications
-Route::post('/sns/bounce')
-    ->controller([SnsController::class, 'handleBounce'])
-    ->name('sns.bounce');
-
-Route::post('/sns/complaint')
-    ->controller([SnsController::class, 'handleComplaint'])
-    ->name('sns.complaint');

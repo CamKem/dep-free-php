@@ -61,8 +61,6 @@ class Auth
         return (new User())
             ->query()
             ->where('email', $email)
-            // TODO add in after we fix the hasManyThrough relation
-           // ->with('roles')->toRawSql());
            ->first();
     }
 
@@ -101,8 +99,6 @@ class Auth
         if (count($parts) === 2) {
             [$userId, $token] = $parts;
             $user = (new User())->query()
-                // TODO add in after we fix the hasManyThrough relation
-                //->with('roles')
                 ->find($userId)
                 ->first();
             if (password_verify($token, $user->remember_token)) {
