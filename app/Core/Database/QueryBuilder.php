@@ -27,17 +27,25 @@ class QueryBuilder
         $this->query = "SELECT {$this->select} FROM {$this->table}";
     }
 
-    public function where(string $column, mixed $operator, mixed $value = null): static
+    public function setRelation(Relation $relation): static
     {
-        if (func_num_args() === 2) {
-            $value = $operator;
-            $operator = "=";
-        }
-        $this->conditions[] = [$column, $operator, $value];
+        $this->relation = $relation;
         return $this;
     }
 
-    // TODO ensure that the select method works as expected
+    public function from(string $table): static
+    {
+        $this->query = str_replace("FROM {$this->table}", "FROM {$table}", $this->query);
+        $this->table = $table;
+        return $this;
+    }
+
+    public function join(string $table, string $first, string $operator, string $second): static
+    {
+        $this->query .= " INNER JOIN {$table} ON {$first} {$operator} {$second}";
+        return $this;
+    }
+
     public function select(string ...$columns): static
     {
         $this->select = implode(", ", $columns);
@@ -45,25 +53,15 @@ class QueryBuilder
         return $this;
     }
 
-    // TODO ensure that the from method works as expected
-    public function from(string $table): static
-    {
-        $this->table = $table;
-        $this->query = str_replace("FROM {$this->table}", "FROM {$table}", $this->query);
-        return $this;
-    }
-
-    // TODO ensure that the orderBy method works as expected
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->query .= " ORDER BY {$column} {$direction}";
+        $this->orderBy[] = [$column, $direction];
         return $this;
     }
 
-    // TODO ensure that the limit method works as expected
     public function limit(int $limit): static
     {
-        $this->query .= " LIMIT {$limit}";
+        $this->limit[] = $limit;
         return $this;
     }
 
