@@ -5,6 +5,7 @@ namespace App\Models;
 use app\Core\Database\Model;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasManyThrough;
+use app\Core\Database\Relations\HasOne;
 
 class Order extends Model
 {
@@ -25,9 +26,9 @@ class Order extends Model
     // card_name
     // purchase date
 
-    public function category(): BelongsTo
+    public function category(): HasOne
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Category::class);
     }
 
     public function user(): BelongsTo
@@ -35,7 +36,7 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product(): HasManyThrough
+    public function products(): HasManyThrough
     {
         return $this->hasManyThrough(
             Product::class,
