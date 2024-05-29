@@ -1,13 +1,23 @@
 export default class FormValidator {
-    constructor(formId) {
+    constructor(formId, onSubmit = true) {
         this.form = document.getElementById(formId);
         this.fields = Array.from(this.form.querySelectorAll('input, textarea, select'));
+        this.fields = this.fields.filter(field => !field.hasAttribute('hidden'));
         this.errors = [];
         this.submitted = false;
         this.debounceTimer = null;
-        this.form.addEventListener('submit', this.validateForm.bind(this));
+        if (onSubmit) {
+            this.form.addEventListener('submit', this.validateForm.bind(this));
+        }
         this.form.addEventListener('focusin', this.removeInvalidClass.bind(this), true);
         this.form.addEventListener('input', this.debouncedValidation.bind(this));
+    }
+
+    validateFor(fields) {
+        fields.forEach(field => {
+            this.validateField(field);
+        });
+        return !this.errors.length;
     }
 
     debounce(func, delay) {
@@ -71,9 +81,11 @@ export default class FormValidator {
     }
 
     displayError(field, message) {
-        const el = field.nextElementSibling;
+        const el = field.nextElementSibling === null
+            ? field.parentElement.nextElementSibling
+            : field.nextElementSibling;
         el.id = field.id + '-error';
-        message = '⚠ '+message.charAt(0).toUpperCase() + message.slice(1);
+        message = '⚠ ' + message.charAt(0).toUpperCase() + message.slice(1);
         el.textContent = message;
     }
 
@@ -107,12 +119,12 @@ export default class FormValidator {
             let errorMessage = null;
             if (!field.value) {
                 this.addInvalidClass(field);
-                errorMessage = `${field.placeholder} is required`;
+                errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
             if (field.value.length < 3) {
                 this.addInvalidClass(field);
-                errorMessage = `${field.placeholder} must be at least 3 characters long`;
+                errorMessage = `${field.title} must be at least 3 characters long`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
             if (field.type === 'email') {
@@ -143,6 +155,64 @@ export default class FormValidator {
                 if (!numberRegex.test(field.value)) {
                     this.addInvalidClass(field);
                     errorMessage = 'Please enter a valid number'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // add one for the field.id === 'postcode' condition
+            if (field.id === 'post_code') {
+                // postcode regex must be 4 numbers long without spaces or characters other than numbers
+                const postcodeRegex = /^\d{4}$/;
+                if (!postcodeRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter valid post code'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            if (field.id === 'card_number') {
+                const cardNumberRegex = /^\d{16}$/;
+                if (!cardNumberRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid card number'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card expiry date
+            if (field.id === 'expiry_date') {
+                const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryDateRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid expiry date'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card cvv
+            if (field.id === 'cvv') {
+                const cvvRegex = /^\d{3}$/;
+                if (!cvvRegex.test(field.value)) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please enter a valid cvv'
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+            }
+            // validate the credit card number with the luhn algorithm
+            if (field.id.startsWith('card-number-1')) {
+                // Concatenate the values of all the card number inputs
+                let value = '';
+                this.fields.forEach(field => {
+                    if (field.id.startsWith('card-number-')) {
+                        value += field.value;
+                    }
+                });
+
+                // Check if the value is a valid number
+                if (isNaN(value)) {
+                    errorMessage = 'Card number should be a number';
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
+
+                // Check if the total length is 16
+                if (value.length !== 16) {
+                    errorMessage = 'Card number should be 16 digits';
                     return this.updateAndDisplayErrors(field.id, errorMessage);
                 }
             }

@@ -1,5 +1,5 @@
 <script type="module">
-    import FormValidator from './scripts/validation.js';
+    import FormValidator from '/scripts/validation.js';
     window.onload = () => new FormValidator('password-reset-form');
 </script>
 <section>
@@ -15,6 +15,7 @@
             <input type="email"
                    id="email"
                    name="email"
+                   title="Email"
                    value="<?= old('email') ?>"
                    placeholder="Enter your email address"
                    data-validate=true

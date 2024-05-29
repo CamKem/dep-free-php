@@ -6,6 +6,7 @@ use App\Core\Collecting\ModelCollection;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
+use Closure;
 use RuntimeException;
 
 class QueryBuilder
@@ -17,8 +18,11 @@ class QueryBuilder
     protected string $select = "*";
     protected array $conditions = [];
     protected array $orConditions = [];
+    protected array $orderBy = [];
+    protected array $limit = [];
     protected array $updateValues = [];
     protected array $with = [];
+    protected ?Relation $relation = null;
 
     public function __construct(protected Model $model)
     {
@@ -27,17 +31,25 @@ class QueryBuilder
         $this->query = "SELECT {$this->select} FROM {$this->table}";
     }
 
-    public function where(string $column, mixed $operator, mixed $value = null): static
+    public function setRelation(Relation $relation): static
     {
-        if (func_num_args() === 2) {
-            $value = $operator;
-            $operator = "=";
-        }
-        $this->conditions[] = [$column, $operator, $value];
+        $this->relation = $relation;
         return $this;
     }
 
-    // TODO ensure that the select method works as expected
+    public function from(string $table): static
+    {
+        $this->query = str_replace("FROM {$this->table}", "FROM {$table}", $this->query);
+        $this->table = $table;
+        return $this;
+    }
+
+    public function join(string $table, string $first, string $operator, string $second): static
+    {
+        $this->query .= " INNER JOIN {$table} ON {$first} {$operator} {$second}";
+        return $this;
+    }
+
     public function select(string ...$columns): static
     {
         $this->select = implode(", ", $columns);
@@ -45,25 +57,15 @@ class QueryBuilder
         return $this;
     }
 
-    // TODO ensure that the from method works as expected
-    public function from(string $table): static
-    {
-        $this->table = $table;
-        $this->query = str_replace("FROM {$this->table}", "FROM {$table}", $this->query);
-        return $this;
-    }
-
-    // TODO ensure that the orderBy method works as expected
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->query .= " ORDER BY {$column} {$direction}";
+        $this->orderBy[] = [$column, $direction];
         return $this;
     }
 
-    // TODO ensure that the limit method works as expected
     public function limit(int $limit): static
     {
-        $this->query .= " LIMIT {$limit}";
+        $this->limit[] = $limit;
         return $this;
     }
 
@@ -77,8 +79,31 @@ class QueryBuilder
         // Create a placeholder for each value
         $placeholders = implode(", ", array_fill(0, count($values), "?"));
 
+        $column = $this->checkPrefixRelation($column);
+
         // Add the condition with the placeholders
         $this->conditions[] = [$column, "IN", "({$placeholders})", $values];
+        return $this;
+    }
+
+    public function where(string $column, mixed $operator, mixed $value = null): static
+    {
+        if (func_num_args() === 2) {
+            $value = $operator;
+            $operator = "=";
+        }
+
+        $column = $this->checkPrefixRelation($column);
+
+        // if the $value is an instance of Closure, we need call subquery & pass the query builder instance
+        if ($value instanceof Closure) {
+            $subQuery = new self($this->model);
+            $value($subQuery);
+            $this->conditions[] = [$column, 'IN', "({$subQuery->toSql()})", $subQuery->getBindings()];
+            return $this;
+        }
+
+        $this->conditions[] = [$column, $operator, $value];
         return $this;
     }
 
@@ -88,6 +113,9 @@ class QueryBuilder
             $value = $operator;
             $operator = "=";
         }
+
+        $column = $this->checkPrefixRelation($column);
+
         $this->orConditions[] = [$column, $operator, $value];
         return $this;
     }
@@ -107,6 +135,21 @@ class QueryBuilder
         return $this;
     }
 
+    public function commonRelated(Relation $relation): array
+    {
+        $relatedTable = $relation->getRelatedTable();
+        $foreignColumn = $relation->getForeignKey();
+
+        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
+        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
+            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
+        }, $columns);
+
+        $this->select("{$this->table}.*, ".implode(", ", $prefixedColumns));
+        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+        return array($relatedTable, $foreignColumn);
+    }
+
     public function toSql(): string
     {
         if (str_starts_with(trim($this->query), 'INSERT')) {
@@ -118,30 +161,31 @@ class QueryBuilder
             foreach ($this->with as $relation) {
                 if (method_exists($modelInstance, $relation)) {
                     $relation = $modelInstance->{$relation}();
+
                     if ($relation instanceof HasManyThrough) {
+                        $parentTable = $relation->getParentTable();
                         $relatedTable = $relation->getRelatedTable();
                         $pivotTable = $relation->getPivotTable();
                         $foreignColumn = $relation->getForeignKey();
                         $relatedColumn = $relation->getRelatedKey();
 
-                        // get the columns of the related table
                         $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
-
                         $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-                            return "{$relatedTable}.{$column['Field']} as {$relation}_{$column['Field']}";
+                            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
                         }, $columns);
 
-                        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-                        $this->query .= " INNER JOIN {$pivotTable} ON {$this->table}.id = {$pivotTable}.{$foreignColumn}";
-                        $this->query .= " INNER JOIN {$relatedTable} ON {$pivotTable}.{$relatedColumn} = {$relatedTable}.id";
+                        $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+                        $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", "=", "{$parentTable}.id");
+                        $this->join($relatedTable, "{$relatedTable}.id", "=", "{$pivotTable}.{$relatedColumn}");
                     }
                     if ($relation instanceof BelongsTo) {
                         [$relatedTable, $foreignColumn] = $this->commonRelated($relation);
-                        $this->query .= " INNER JOIN {$relatedTable} ON {$this->table}.{$foreignColumn} = {$relatedTable}.id";
+                        $this->join($relatedTable, "{$this->table}.{$foreignColumn}", '=', "{$relatedTable}.id");
                     }
                     if ($relation instanceof HasMany) {
                         [$relatedTable, $foreignColumn] = $this->commonRelated($relation);
-                        $this->query .= " INNER JOIN {$relatedTable} ON {$relatedTable}.{$foreignColumn} = {$this->table}.id";
+                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id");
+
                     }
                 }
             }
@@ -169,13 +213,30 @@ class QueryBuilder
             }
         }
 
+        // handle order by clause
+        if (!empty($this->orderBy)) {
+            $this->query .= " ORDER BY ";
+            foreach ($this->orderBy as $index => $order) {
+                if ($index > 0) {
+                    $this->query .= ", ";
+                }
+                $this->query .= "{$order[0]} {$order[1]}";
+            }
+        }
+
+        // handle limit clause
+        if (!empty($this->limit)) {
+            $this->query .= " LIMIT {$this->limit[0]}";
+        }
+
         return $this->query;
     }
 
     public function create(array $data): static
     {
         $columns = implode(", ", array_keys($data));
-        $placeholders = array_map(fn($key) => ":{$key}", array_keys($data));
+        $placeholders = array_map(fn($key) => ":{$key}", array_keys($data)
+        );
         $values = implode(", ", $placeholders);
 
         $this->query = "INSERT INTO {$this->table} ({$columns}) VALUES ({$values})";
@@ -194,18 +255,12 @@ class QueryBuilder
         return $this;
     }
 
-    public function commonRelated(BelongsTo|HasMany $relation): array
+    public function checkPrefixRelation(string $column): string
     {
-        $relatedTable = $relation->getRelatedTable();
-        $foreignColumn = $relation->getForeignKey();
-        $columns = $this->db->execute("SHOW COLUMNS FROM {$relatedTable}")->get();
-
-        $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
-            return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
-        }, $columns);
-
-        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
-        return array($relatedTable, $foreignColumn);
+        if ($this->relation instanceof HasManyThrough && !str_contains($column, '.')) {
+            $column = "{$this->relation->getRelatedTable()}.{$column}";
+        }
+        return $column;
     }
 
     protected function getConditionsFromAttributes(): void
@@ -243,15 +298,25 @@ class QueryBuilder
         $bindings = [];
         $conditions = array_merge($this->conditions, $this->orConditions, $this->updateValues) ?? [];
         foreach ($conditions as $condition) {
+            // handle the whereIn clause
             if (isset($condition[3]) && is_array($condition[3])) {
                 foreach ($condition[3] as $key => $value) {
-                    $bindings[$key+1] = $value;
+                    $bindings[$key + 1] = $value;
                 }
                 return $bindings;
             }
-            $bindings[$condition[0]] = $condition[2];
+            // handle the where clause
+            $bindings[$this->replacePeriod($condition[0])] = $condition[2];
         }
         return $bindings;
+    }
+
+    public function replacePeriod(mixed $binding): mixed
+    {
+        if (str_contains($binding, '.')) {
+            $binding = str_replace('.', '_', $binding);
+        }
+        return $binding;
     }
 
     public function withCheck(mixed $condition): void
@@ -266,8 +331,13 @@ class QueryBuilder
     {
         if ($condition[1] === "IN" && str_contains($condition[2], '?')) {
             $this->query .= "{$condition[0]} {$condition[1]} {$condition[2]}";
+        } elseif ($condition[1] === 'IN' && $condition[2] instanceof Closure) {
+            // TODO: handle subquery, make sure it works
+            $subQuery = new self($this->model);
+            $condition[2]($subQuery);
+            $this->query .= "{$condition[0]} {$condition[1]} ({$subQuery->toSql()})";
         } else {
-            $this->query .= "{$condition[0]} {$condition[1]} :{$condition[0]}";
+            $this->query .= "{$condition[0]} {$condition[1]} :{$this->replacePeriod($condition[0])}";
         }
     }
 
@@ -284,7 +354,6 @@ class QueryBuilder
     public function get(): ModelCollection
     {
         $sql = $this->toSql();
-        logger("Query: {$this->db->raw($sql, $this->getBindings())->queryString}");
         return $this->model->hydrate(
             $this->db->execute(
                 $sql,

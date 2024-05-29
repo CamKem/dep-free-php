@@ -1,5 +1,5 @@
 .error-message {
-    color: #cc0000;
+    color: var(--error-red-color);
     font-size: var(--font-extra-small);
     margin-bottom: var(--default-margin);
     height: 1rem;
@@ -7,7 +7,7 @@
 
 .user-form {
     align-items: flex-start;
-    padding: 2rem;
+    padding: var(--extra-large-padding);
     background-color: var(--very-light-grey-color);
     border-radius: var(--medium-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -25,7 +25,7 @@ input[type="email"] {
     width: 100%;
     padding: var(--small-padding);
     margin-top: var(--small-margin);
-    margin-bottom: var(--default-margin);
+    margin-bottom: var(--small-margin);
     border: var(--thin-border) solid var(--light-grey-color);
     border-radius: var(--small-radius);
 }
@@ -46,6 +46,7 @@ input[type="checkbox"]:checked {
     align-items: center;
     margin-top: var(--default-margin);
     width: 100%;
+    gap: var(--default-gap);
 }
 
 .checkbox-label {

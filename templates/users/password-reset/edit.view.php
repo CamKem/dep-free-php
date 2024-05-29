@@ -1,5 +1,5 @@
 <script type="module">
-    import FormValidator from './scripts/validation.js';
+    import FormValidator from '/scripts/validation.js';
 
     window.onload = () => new FormValidator('password-reset-form');
 </script>
@@ -16,6 +16,7 @@
             <input type="password"
                    id="password"
                    name="password"
+                   title="Password"
                    placeholder="Enter your new password"
                    data-validate=true
                    value="<?= old('password') ?>"

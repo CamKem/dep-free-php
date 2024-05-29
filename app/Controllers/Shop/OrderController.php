@@ -3,8 +3,10 @@
 namespace app\Controllers\Shop;
 
 use App\Core\Controller;
+use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Models\Order;
 
 class OrderController extends Controller
@@ -15,13 +17,40 @@ class OrderController extends Controller
         return view('order.show', compact('order'));
     }
 
-    public function store(): Response
+    public function store(Request $request): Response
     {
+
+        $validated = (new Validator())->validate($request->all(), [
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'address' => ['required'],
+            'city' => ['required'],
+            'state' => ['required'],
+            'postcode' => ['required'],
+            'contact_number' => 'required',
+            'card_name' => 'required',
+            'card_number' => 'required',
+            'expiry_date' => 'required',
+            'ccv' => 'required',
+        ]);
+
+        // concatenate the address
+        $address = $validated['address'] . ', ' . $validated['city'] . ', ' . $validated['state'] . ', ' . $validated['postcode'];
+
         $new = (new Order())
             ->query()
             ->create([
                 'status' => 'pending',
                 'user_id' => auth()->user()->id,
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'address' => $address,
+                'contact_number' => $validated['contact_number'],
+                'card_name' => $validated['card_name'],
+                'card_number' => $validated['card_number'],
+                'expiry_date' => $validated['expiry_date'],
+                'ccv' => $validated['ccv'],
+                'purchase_date' => now(),
             ])->save();
 
         if ($new === false) {

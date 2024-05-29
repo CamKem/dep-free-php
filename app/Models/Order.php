@@ -5,14 +5,30 @@ namespace App\Models;
 use app\Core\Database\Model;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasManyThrough;
+use app\Core\Database\Relations\HasOne;
 
 class Order extends Model
 {
     protected string $table = 'orders';
 
-    public function category(): BelongsTo
+    # attributes
+    // id
+    // user_id
+    // status
+    // first_name
+    // last_name
+    // address (need to concatenate the form inputs)
+    // contact number
+    // card name
+    // card number
+    // expiry date
+    // cvv
+    // card_name
+    // purchase date
+
+    public function category(): HasOne
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Category::class);
     }
 
     public function user(): BelongsTo
@@ -20,7 +36,7 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function product(): HasManyThrough
+    public function products(): HasManyThrough
     {
         return $this->hasManyThrough(
             Product::class,

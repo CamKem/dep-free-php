@@ -4,33 +4,57 @@ namespace app\Core\Database\Relations;
 
 use app\Core\Database\Model;
 use app\Core\Database\QueryBuilder;
+use app\Core\Database\Relation;
+use Override;
 
-class HasOne
+class HasOne extends Relation
 {
-    protected Model $parent;
-    protected Model $related;
-    protected string $foreignKey;
 
-    public function __construct(Model $parent, Model $related)
+    public function __construct(
+        protected Model $parent,
+        protected Model $related
+    )
     {
-        $this->parent = $parent;
-        $this->related = $related;
-        $this->foreignKey = strtolower(class_basename($parent)) . '_id';
     }
 
+    #[Override]
+    public function getParentTable(): string
+    {
+        return $this->parent->getTable();
+    }
+
+    #[Override]
+    public function getForeignKey(): string
+    {
+        return strtolower(class_basename($this->parent)) . '_id';
+    }
+
+    #[Override]
     public function getRelatedTable(): string
     {
         return $this->related->getTable();
     }
 
-    public function getForeignKey(): string
+    #[Override]
+    public function getRelatedKey(): string
     {
-        return $this->foreignKey;
+        return $this->related->getPrimaryKey();
     }
 
+    #[Override]
     public function query(): QueryBuilder
     {
-        return $this->related->query()->where($this->foreignKey, $this->parent->id);
+        return $this->related->query()
+            ->setRelation($this)
+            ->where(
+                $this->getForeignKey(),
+                $this->parent->id
+            );
+    }
+
+    public function getRelationName(): string
+    {
+        return strtolower(class_basename($this->related));
     }
 
 }

@@ -85,7 +85,7 @@ class Model implements Arrayable, JsonSerializable
 
     public function hasManyThrough(string $relatedModel, string $pivotTable, string $foreignKey, string $relatedKey): HasManyThrough
     {
-        return new HasManyThrough($this, new $relatedModel, $pivotTable, $foreignKey, $relatedKey);
+        return new HasManyThrough($this, new $relatedModel, new $pivotTable, $foreignKey, $relatedKey);
     }
 
     /**

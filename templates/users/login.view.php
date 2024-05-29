@@ -1,7 +1,7 @@
 <section>
     <h2>Login</h2>
     <script type="module">
-        import FormValidator from './scripts/validation.js';
+        import FormValidator from '/scripts/validation.js';
 
         window.onload = () => new FormValidator('login-form');
     </script>
@@ -13,6 +13,8 @@
             <input type="email"
                    id="email"
                    name="email"
+                   title="Email address"
+                   autocomplete="email"
                    value="<?= old('email') ?>"
                    placeholder="Your email address"
                    data-validate=true
@@ -25,6 +27,8 @@
             <input type="password"
                    id="password"
                    name="password"
+                   title="Password"
+                   autocomplete="current-password"
                    value="<?= old('password') ?>"
                    placeholder="Enter your password"
                    data-validate=true

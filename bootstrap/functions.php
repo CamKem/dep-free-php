@@ -182,3 +182,8 @@ function cookie($key): ?string
 {
     return $_COOKIE[$key] ?? null;
 }
+
+function now(): string
+{
+    return date('Y-m-d H:i:s');
+}

@@ -1,7 +1,7 @@
 <section>
     <h2>Register</h2>
     <script type="module">
-        import FormValidator from './scripts/validation.js';
+        import FormValidator from '/scripts/validation.js';
         window.onload = () => new FormValidator('registration-form');
     </script>
     <div class="flex-center">
@@ -14,6 +14,7 @@
             <input type="text"
                    id="username"
                    name="username"
+                   title="Username"
                    value="<?= old('username') ?>"
                    placeholder="Your username"
                    data-validate=true
@@ -26,6 +27,7 @@
             <input type="email"
                    id="email"
                    name="email"
+                   title="Email address"
                    value="<?= old('email') ?>"
                    placeholder="Your email address"
                    data-validate=true
@@ -38,6 +40,7 @@
             <input type="password"
                    id="password"
                    name="password"
+                   title="Password"
                    value="<?= old('password') ?>"
                    placeholder="Enter your password"
                    data-validate=true

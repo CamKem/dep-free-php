@@ -1,135 +1,327 @@
+<script type="module">
+    import FormValidator from '/scripts/validation.js';
+    import {CardHandler, Progress} from "/scripts/checkout.js";
+
+    window.onload = () => {
+        const circles = document.querySelectorAll('.progress .circle');
+        const bars = document.querySelectorAll('.progress .bar');
+        const sections = Array.from(document.querySelectorAll('.checkout-form-container fieldset'));
+        const nextButtons = Array.from(document.querySelectorAll('.next'));
+        const prevButtons = Array.from(document.querySelectorAll('.prev'));
+        const validator = new FormValidator('checkout-form', false);
+        new Progress(circles, bars, prevButtons, nextButtons, sections, validator)
+        const cardNumberInputs = Array.from(document.querySelectorAll('.card-segment'));
+        const expiryDateInput = document.getElementById('expiry_date');
+        new CardHandler(cardNumberInputs, expiryDateInput);
+
+        function generateDetails(inputs) {
+            return inputs.reduce((acc, input) => {
+                if (!input.id.includes('card-number-')) {
+                    acc += `<p class="confirmation-detail"><span class="title">${input.title}:</span><span title="value">${input.value}</span></p>`;
+                }
+                return acc;
+            }, '');
+        }
+
+        window.addEventListener('summary', () => {
+            const shippingInfo = document.getElementById('shipping-info');
+            const paymentInfo = document.getElementById('payment-info');
+
+            const shippingInputs = Array.from(document.querySelectorAll('#step-1 input'));
+            const paymentInputs = Array.from(document.querySelectorAll('#step-2 input'));
+
+            shippingInfo.innerHTML = generateDetails(shippingInputs);
+            paymentInfo.innerHTML = generateDetails(paymentInputs);
+        });
+    };
+</script>
 <section>
     <h2>Checkout</h2>
-    <div class="progress">
-        <div class="circle done">
-            <span class="label">1</span>
-            <span class="title">Confirm</span>
+    <?php if ($cart->count() === 0): ?>
+        <div class="flex-center">
+            <p>No items are in your cart</p>
+            <a href="<?= route('products.index') ?>" class="standard-link">
+                Back to shop
+            </a>
         </div>
-        <span class="bar done"></span>
-        <div class="circle done">
-            <span class="label">2</span>
-            <span class="title">Address</span>
-        </div>
-        <span class="bar half"></span>
-        <div class="circle active">
-            <span class="label">3</span>
-            <span class="title">Payment</span>
-        </div>
-        <span class="bar"></span>
-        <div class="circle">
-            <span class="label">5</span>
-            <span class="title">Finish</span>
-        </div>
-    </div>
-    <div class="checkout-progress">
-        <ul class="circles">
-            <li><div class="circle"></div></li>
-            <li class="active"><div class="circle"></div></li>
-            <li><div class="circle"></div></li>
-            <li><div class="circle"></div></li>
-        </ul>
-        <ul class="labels">
-            <li><span>Cart</span></li>
-            <li><span>Shipping</span></li>
-            <li><span>Payment</span></li>
-            <li><span>Confirmation</span></li>
-        </ul>
-    </div>
-    <div class="order-summary">
-        <h2>Order Summary</h2>
-        <!-- Loop through the cart items and display them -->
-        <?php $total = 0; ?>
-        <?php foreach ($cart->toArray() as $index => $item): ?>
-            <div class="order-item">
-                <p><?= ucwords($item['name']) ?></p>
-                <p>Quantity: <?= $item['quantity'] ?></p>
-                <p>Price: $<?= $item['price'] ?></p>
-                <p>Total:
-                    $<?php
-                    $total += number_format($item['price'] * $item['quantity'], 2);
-                    echo $total;
-                    ?>
-                </p>
+    <?php else: ?>
+        <div class="checkout-container">
+            <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="circle done">
+                        <span class="label">1</span>
+                        <span class="title">Address</span>
+                    </div>
+                    <span class="bar done"></span>
+                    <div class="circle active">
+                        <span class="label">2</span>
+                        <span class="title">Payment</span>
+                    </div>
+                    <span class="bar"></span>
+                    <div class="circle">
+                        <span class="label">3</span>
+                        <span class="title">Process</span>
+                    </div>
+                </div>
             </div>
-        <?php endforeach; ?>
-        <!-- Display the total order price -->
-        <p class="order-total">Order Total: $<?= number_format($total, 2) ?></p>
-    </div>
-    <div class="checkout-form-container">
-        <form action="<?= route('orders.store') ?>" method="post"
-              class="checkout-form">
-            <h3>Shipping Information</h3>
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required>
+            <div class="order-summary card">
+                <h3 class="general-heading">Order Summary</h3>
+                <?php $total = 0; ?>
+                <?php foreach ($cart->toArray() as $index => $item): ?>
+                    <div class="order-item">
+                        <a href="<?= route('products.show', [
+                            'category' => $item['category']['slug'],
+                            'product' => $item['slug'],
+                        ]) ?>"
+                           class="general-link"
+                        >
+                            <?= ucwords($item['name']) ?></a>
+                        <div style="display: flex; justify-content: space-between;">
+                            <p>Quantity: <?= $item['quantity'] ?></p>
+                            <p>Price: $<?= $item['price'] ?></p>
+                            <p>Total:
+                                $<?php
+                                $total += $item['price'] * $item['quantity'];
+                                echo number_format($total, 2);
+                                ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <p class="order-detail">Subtotal:
+                    $<?= number_format($total, 2) ?></p>
+                <p class="order-detail">
+                    Shipping: $<?= number_format($shipping, 2) ?>
+                </p>
+                <p class="order-detail">
+                    Tax: $<?= number_format($total * $taxRate, 2) ?>
+                </p>
+                <p class="order-total">Order Total:
+                    <?php $orderTotal = $total + $shipping + ($total * $taxRate); ?>
+                    $<?= number_format($orderTotal, 2) ?></p>
+            </div>
 
-            <label for="address">Address</label>
-            <input type="text" id="address" name="address" required>
+            <div class="checkout-form-container card">
+                <form action="<?= route('orders.store') ?>"
+                      method="post"
+                      id="checkout-form"
+                      class="checkout-form"
+                >
+                    <fieldset id="step-1">
+                        <h3 class="general-heading">Shipping Information</h3>
+                        <div class="form-bottom">
+                            <div class="flex-center align-start">
+                                <label for="first_name">First Name:</label>
+                                <input type="text"
+                                       id="first_name"
+                                       title="First Name"
+                                       name="first_name"
+                                       placeholder="First Name"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                            <div class="flex-center align-start">
+                                <label for="cvv">Last Name:</label>
+                                <input type="text"
+                                       id="last_name"
+                                       title="Last Name"
+                                       name="last_name"
+                                       placeholder="Last Name"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                        </div>
 
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" required>
+                        <label for="address">Address:
+                            <input type="text"
+                                   id="address"
+                                   name="address"
+                                   autocomplete="address-line1"
+                                   title="Street Address"
+                                   placeholder="Street Address"
+                                   data-validate=true
+                            >
+                        </label>
+                        <p class="error-message"></p>
 
-            <label for="state">State</label>
-            <input type="text" id="state" name="state" required>
+                        <label for="city">City:
+                            <input type="text"
+                                   id="city"
+                                   name="city"
+                                   title="City"
+                                   placeholder="City"
+                                   data-validate=true
+                            >
+                        </label>
+                        <p class="error-message"></p>
 
-            <label for="zip">Post / ZIP Code</label>
-            <input type="text" id="post_zip_code" name="post_zip_code" required>
+                        <div class="form-bottom">
+                            <div class="flex-center align-start">
+                                <label for="state">State:</label>
+                                <input type="text"
+                                       id="state"
+                                       name="state"
+                                       title="State"
+                                       placeholder="State"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                            <div class="flex-center align-start">
+                                <label for="postcode">Post Code:</label>
+                                <input type="text"
+                                       id="postcode"
+                                       name="postcode"
+                                       title="Post Code"
+                                       placeholder="Post Code"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                        </div>
 
-            <h3>Payment Information</h3>
-            <label for="cardName">Name on Card</label>
-            <input type="text" id="cardName" name="cardName" required>
+                        <div class="form-bottom">
+                            <a href="<?= route('cart.show') ?>"
+                               class="btn prev"
+                            >Back to cart</a>
+                            <button type="button" class="btn next">Next</button>
+                        </div>
+                    </fieldset>
+                    <fieldset id="step-2" class="hidden">
+                        <h3 class="general-heading">Payment Information</h3>
+                        <label for="card_name">Name on Card:</label>
+                        <input type="text"
+                               id="card_name"
+                               name="card_name"
+                               title="Cardholder"
+                               placeholder="Cardholder Name"
+                               data-validate=true>
+                        <p class="error-message"></p>
 
-            <label for="cardNumber">Card Number</label>
-            <input type="text" id="cardNumber" name="cardNumber" required>
+                        <label for="card_number">Card Number:</label>
+                        <input type="hidden"
+                               name="card_number"
+                               title="Card Number"
+                               id="card_number"
+                        >
+                        <div class="card-number" id="card_number">
+                            <input
+                                    type="text"
+                                    class="card-segment"
+                                    id="card-number-1"
+                                    title="Card Number"
+                                    maxlength="4"
+                                    inputmode="numeric"
+                                    pattern="\d{4}"
+                                    autocomplete="cc-number"
+                                    placeholder="####"
+                                    data-validate=true
+                            >
+                            <input
+                                    type="text"
+                                    class="card-segment"
+                                    id="card-number-2"
+                                    title="Card Number"
+                                    maxlength="4"
+                                    inputmode="numeric"
+                                    pattern="\d{4}"
+                                    placeholder="####"
+                                    data-validate=true
+                            >
+                            <input
+                                    type="text"
+                                    class="card-segment"
+                                    id="card-number-3"
+                                    title="Card Number"
+                                    maxlength="4"
+                                    inputmode="numeric"
+                                    pattern="\d{4}"
+                                    placeholder="####"
+                                    data-validate=true
+                            >
+                            <input type="text"
+                                   class="card-segment"
+                                   id="card-number-4"
+                                   title="Card Number"
+                                   maxlength="4"
+                                   inputmode="numeric"
+                                   pattern="\d{4}"
+                                   placeholder="####"
+                                   data-validate=true
+                            >
+                        </div>
+                        <p class="error-message"></p>
 
-            <label for="expDate">Expiration Date</label>
-            <input type="text" id="expDate" name="expDate" required>
+                        <div class="form-bottom">
+                            <div class="flex-center align-start">
+                                <label for="expiry_date">
+                                    Expiry Date:
+                                </label>
+                                <input type="text"
+                                       id="expiry_date"
+                                       title="Expiry"
+                                       name="expiry_date"
+                                       inputmode="numeric"
+                                       pattern="(?:0[1-9]|1[0-2])\/[0-9]{2}"
+                                       placeholder="MM/YY"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                            <div class="flex-center align-start">
+                                <label for="ccv">CCV:
+                                </label>
+                                <input type="text"
+                                       id="ccv"
+                                       title="CCV"
+                                       name="ccv"
+                                       inputmode="numeric"
+                                       maxlength="3"
+                                       pattern="[0-9]{3}"
+                                       placeholder="CCV"
+                                       data-validate=true
+                                >
+                                <p class="error-message"></p>
+                            </div>
+                        </div>
 
-            <label for="cvv">CVV</label>
-            <input type="text" id="cvv" name="cvv" required>
+                        <label for="contact_number">
+                            Contact Number:
+                            <input type="tel"
+                                   id="contact_number"
+                                   name="contact_number"
+                                   title="Contact Number"
+                                   inputmode="numeric"
+                                   pattern="[0-9]{10}"
+                                   placeholder="Contact Number"
+                                   data-validate=true
+                            >
+                        </label>
+                        <p class="error-message"></p>
 
-            <button type="submit" class="btn">Place Order</button>
-        </form>
-    </div>
+                        <div class="form-bottom">
+                            <button type="button" class="btn prev">Previous
+                            </button>
+                            <button type="button" class="btn next">Next</button>
+                        </div>
+                    </fieldset>
+                    <fieldset id="step-3" class="hidden">
+                        <h3 class="general-heading">Order Confirmation</h3>
+                        <h4 class="confirmation-title">Shipping Info:</h4>
+                        <div id="shipping-info"></div>
+                        <h4 class="confirmation-title">Payment Info:</h4>
+                        <div id="payment-info"></div>
+                        <div class="form-bottom">
+                            <button type="button" class="btn prev">Previous
+                            </button>
+                            <button type="submit" class="btn">Place Order
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
 </section>
-
-<script>
-    let i = 1;
-    const circles = document.querySelectorAll('.progress .circle');
-    const bars = document.querySelectorAll('.progress .bar');
-
-    circles.forEach(function(circle) {
-        circle.className = 'circle';
-    });
-
-    bars.forEach(function(bar) {
-        bar.className = 'bar';
-    });
-
-    setInterval(function() {
-        if (circles[i-1] !== undefined) {
-            circles[i-1].classList.add('active');
-        }
-        if (circles[i-2] !== undefined) {
-            circles[i-2].classList.remove('active');
-            circles[i-2].classList.add('done');
-            circles[i-2].querySelector('.label').innerHTML = '&#10003;';
-        }
-        if (bars[i-1] !== undefined) {
-            bars[i-1].classList.add('active');
-        }
-        if (bars[i-2] !== undefined) {
-            bars[i-2].classList.remove('active');
-            bars[i-2].classList.add('done');
-        }
-        i++;
-        if (i === 0) {
-            bars.forEach(function(bar) {
-                bar.className = 'bar';
-            });
-            circles.forEach(function(circle) {
-                circle.className = 'circle';
-            });
-            i = 1;
-        }
-    }, 1000);
-</script>

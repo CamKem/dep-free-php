@@ -1,10 +1,12 @@
+<script type="module">
+    import FormValidator from '/scripts/validation.js';
+
+    window.onload = () => {
+        new FormValidator("contact-form")
+    }
+</script>
 <section>
     <h2>Contact Us</h2>
-    <script type="module">
-        import FormValidator from './scripts/validation.js';
-
-        window.onload = () => new FormValidator('contact-form');
-    </script>
     <div class="flex-center row" style="gap: var(--large-gap)">
         <div class="desktop-only flex-center">
             <h3 class="general-heading">Visit our store</h3>
@@ -19,15 +21,19 @@
                     class="map"></iframe>
         </div>
         <div class="flex-center">
-            <form method="POST" action="/contact" id="contact-form"
+            <form method="POST"
+                  action="<?= route('contact.index') ?>"
+                  id="contact-form"
                   aria-label="Contact form"
-                  class="user-form">
+                  class="user-form"
+            >
                 <input type="hidden" name="csrf_token"
                        value="<?= csrf_token() ?>">
                 <label for="first_name"><span>First name</span></label>
                 <input type="text"
                        name="first_name"
                        id="first_name"
+                       title="First name"
                        placeholder="Your first name"
                        data-validate=true
                 >
@@ -37,6 +43,7 @@
                 <input type="text"
                        id="last_name"
                        name="last_name"
+                       title="Last name"
                        placeholder="Your last name"
                        data-validate=true
                 >
@@ -46,6 +53,7 @@
                 <input type="tel"
                        id="contact"
                        name="contact"
+                       title="Contact number"
                        placeholder="Your contact number"
                        data-validate=true
                 >
@@ -55,6 +63,7 @@
                 <input type="email"
                        id="email"
                        name="email"
+                       title="Email address"
                        placeholder="Your email address"
                        data-validate=true
                 >
@@ -63,6 +72,7 @@
                 <textarea id="message"
                           aria-label="Message"
                           name="message"
+                          title="Message"
                           rows="5"
                           placeholder="Please write a message here..."
                           data-validate=false

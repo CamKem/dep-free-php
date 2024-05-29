@@ -12,10 +12,12 @@ class Database
 
     public function connect(): void
     {
-        $dsn = 'mysql:' . http_build_query(config('database'), '', ';');
-
         $this->connection = new PDO(
-            $dsn,
+            'mysql:' . http_build_query(
+                config('database'),
+                '',
+                ';'
+            ),
             config('database.username'),
             config('database.password'),
             config('database.options')
@@ -30,7 +32,12 @@ class Database
     // method to return the prepared statement, with the bound values
     public function raw(string $query, array $bindings = []): PDOStatement|false
     {
-        return $this->prepareQueryString($query, $bindings);
+        $fullQuery = $query;
+        foreach ($bindings as $key => $value) {
+            $fullQuery = str_replace(":" . $key, $this->connection->quote($value), $fullQuery);
+        }
+        logger("Full Query:", "database", [$fullQuery]);
+        return $this->connection->query($fullQuery);
     }
 
     public function execute(string $query, array $bindings = []): static
@@ -60,25 +67,17 @@ class Database
         $this->disconnect();
     }
 
-    /**
-     * @param string $query
-     * @param array $bindings
-     * @return false|PDOStatement
-     */
-    public function prepareQueryString(string $query, array $bindings): PDOStatement|false
+    public function prepareQueryString(string $query, array $bindings): ?PDOStatement
     {
         $this->statement = $this->connection->prepare($query);
 
         foreach ($bindings as $key => $value) {
-            $this->statement->bindValue($key, $value);
+            if (str_contains($key, '.')) {
+                $key = str_replace('.', '_', $key);
+            }
+            $placeholder = $key;
+            $this->statement->bindValue($placeholder, $value);
         }
-
-        // Log the query with its bound values
-        $fullQuery = $query;
-        foreach ($bindings as $key => $value) {
-            $fullQuery = str_replace(":" . $key, $this->connection->quote($value), $fullQuery);
-        }
-        logger("Full Query: {$fullQuery}");
 
         return $this->statement;
     }
