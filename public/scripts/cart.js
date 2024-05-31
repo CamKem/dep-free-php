@@ -119,18 +119,39 @@ class RemoveConfirmation {
     }
 
     handleRemove() {
+        this.openModalOnSubmit();
+        this.handleEnter();
+        this.submitOnConfirm();
+    }
+
+    openModalOnSubmit() {
         this.removeForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            let openModalEvent = new CustomEvent('openModal', {
-                bubbles: true,
-                detail: {action: 'open'}
-            });
-            this.removeForm.dispatchEvent(openModalEvent);
+            this.createEvent('openModal', 'open');
         });
+    }
+
+    submitOnConfirm() {
         document.addEventListener('confirmed', (event) => {
             if (event.detail.action === 'remove') {
                 this.removeForm.submit();
             }
         });
+    }
+
+    handleEnter() {
+        this.removeForm.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.createEvent('confirmed', 'remove');
+            }
+        })
+    }
+
+    createEvent(name, action) {
+        let event = new CustomEvent(name, {
+            bubbles: true,
+            detail: {action: action}
+        });
+        this.removeForm.dispatchEvent(event);
     }
 }
