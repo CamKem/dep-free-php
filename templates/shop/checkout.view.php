@@ -67,38 +67,42 @@
             <div class="order-summary card">
                 <h3 class="general-heading">Order Summary</h3>
                 <?php $total = 0; ?>
-                <?php foreach ($cart->toArray() as $index => $item): ?>
-                    <div class="order-item">
+                <ul>
+                    <?php foreach ($cart->toArray() as $index => $item): ?>
                         <a href="<?= route('products.show', [
                             'category' => $item['category']['slug'],
                             'product' => $item['slug'],
                         ]) ?>"
-                           class="general-link"
                         >
-                            <?= ucwords($item['name']) ?></a>
-                        <div style="display: flex; justify-content: space-between;">
-                            <p>Quantity: <?= $item['quantity'] ?></p>
-                            <p>Price: $<?= $item['price'] ?></p>
-                            <p>Total:
-                                $<?php
-                                $total += $item['price'] * $item['quantity'];
-                                echo number_format($total, 2);
-                                ?>
-                            </p>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-                <p class="order-detail">Subtotal:
-                    $<?= number_format($total, 2) ?></p>
-                <p class="order-detail">
-                    Shipping: $<?= number_format($shipping, 2) ?>
-                </p>
-                <p class="order-detail">
-                    Tax: $<?= number_format($total * $taxRate, 2) ?>
-                </p>
-                <p class="order-total">Order Total:
-                    <?php $orderTotal = $total + $shipping + ($total * $taxRate); ?>
-                    $<?= number_format($orderTotal, 2) ?></p>
+                            <li class="order-item">
+                                <p class="general-link"><?= ucwords($item['name']) ?></p>
+                                <div class="row-between">
+                                    <p>Quantity: <?= $item['quantity'] ?></p>
+                                    <p>Price: $<?= $item['price'] ?></p>
+                                    <p>Total:
+                                        $<?php
+                                        $total += $item['price'] * $item['quantity'];
+                                        echo number_format($total, 2);
+                                        ?>
+                                    </p>
+                                </div>
+                            </li>
+                        </a>
+                    <?php endforeach; ?>
+                </ul>
+                <div class="order-total-container">
+                    <p class="order-detail">Subtotal:
+                        $<?= number_format($total, 2) ?></p>
+                    <p class="order-detail">
+                        Shipping: $<?= number_format($shipping, 2) ?>
+                    </p>
+                    <p class="order-detail">
+                        Tax: $<?= number_format($total * $taxRate, 2) ?>
+                    </p>
+                    <p class="order-total">Order Total:
+                        <?php $orderTotal = $total + $shipping + ($total * $taxRate); ?>
+                        $<?= number_format($orderTotal, 2) ?></p>
+                </div>
             </div>
 
             <div class="checkout-form-container card">

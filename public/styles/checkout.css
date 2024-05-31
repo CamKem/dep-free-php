@@ -115,6 +115,11 @@ fieldset {
     }
 }
 
+.order-total-container{
+    border-top: var(--thin-border) solid var(--light-grey-color);
+    padding-top: var(--small-padding);
+}
+
 .order-item {
     padding: var(--small-padding);
     font-size: calc(var(--font-small) / 1.25);
