@@ -8,13 +8,21 @@ use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
 use App\Models\Order;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
 
-    public function show(Order $order): Template
+    public function show(Request $request): Template
     {
-        return view('order.show', compact('order'));
+        return view('shop.order', [
+            'title' => 'Order',
+            'order' => (new Order())
+                ->query()
+                ->with('products')
+                ->find($request->get('order'))
+                ->get(),
+        ]);
     }
 
     public function store(Request $request): Response
@@ -64,6 +72,31 @@ class OrderController extends Controller
             ->where('user_id', auth()->user()->id)
             ->orderBy('created_at', 'desc')
             ->first();
+
+        $ids = array_values(array_map(fn($item) => $item['product_id'], session()->get('cart')));
+
+        $products = (new Product())
+            ->query()
+            ->select('id', 'price')
+            ->whereIn('id', $ids)
+            ->get();
+
+        $items = session()->get('cart');
+
+        foreach ($products->toArray() as $product) {
+            foreach ($items as &$item) {
+                if ($item['product_id'] == $product['id']) {
+                    $item['price'] = $product['price'];
+                }
+            }
+        }
+        unset($item);
+
+        // attach the products to the order
+        $order->products()->attach($items);
+
+        // now empty the cart
+        session()->remove('cart');
 
         // add the cart items to the order
         session()->flash('success', 'Order created successfully');

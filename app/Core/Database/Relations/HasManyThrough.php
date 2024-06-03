@@ -15,10 +15,9 @@ class HasManyThrough extends Relation
         protected Model  $related,
         protected Model  $pivot,
         protected string $foreignKey,
-        protected string $relatedKey
-    )
-    {
-    }
+        protected string $relatedKey,
+        public bool $withPivot = false
+    ){}
 
     #[Override]
     public function getParentTable(): string
@@ -63,6 +62,27 @@ class HasManyThrough extends Relation
             ->join("{$this->pivot->getTable()} AS pivot", "pivot.{$this->getRelatedKey()}", "=", "id")
             ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}")
             ->where("origin.id", "=", $this->getParentId());
+    }
+    public function attach(array $items): void
+    {
+        foreach ($items as $item) {
+            // remove the key with [$this->getRelatedKey()] from the item
+            $remainingItems = array_filter((array)$item, fn($key) => $key !== $this->getRelatedKey(), ARRAY_FILTER_USE_KEY);
+            $this->pivot->query()->create([
+                $this->getForeignKey() => $this->getParentId(),
+                $this->getRelatedKey() => $item[$this->getRelatedKey()],
+                ...$remainingItems
+        }
+    }
+    // detach items from the pivot model
+    public function detach(array $items): void
+    {
+        foreach ($items as $item) {
+            $this->pivot->query()
+                ->where($this->getForeignKey(), $this->getParentId())
+                ->where($this->getRelatedKey(), $item->id)
+                ->delete()->save();
+        }
     }
 
     public function getRelationName(): string
