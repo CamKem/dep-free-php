@@ -33,6 +33,21 @@
     text-decoration: underline;
 }
 
+.center {
+    align-items: center;
+    align-content: center;
+}
+
+.warning-text {
+    color: var(--error-red-color);
+    font-size: 0.6rem;
+    border: 1px solid var(--error-red-color);
+    border-radius: 0.2rem;
+    padding: var(--extra-small-padding);
+    margin-inline: var(--small-margin);
+    background-color: #fbdada;
+}
+
 ul {
     list-style: none;
 }

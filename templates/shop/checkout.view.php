@@ -204,17 +204,13 @@
                                data-validate=true>
                         <p class="error-message"></p>
 
-                        <label style="display: inline-flex" for="card_number">Card Number: <span
-                                    style="
-                                    color: red;
-                                    font-size: 0.6rem;
-                                    border: 1px solid red;
-                                    border-radius: 0.2rem;
-                                    padding: 0.2rem;
-                                    margin-inline: var(--small-margin);
-                                    background-color: #fbdada;
-"
-                            >Demo Purposes Only</span></label>
+                        <label style="display: inline-flex"
+                               class="center"
+                               for="card_number"
+                        >
+                            Card Number:
+                            <span class="warning-text">Demo Purposes Only</span>
+                        </label>
                         <input type="hidden"
                                name="card_number"
                                title="Card Number"
