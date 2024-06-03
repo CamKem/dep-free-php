@@ -1,8 +1,9 @@
 <ul class="product-grid">
     <?php foreach ($products->toArray() as $product): ?>
         <li>
+<!--            --><?php //= dd($product) ?>
             <a href="<?= route('products.show', [
-                    'category' => $product['category']['slug'] ?? $category->slug,
+                    'category' => $product['category'][0]['slug'] ?? $category->slug,
                     'product' => $product['slug']]) ?>"
                class="product-link"
                aria-label="<?= $product['name'] ?>"
