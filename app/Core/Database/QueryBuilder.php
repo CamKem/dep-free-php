@@ -50,7 +50,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function select(string ...$columns): static
+    public function select(string|array ...$columns): static
     {
         $this->select = implode(", ", $columns);
         $this->query = str_replace("SELECT *", "SELECT {$this->select}", $this->query);
@@ -59,6 +59,7 @@ class QueryBuilder
 
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
+        $column = $this->checkPrefixRelation($column);
         $this->orderBy[] = [$column, $direction];
         return $this;
     }
@@ -79,6 +80,7 @@ class QueryBuilder
         // Create a placeholder for each value
         $placeholders = implode(", ", array_fill(0, count($values), "?"));
 
+        // Check if the column needs to be prefixed with the related table
         $column = $this->checkPrefixRelation($column);
 
         // Add the condition with the placeholders
@@ -173,8 +175,19 @@ class QueryBuilder
                         $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
                             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
                         }, $columns);
+                        //$this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
 
-                        $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+                        // if relation method on the model is defined with withPivot = true, then select the pivot columns
+                        if ($relation->withPivot) {
+                            $pivotColumns = $this->db->execute("SHOW COLUMNS FROM {$pivotTable}")->get();
+                            $prefixedPivotColumns = array_map(static function ($column) use ($pivotTable, $relation) {
+                                return "{$pivotTable}.{$column['Field']} as pivot_{$column['Field']}";
+                            }, $pivotColumns);
+                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns) . ", " . implode(", ", $prefixedPivotColumns));
+                        } else {
+                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+                        }
+
                         $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", "=", "{$parentTable}.id");
                         $this->join($relatedTable, "{$relatedTable}.id", "=", "{$pivotTable}.{$relatedColumn}");
                     }
@@ -257,7 +270,9 @@ class QueryBuilder
 
     public function checkPrefixRelation(string $column): string
     {
-        if ($this->relation instanceof HasManyThrough && !str_contains($column, '.')) {
+        // Check if the column name is already prefixed with the table name
+        if ($this->relation instanceof HasManyThrough && !str_contains($column, '.') && !str_starts_with($column, "{$this->table}.")) {
+            // TODO: make sure the other relations don't need the prefix added
             $column = "{$this->relation->getRelatedTable()}.{$column}";
         }
         return $column;
@@ -341,22 +356,11 @@ class QueryBuilder
         }
     }
 
-    public function all(): ModelCollection
+    public function get(): ModelCollection
     {
         return $this->model->hydrate(
             $this->db->execute(
                 $this->toSql(),
-                $this->getBindings(),
-            )->get()
-        );
-    }
-
-    public function get(): ModelCollection
-    {
-        $sql = $this->toSql();
-        return $this->model->hydrate(
-            $this->db->execute(
-                $sql,
                 $this->getBindings()
             )->get()
         );
