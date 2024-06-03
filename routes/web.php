@@ -58,11 +58,6 @@ Route::get('/dashboard')
     ->middleware('auth');
 
 // Order Routes
-Route::get('/orders')
-    ->controller([OrderController::class, 'index'])
-    ->name('orders.index')
-    ->middleware('auth');
-
 Route::get('/orders/create')
     ->controller([OrderController::class, 'create'])
     ->name('orders.create')
@@ -101,13 +96,7 @@ Route::put('/cart')
     ->name('cart.update');
 
 // Checkout Routes
-
 Route::get('/checkout')
     ->controller(CheckoutController::class)
     ->name('checkout')
-    ->middleware('auth');
-
-Route::post('/orders')
-    ->controller([OrderController::class, 'store'])
-    ->name('orders.store')
     ->middleware('auth');

@@ -73,7 +73,9 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
-        $ids = array_values(array_map(fn($item) => $item['product_id'], session()->get('cart')));
+        $ids = array_values(
+            array_map(fn($item) => $item['product_id'], session()->get('cart'))
+        );
 
         $products = (new Product())
             ->query()
@@ -85,7 +87,7 @@ class OrderController extends Controller
 
         foreach ($products->toArray() as $product) {
             foreach ($items as &$item) {
-                if ($item['product_id'] == $product['id']) {
+                if ($item['product_id'] === $product['id']) {
                     $item['price'] = $product['price'];
                 }
             }
@@ -101,7 +103,7 @@ class OrderController extends Controller
         // add the cart items to the order
         session()->flash('success', 'Order created successfully');
 
-        redirect()->route('orders.show', ['order' => $order->id]);
+        return redirect()->route('orders.show', ['order' => $order->id]);
     }
 
     public function destroy(Order $order): void

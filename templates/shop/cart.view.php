@@ -27,7 +27,7 @@
                         <div class="cartSection product-title-section">
                             <h3>
                                 <a href="<?= route('products.show', [
-                                    'category' => $item['category']['slug'],
+                                    'category' => $item['category'][0]['slug'],
                                     'product' => $item['slug']
                                 ]) ?>">
                                     <?= ucwords($item['name']) ?>

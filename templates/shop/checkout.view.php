@@ -70,7 +70,7 @@
                 <ul>
                     <?php foreach ($cart->toArray() as $index => $item): ?>
                         <a href="<?= route('products.show', [
-                            'category' => $item['category']['slug'],
+                            'category' => $item['category'][0]['slug'],
                             'product' => $item['slug'],
                         ]) ?>"
                         >
@@ -204,7 +204,17 @@
                                data-validate=true>
                         <p class="error-message"></p>
 
-                        <label for="card_number">Card Number:</label>
+                        <label style="display: inline-flex" for="card_number">Card Number: <span
+                                    style="
+                                    color: red;
+                                    font-size: 0.6rem;
+                                    border: 1px solid red;
+                                    border-radius: 0.2rem;
+                                    padding: 0.2rem;
+                                    margin-inline: var(--small-margin);
+                                    background-color: #fbdada;
+"
+                            >Demo Purposes Only</span></label>
                         <input type="hidden"
                                name="card_number"
                                title="Card Number"
