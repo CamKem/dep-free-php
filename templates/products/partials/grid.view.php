@@ -3,7 +3,7 @@
         <li>
 <!--            --><?php //= dd($product) ?>
             <a href="<?= route('products.show', [
-                    'category' => $product['category'][0]['slug'] ?? $category->slug,
+                    'category' => $product['category']['slug'] ?? $category->slug,
                     'product' => $product['slug']]) ?>"
                class="product-link"
                aria-label="<?= $product['name'] ?>"

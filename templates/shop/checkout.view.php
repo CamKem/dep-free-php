@@ -70,7 +70,7 @@
                 <ul>
                     <?php foreach ($cart->toArray() as $index => $item): ?>
                         <a href="<?= route('products.show', [
-                            'category' => $item['category'][0]['slug'],
+                            'category' => $item['category']['slug'],
                             'product' => $item['slug'],
                         ]) ?>"
                         >

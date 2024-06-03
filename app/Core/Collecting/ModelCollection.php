@@ -3,6 +3,7 @@
 namespace App\Core\Collecting;
 
 use app\Core\Database\Model;
+use app\Core\Database\Relations\BelongsTo;
 use Override;
 
 class ModelCollection extends Collection
@@ -28,15 +29,24 @@ class ModelCollection extends Collection
                         if ($models instanceof Model) {
                             $array[$key][$relation] = $models->toArray();
                         } elseif (is_array($models)) {
-                            // NOTE: work out if we want this or not:
-                            // if there is only 1 item in the collection,
-                            // ensure no further nesting & convert to an array
-                            //if ((count($models) === 1) && empty($models[0]->getRelated())) {
-                            //    $array[$key][$relation] = $models[0]->toArray();
-                            //} else {
-                            //    $array[$key][$relation] = $this->toArray($models);
-                            //}
-                            $array[$key][$relation] = $this->toArray($models);
+                            // if the relation is belongsTo, there will only be 1 item
+                            if (count($models) === 1 && $value->$relation() instanceof BelongsTo) {
+                                $array[$key][$relation] = $models[0]->toArray();
+                                $belongsToRelations = $models[0]->getRelated();
+                                if (!empty($belongsToRelations)) {
+                                    $array[$key][$relation] = $this->toArray($models);
+                                }
+                            } else {
+                                // NOTE: work out if we want this or not:
+                                // if there is only 1 item in the collection,
+                                // ensure no further nesting & convert to an array
+                                //if ((count($models) === 1) && empty($models[0]->getRelated())) {
+                                //    $array[$key][$relation] = $models[0]->toArray();
+                                //} else {
+                                //    $array[$key][$relation] = $this->toArray($models);
+                                //}
+                                $array[$key][$relation] = $this->toArray($models);
+                            }
                         }
                     }
                 }
