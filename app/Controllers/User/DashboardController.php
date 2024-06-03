@@ -10,7 +10,7 @@ class DashboardController
     {
         $orders = auth()->user()?->orders()
             ->query()
-            ->orderBy('created_at', 'desc')
+            //->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
