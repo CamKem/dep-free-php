@@ -53,7 +53,7 @@ class ContactController extends Controller
         $contact->save();
 
         // store the request
-        session()->set('flash-message', 'Your message has been sent successfully!');
+        session()->flash('flash-message', 'Your message has been sent successfully!');
         // redirect back with a success message
         return redirect(route('contact.index'));
     }
