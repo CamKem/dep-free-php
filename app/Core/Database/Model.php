@@ -128,7 +128,7 @@ class Model implements Arrayable, JsonSerializable
     {
         $models = [];
         $relatedModels = [];
-        $firstRowId = $results[0]['id'];
+        $firstRowId = $results[0]['id'] ?? null;
 
         foreach ($results as $row) {
             // get the id of the main model
