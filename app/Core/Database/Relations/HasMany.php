@@ -49,10 +49,11 @@ class HasMany extends Relation
                 $this->getParentTable(),
                 $this->getForeignKey(),
                 '=',
-                $this->getRelatedKey()
+                "{$this->getParentTable()}.{$this->getRelatedKey()}"
             )
             ->where(
                 $this->getForeignKey(),
+                '=',
                 $this->parent->id
             );
     }

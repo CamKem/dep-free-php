@@ -49,14 +49,14 @@ class Router
         $controller = $route->getController();
         $action = $route->getAction();
 
+        // if $controller is an instance of Closure, then we can call it directly
+        if ($controller instanceof Closure) {
+            return $controller($request);
+        }
+
         // if $action is null, then we can call the invoke method on the controller
         if ($action === null) {
             return (new $controller())($request);
-        }
-
-        // if $controller is instance of Closure, then we can call it directly
-        if ($controller instanceof Closure) {
-            return $controller($request);
         }
 
         // if $controller is a string, then we can call the method on the controller

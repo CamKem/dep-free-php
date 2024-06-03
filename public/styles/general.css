@@ -17,6 +17,22 @@
     user-select: none;
 }
 
+.row-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.general-link {
+    color: var(--mid-blue-color);
+    text-decoration: none;
+}
+
+.general-link:hover {
+    color: var(--dark-blue-color);
+    text-decoration: underline;
+}
+
 ul {
     list-style: none;
 }

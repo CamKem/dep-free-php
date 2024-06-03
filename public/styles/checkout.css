@@ -115,16 +115,19 @@ fieldset {
     }
 }
 
-.order-item {
-    border-bottom: var(--thin-border) solid var(--light-grey-color);
-    padding: var(--extra-small-padding) 0;
-    font-size: calc(var(--font-small) / 1.25);
-    margin-bottom: var(--default-margin);
+.order-total-container{
+    border-top: var(--thin-border) solid var(--light-grey-color);
+    padding-top: var(--small-padding);
 }
 
-.order-item > a {
-    color: var(--mid-blue-color);
-    text-decoration: none;
+.order-item {
+    padding: var(--small-padding);
+    font-size: calc(var(--font-small) / 1.25);
+    background-color: var(--light-grey-color);
+    border-radius: var(--small-radius);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--grey-color);
+    margin-bottom: var(--default-margin);
 }
 
 .order-detail {

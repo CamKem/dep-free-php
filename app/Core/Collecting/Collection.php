@@ -7,10 +7,8 @@ use JsonException;
 use JsonSerializable;
 use Traversable;
 
-/**
- * Object to hold array items and perform operations on them
+/** Hold array items to perform operations on */
 
- */
 class Collection implements Arrayable, JsonSerializable
 {
 
@@ -47,7 +45,7 @@ class Collection implements Arrayable, JsonSerializable
      * @param mixed $default
      * @return mixed
      */
-    public function first(callable|null $callback = null, mixed $default = null): mixed
+    public function first(?callable $callback = null, mixed $default = null): mixed
     {
         if ($callback === null) {
             if (empty($this->items)) {
@@ -95,56 +93,63 @@ class Collection implements Arrayable, JsonSerializable
         return $this;
     }
 
-    /**
-     * Get the number of items in the collection.
-     */
     public function count(): int
     {
         return count($this->items);
     }
 
-    /**
-     * Get the items as a plain array.
-     */
     public function toArray(): array
     {
-        return $this->items;
+        return $this->getArrayableItems($this->items);
     }
 
-    /**
-     * Serialize the instance to JSON.
-     *
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     public function toJson(): string
-    {
-        return $this->jsonSerialize();
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function jsonSerialize(): string
     {
         return json_encode($this->items, JSON_THROW_ON_ERROR);
     }
 
-    /**
-     * Check the items to see if they are arrayable.
-     * Only arrayable items can be collected.
-     */
+    /** @throws JsonException */
+    public function jsonSerialize(): string
+    {
+        return $this->toJson();
+    }
+
     public function getArrayableItems($items): array
     {
-        if (is_array($items)) {
-            return $items;
-        }
-
-        return match (true) {
+        return match ($items) {
+            is_array($items) => $items,
             $items instanceof self, $items instanceof Arrayable => $items->toArray(),
             $items instanceof JsonSerializable => $items->jsonSerialize(),
             $items instanceof Traversable => iterator_to_array($items),
             default => (array)$items,
         };
+    }
+
+    public function all(): array
+    {
+        return $this->items;
+    }
+
+    public function groupBy(string $key): self
+    {
+        $grouped = [];
+
+        foreach ($this->items as $item) {
+            $grouped[$item[$key]][] = $item;
+        }
+
+        return new static($grouped);
+    }
+
+    public function __serialize(): array
+    {
+        return $this->items;
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->items = $data;
     }
 
 }

@@ -42,7 +42,8 @@ class Order extends Model
             Product::class,
             OrderProduct::class,
             'order_id',
-            'product_id'
+            'product_id',
+            true
         );
     }
 
