@@ -87,7 +87,7 @@ class OrderController extends Controller
 
         foreach ($products->toArray() as $product) {
             foreach ($items as &$item) {
-                if ($item['product_id'] === $product['id']) {
+                if ($item['product_id'] == $product['id']) {
                     $item['price'] = $product['price'];
                 }
             }
