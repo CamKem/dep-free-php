@@ -31,8 +31,9 @@ class ModelCollection extends Collection
                         } elseif (is_array($models)) {
                             // if the relation is belongsTo, there will only be 1 item
                             if (count($models) === 1 && $value->$relation() instanceof BelongsTo) {
-                                $array[$key][$relation] = $models[0]->toArray();
-                                $belongsToRelations = $models[0]->getRelated();
+                                // get the first item in the array (keyed by id so used array_values)
+                                $array[$key][$relation] = array_values($models)[0]->toArray();
+                                $belongsToRelations = array_values($models)[0]->getRelated();
                                 if (!empty($belongsToRelations)) {
                                     $array[$key][$relation] = $this->toArray($models);
                                 }
