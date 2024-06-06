@@ -21,7 +21,7 @@ class OrderController extends Controller
                 ->query()
                 ->with('products')
                 ->find($request->get('order'))
-                ->get(),
+                ->first(),
         ]);
     }
 
@@ -62,7 +62,7 @@ class OrderController extends Controller
             ])->save();
 
         if ($new === false) {
-            session()->flash('error', 'Error: Order not created');
+            session()->flash('flash-message', 'Error: Order not created');
             return redirect()->back();
         }
 
@@ -87,6 +87,7 @@ class OrderController extends Controller
 
         foreach ($products->toArray() as $product) {
             foreach ($items as &$item) {
+                // do not use strict comparison here
                 if ($item['product_id'] == $product['id']) {
                     $item['price'] = $product['price'];
                 }
@@ -101,20 +102,27 @@ class OrderController extends Controller
         session()->remove('cart');
 
         // add the cart items to the order
-        session()->flash('success', 'Order created successfully');
+        session()->flash('flash-message', 'Order created successfully');
 
         return redirect()->route('orders.show', ['order' => $order->id]);
     }
 
-    public function destroy(Order $order): void
+    public function destroy(Request $request): Response
     {
-        $order
-            ->query()
-            ->delete();
 
-        session()->flash('success', 'Order deleted successfully');
+        // find the order & delete it,
+        //products will be deleted to because of cascade
+        $removed = (new Order())->query()->find($request->get('order'))
+            ->delete()->save();
 
-        redirect()->route('orders.index');
+        // check order was deleted
+        if ($removed === false) {
+            session()->flash('flash-message', 'Error: Order not deleted');
+            return redirect()->back();
+        }
+
+        session()->flash('flash-message', 'Order deleted successfully');
+        return redirect()->route('dashboard.index');
     }
 
 }
