@@ -22,6 +22,8 @@ class OrderController extends Controller
                 ->with('products')
                 ->find($request->get('order'))
                 ->first(),
+            'shipping' => '10',
+            'tax' => '.10',
         ]);
     }
 
@@ -42,6 +44,27 @@ class OrderController extends Controller
             'ccv' => 'required',
         ]);
 
+        $ids = array_values(
+            array_map(fn($item) => $item['product_id'], session()->get('cart'))
+        );
+
+        $products = (new Product())
+            ->query()
+            ->select('id', 'price')
+            ->whereIn('id', $ids)
+            ->get();
+
+        $items = session()->get('cart');
+
+        $total = 0;
+        foreach ($products->toArray() as $product) {
+            foreach ($items as $item) {
+                if ($item['product_id'] == $product['id']) {
+                    $total += $product['price'] * $item['quantity'];
+                }
+            }
+        }
+
         // concatenate the address
         $address = $validated['address'] . ', ' . $validated['city'] . ', ' . $validated['state'] . ', ' . $validated['postcode'];
 
@@ -59,31 +82,13 @@ class OrderController extends Controller
                 'expiry_date' => $validated['expiry_date'],
                 'ccv' => $validated['ccv'],
                 'purchase_date' => now(),
+                'total' => $total,
             ])->save();
 
         if ($new === false) {
             session()->flash('flash-message', 'Error: Order not created');
             return redirect()->back();
         }
-
-        // find the order we just created
-        $order = (new Order())
-            ->query()
-            ->where('user_id', auth()->user()->id)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        $ids = array_values(
-            array_map(fn($item) => $item['product_id'], session()->get('cart'))
-        );
-
-        $products = (new Product())
-            ->query()
-            ->select('id', 'price')
-            ->whereIn('id', $ids)
-            ->get();
-
-        $items = session()->get('cart');
 
         foreach ($products->toArray() as $product) {
             foreach ($items as &$item) {
@@ -94,6 +99,15 @@ class OrderController extends Controller
             }
         }
         unset($item);
+
+
+
+        // find the order we just created
+        $order = (new Order())
+            ->query()
+            ->where('user_id', auth()->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         // attach the products to the order
         $order->products()->attach($items);
