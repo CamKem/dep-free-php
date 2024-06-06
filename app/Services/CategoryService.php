@@ -15,9 +15,11 @@ class CategoryService extends ServiceProvider
 
     public function boot(): void
     {
-        $categories = (new Category())
-            ->query()
-            ->get();
-        session()->set('categories', $categories->toArray());
+        if (!session()->has('categories')) {
+            $categories = (new Category())
+                ->query()
+                ->get();
+            session()->set('categories', $categories->toArray());
+        }
     }
 }
