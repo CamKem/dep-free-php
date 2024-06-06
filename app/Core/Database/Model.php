@@ -9,6 +9,7 @@ use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
 use app\Core\Database\Relations\HasOne;
 use JsonSerializable;
+use stdClass;
 
 class Model implements Arrayable, JsonSerializable
 {
@@ -124,153 +125,227 @@ class Model implements Arrayable, JsonSerializable
     // 3: one or more row for the same model, with no related models
     // 4: one or more row for the same model, with one or more related models
     // we need to handle each of these scenarios
+
+    // TODO: change how we store the models with the id of the model as the key.
+    //  rather we can look at the id in the instances of the model
+    //  that we can maintain normal array keys for the models
+
+    // NOTE: we can then refactor the code to make it abstract and reusable
+    // TODO: Problem to solve, allow for n number of nested relations, recursively
     public function hydrate(array $results): ModelCollection
     {
         $models = [];
-        $relatedModels = [];
-        $firstRowId = $results[0]['id'] ?? null;
-
         foreach ($results as $row) {
-            // get the id of the main model
-            $mainModelId = $row['id'];
-            $mainModelData = [];
-            $relatedModelData = [];
+            // get the id of the model
+            $ModelId = $row['id'];
 
-            // TODO need to work out how we will map the data for pivot columns, this is the last piece of the puzzle
-            // NOTE: we can then refactor the code to make it abstract and reusable
+            // first we should check if the model has already been created
+            if (!isset($models[$ModelId])) {
+                // if the model has not been created
+                // lets instantiate the model
+                $models[$ModelId] = new static;
+                // and set the id of the model
+                $models[$ModelId]->id = $ModelId;
+            }
 
-            // TODO: change how we store the models with the id of the model as the key.
-            //  rather we can look at the id in the instances of the model
-            //  that we can maintain normal array keys for the models
+            $currentRelationId = null;
+            $currentRelationName = null;
+            $relations = [];
+            $currentNestedRelationId = null;
 
-            // check if the model has already been created
-            if (!isset($models[$mainModelId])) {
-                // loop through the columns in the row
-                foreach ($row as $column => $value) {
-                    // if the column is not the id, and contains _id, it is a foreign key
-                    if ($column !== 'id' && str_contains($column, '_id')) {
-                        // Identify related model by _id suffix
-                        $relation = substr($column, 0, strpos($column, '_id'));
-                        // drop the s off the end of the relation name, or ies and add a y
-                        if (str_ends_with($relation, 'ies')) {
-                            $relation = substr($relation, 0, -3) . 'y';
-                        } elseif (str_ends_with($relation, 's')) {
-                            $relation = substr($relation, 0, -1);
-                        }
-                        // remove the relation prefix from the column name
-                        $column = substr($column, strpos($column, 'id'));
-                        $relatedModelData[$relation][$column] = $value;
+            // we should loop through & build the relations
+            foreach ($row as $column => $value) {
+                // TODO: need a better way to store the current relation name & id, because there might be multiple in a row
+                // if the column is not the id:
+                if ($column !== 'id') {
+                    // split it into parts
+                    $parts = explode('_', $column);
+                    // check if the method exists on the model
+                    if (method_exists($models[$ModelId], $parts[0])) {
+                        $relation = $parts[0];
                     } else {
-                        // if the column has the prefix that is the same as any of the related models
-                        // map them under the related model & remove the prefix
-                        foreach ($relatedModelData as $relation => $data) {
-                            // if the column has the prefix that is the same as any of the related models
-                            // map them under the related model & remove the prefix
-                            if (str_starts_with($column, $relation . '_')) {
-                                $relatedModelData[$relation][substr($column, strlen($relation) + 1)] = $value;
-                                unset($row[$column]);
-                                // else if the column doesn't have a valid $relation prefix it should just be mapped normally.
-                            }
-                            // if the column has a prefix with the relation name and an s
-                            // map them under the related model & remove the prefix
-                            if (str_starts_with($column, $relation . 's_')) {
-                                $relatedModelData[$relation][substr($column, strlen($relation) + 2)] = $value;
-                                unset($row[$column]);
-                            }
-                        }
-
-                        $relation = $relation ?? null;
-                        // skip any columns that are related to the model, when mapping the main model data
-                        if (!str_starts_with($column, $relation . '_') && !str_starts_with($column, $relation . 's_')) {
-                            $mainModelData[$column] = $value;
-                        }
+                        $relation = $this->convertToSingular($parts[0]);
                     }
-                }
-
-                $models[$mainModelId] = new static($mainModelData);
-
-                foreach ($relatedModelData as $relation => $data) {
-                    // we can start model class with a capital letter
-                    // higher up in the logic, rather than do it here.
-                    // we can also use the $relation variable to get the class name
-                    $relationModelClass = "App\\Models\\" . ucfirst($relation);
-                    $relatedModels[$mainModelId][$relation][] = new $relationModelClass($data);
-                }
-                // else if the model has already been created,
-                //we need to add the related models to the model
-            } else {
-                // loop through the columns in the row
-                foreach ($row as $column => $value) {
-                    // if the column is not the id, and contains _id, it is a foreign key
-                    if ($column !== 'id' && str_contains($column, '_id')) {
-                        // Identify related model by _id suffix
-                        $relation = substr($column, 0, strpos($column, '_id'));
-                        // drop the s off the end of the relation name, or ies and add a y
-                        if (str_ends_with($relation, 'ies')) {
-                            $relation = substr($relation, 0, -3) . 'y';
-                        } elseif (str_ends_with($relation, 's')) {
-                            $relation = substr($relation, 0, -1);
-                        }
-                        // remove the relation prefix from the column name
-                        $column = substr($column, strpos($column, 'id'));
-                        $relatedModelData[$relation][$column] = $value;
-                    } else {
-                        // if the column has the prefix that is the same as any of the related models
-                        // map them under the related model & remove the prefix
-                        foreach ($relatedModelData as $relation => $data) {
-                            if (str_starts_with($column, $relation . '_')) {
-                                $relatedModelData[$relation][substr($column, strlen($relation) + 1)] = $value;
-                                unset($row[$column]);
-                                // else if the column doesn't have a valid $relation prefix it should just be mapped normally.
+                    $relationModelName = $this->convertToSingular($parts[0]);
+                    // if the last part of the column is id, we have a foreign key
+                    if (end($parts) === 'id' && count($parts) > 1) {
+                        if (count($parts) > 2) {
+                            $class = $models[$ModelId]->relations[$relation][$currentRelationId] ?? new StdClass;
+                            if (method_exists($class, $parts[1])) {
+                                $nestedRelation = $parts[1];
+                            } else {
+                                $nestedRelation = $this->convertToSingular($parts[1]);
                             }
-                            if (str_starts_with($column, $relation . 's_')) {
-                                $relatedModelData[$relation][substr($column, strlen($relation) + 2)] = $value;
-                                unset($row[$column]);
+                            $nestedRelationModelName = $this->convertToSingular($parts[1]);
+                            // we might have a nested relation
+                            if (!isset($models[$ModelId]->relations[$relation][$currentRelationId]->relations[$nestedRelation][$value])) {
+                                if (isset($models[$ModelId]->relations[$relation][$currentRelationId])) {
+                                    $nestedRelationModel = "App\\Models\\" . ucfirst($nestedRelationModelName);
+                                    $models[$ModelId]->relations[$relation][$currentRelationId]->relations[$nestedRelation][$value] = new $nestedRelationModel;
+                                    $model = $models[$ModelId]->relations[$relation][$currentRelationId]->relations[$nestedRelation][$value];
+                                    $model->id = $value;
+                                    $currentNestedRelationId = $value;
+                                    // find the $relation in the $relation in the $relations array
+                                    // it will be stored inside the $relations array as an array
+                                    $relations[$relation][$nestedRelation][] = $value;
+                                }
+                            }
+                        } else {
+                            // we might have a relation
+                            //$relation = $this->convertToSingular($parts[count($parts) - 2]);
+                            // first we need to check if the relation exists
+                            if (!isset($models[$ModelId]->relations[$relation][$value])) {
+                                $relatedModel = "App\\Models\\" . ucfirst($relationModelName);
+                                $models[$ModelId]->relations[$relation][$value] = new $relatedModel;
+                                $model = $models[$ModelId]->relations[$relation][$value];
+                                $model->id = $value;
+                                $relations[$relation][] = $value;
+                                $currentRelationName = $relation;
+                                $currentRelationId = $value;
                             }
                         }
                     }
                 }
+            }
 
-                foreach ($relatedModelData as $relation => $data) {
-                    // we can start model class with a capital letter
-                    // higher up in the logic, rather than do it here.
-                    // we can also use the $relation variable to get the class name
-                    $relationModelClass = "App\\Models\\" . ucfirst($relation);
-                    $relatedModels[$firstRowId][$relation][] = new $relationModelClass($data);
+            // now we should loop through again an map the data now the relations are created
+            foreach ($row as $column => $value) {
+                // if the column is not the id:
+                if ($column !== 'id') {
+                    // split it into parts
+                    $parts = explode('_', $column);
+
+                    if (method_exists($models[$ModelId], $parts[0])) {
+                        $relation = $parts[0];
+                    } else {
+                        $relation = $this->convertToSingular($parts[0]);
+                    }
+                   // $relation = $this->convertToSingular($parts[0]);
+
+                    // TODO: work out a better way to check for existence of a relationship & then set the value,
+                    //  this will ensure that we can have n number of nested relations
+                    //  using: $this->keyExistsInNestedArray($this->convertToSingular($parts[0]), $value, $relations))
+
+                    if (isset($parts[1])) {
+                        $class = $models[$ModelId]->relations[$relation][$currentRelationId] ?? new StdClass;
+                        if (method_exists($class, $parts[1])) {
+                            $nestedRelation = $parts[1];
+                        } else {
+                            $nestedRelation = $this->convertToSingular($parts[1]);
+                        }
+                    }
+
+                    if (count($parts) === 1) {
+                        $property = $parts[0];
+                        $models[$ModelId]->$property = $value;
+                    }
+                    if (count($parts) === 2) {
+                        // it's a related model column
+                        if (isset($models[$ModelId]->relations[$relation][$currentRelationId])) {
+                            // get the value of $parts[1] and set it as a property of the related model
+                            $property = $parts[1];
+                            $models[$ModelId]->relations[$relation][$currentRelationId]->$property = $value;
+                        } elseif ($relation === 'pivot') {
+                            // if the relation is a pivot table, we should store the value in the attributes array
+                            $key = implode('_', $parts);
+                            $models[$ModelId]->relations[$currentRelationName][$currentRelationId]->attributes[$key] = $value;
+                        } else {
+                            $related = $relations;
+                            // if the relation doesn't exist, we should just map the value to the main model
+                            // TODO: we need to come up with a better way to use $relations.
+                            if (!$this->keyExistsInNestedArray($relation, $value, $relations)) {
+                                if (end($parts) !== 'id') {
+                                    $property = $parts[0] . '_' . $parts[1];
+                                    $models[$ModelId]->$property = $value;
+                                }
+                            }
+                        }
+                    }
+                    if (count($parts) === 3) {
+                        if (isset($models[$ModelId]->relations[$relation][$currentRelationId]->relations[$nestedRelation][$currentNestedRelationId])) {
+                            if ($parts[0] !== 'pivot') {
+                                // it's a nested related model column
+                                // get the value of $parts[2] and set it as a property of the nested related model
+                                $property = $parts[2];
+                                $models[$ModelId]->relations[$relation][$currentRelationId]->relations[$nestedRelation][$currentNestedRelationId]->$property = $value;
+                            }
+                        } else {
+                            // check if the value should be put on a relation with the 2 last parts joined
+                            if ($relation !== 'pivot' && $models[$ModelId]->relations[$relation][$currentRelationId]) {
+                                $property = $parts[1] . '_' . $parts[2];
+                                $models[$ModelId]->relations[$relation][$currentRelationId]->$property = $value;
+                            } elseif ($relation === 'pivot') {
+                                $key = implode('_', $parts);
+                                $models[$ModelId]->relations[$currentRelationName][$currentRelationId]->attributes[$key] = $value;
+                            } else {
+                                // if the relation doesn't exist, we should just join the parts and map the value to the main model
+                                $property = $parts[0] . '_' . $parts[1] . '_' . $parts[2];
+                                $models[$ModelId]->$property = $value;
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        // if the related models are not empty, we need to add them to the main model
-        if (!empty($relatedModels)) {
-            //dd($relatedModels);
-            foreach ($models as $id => $model) {
-                // add to model's relation property which they are related to
-                foreach ($relatedModels[$id] as $relation => $relationModels) {
-                    $model->relations[$relation] = $relationModels;
-                }
-            }
-
-        }
-
+        //dd($models);
         return new ModelCollection($models);
     }
 
-    // TODO: work out why this is not ensuring that only the attributes are serialized
-    //  the base class is being serialized as well, which is not what we want
-    // NOTE: URGENT
-    //  url: https://www.php.net/manual/en/language.oop5.magic.php#object.serialize
-    public function __serialize(): array
+    public function keyExistsInNestedArray($key, $value, $array): bool
+    {
+        // Check if the key exists in the current level and the value matches
+        if (array_key_exists($key, $array) && in_array($value, $array[$key], true)) {
+            return true;
+        }
+
+        // If the key does not exist in the current level or the value doesn't match, check the next level
+        foreach ($array as $k => $v) {
+//            dd($k,
+//                $v,
+//                array_key_exists($k, $array),
+//                $value,
+//                $array[$k],
+//                in_array($value, $array[$k])
+//            );
+            if (is_array($v) && $this->keyExistsInNestedArray($k, $value, $v)) {
+                return true;
+            }
+        }
+
+        // If the key does not exist in any level or the value doesn't match, return false
+        return false;
+    }
+
+    private function convertToSingular($name): string
+    {
+        if (str_ends_with($name, 'ies')) {
+            return substr($name, 0, -3) . 'y';
+        }
+        if (str_ends_with($name, 's')) {
+            return substr($name, 0, -1);
+        }
+        return $name;
+    }
+
+// TODO: work out why this is not ensuring that only the attributes are serialized
+//  the base class is being serialized as well, which is not what we want
+// NOTE: URGENT
+//  url: https://www.php.net/manual/en/language.oop5.magic.php#object.serialize
+    public
+    function __serialize(): array
     {
         return $this->getAttributes();
     }
 
-    public function __unserialize(array $data): void
+    public
+    function __unserialize(array $data): void
     {
         $this->attributes = $data;
     }
 
-    public function getPrimaryKey(): string
+    public
+    function getPrimaryKey(): string
     {
         return $this->primaryKey;
     }
