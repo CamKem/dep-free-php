@@ -48,8 +48,6 @@ class RemoveConfirmation {
     submitOnConfirm() {
         document.addEventListener('confirmed', (event) => {
             if (event.detail.action === 'remove' || 'delete') {
-                console.log('submitting');
-                console.log(this.removeForm);
                 this.removeForm.submit();
             }
         });
@@ -58,7 +56,6 @@ class RemoveConfirmation {
     handleEnter() {
         this.removeForm.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                console.log('enter');
                 this.createEvent('confirmed', 'remove');
             }
         })
