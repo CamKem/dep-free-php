@@ -47,7 +47,7 @@ class BelongsTo extends Relation
         return $this->related->query()
             ->setRelation($this)
             ->where(
-                $this->getForeignKey(),
+                'id',
                 $this->parent->{$this->getRelatedKey()}
             );
     }
