@@ -142,6 +142,11 @@ class Collection implements Arrayable, JsonSerializable
         return new static($grouped);
     }
 
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
     public function __serialize(): array
     {
         return $this->items;
