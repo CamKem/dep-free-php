@@ -350,4 +350,24 @@ class Model implements Arrayable, JsonSerializable
         return $this->primaryKey;
     }
 
+    // add a load method so that we can lazy load the relations
+    public function load(string $relation): void
+    {
+        // Check if a method with the same name as the relation exists in the model
+        if (method_exists($this, $relation)) {
+            // Call the relation method to get the Relation object
+            $relationObject = $this->$relation();
+
+            // Check if the method returns a Relation object
+            if ($relationObject instanceof Relation) {
+
+                // Load the related models
+                $relatedModels = $relationObject->query()->get();
+
+                // Store the related models in the relations property of the model
+                $this->relations[$relation] = $relatedModels;
+            }
+        }
+    }
+
 }
