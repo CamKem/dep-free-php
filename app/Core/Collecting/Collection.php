@@ -3,13 +3,14 @@
 namespace App\Core\Collecting;
 
 use App\Core\Arrayable;
+use Iterator;
 use JsonException;
 use JsonSerializable;
 use Traversable;
 
 /** Hold array items to perform operations on */
 
-class Collection implements Arrayable, JsonSerializable
+class Collection implements Arrayable, JsonSerializable, Iterator
 {
 
     protected array $items = [];
@@ -157,4 +158,30 @@ class Collection implements Arrayable, JsonSerializable
         $this->items = $data;
     }
 
+    private int $position = 0;
+
+    public function current(): mixed
+    {
+        return $this->items[$this->position];
+    }
+
+    public function next(): void
+    {
+        $this->position++;
+    }
+
+    public function key(): int
+    {
+        return $this->position;
+    }
+
+    public function valid(): bool
+    {
+        return isset($this->items[$this->position]);
+    }
+
+    public function rewind(): void
+    {
+        $this->position = 0;
+    }
 }
