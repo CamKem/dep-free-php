@@ -11,6 +11,7 @@
     border: 1px solid var(--light-grey-color);
     border-radius: 0.5rem;
     padding: var(--large-padding) var(--extra-large-padding);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
@@ -38,6 +39,7 @@
 .orders {
     border: 1px solid var(--light-grey-color);
     border-radius: var(--medium-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .order-item-grid {
@@ -88,12 +90,13 @@
     border-radius: var(--medium-radius);
     padding: var(--default-padding);
     margin-bottom: var(--large-margin);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-header p {
     font-size: calc(var(--font-small) * 0.9);
     color: var(--mid-grey-color);
-    margin-bottom: var(--small-margin);
+    margin: var(--small-margin);
 }
 
 .dashboard-header a {
@@ -111,11 +114,6 @@
     padding: var(--small-padding);
     width: 100%;
     background-color: var(--light-grey-color);
-    -moz-border-radius-topleft: var(--medium-radius);
-    -webkit-border-top-left-radius: var(--medium-radius);
-    border-top-left-radius: var(--medium-radius);
-    -moz-border-radius-topright: var(--medium-radius);
-    -webkit-border-top-right-radius: var(--medium-radius);
-    border-top-right-radius: var(--medium-radius);
-    margin-bottom: var(--small-margin);"
+    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
+    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
 }
