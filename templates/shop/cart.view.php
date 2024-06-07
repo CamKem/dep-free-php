@@ -1,8 +1,9 @@
 <script type="module">
-    import {Cart, RemoveManager} from '/scripts/cart.js'
+    import Cart from '/scripts/cart.js';
+    import RemoveManager from '/scripts/remove.js';
 
     new Cart(<?= $taxRate ?>, <?= $shipping ?>);
-    new RemoveManager();
+    new RemoveManager('remove-form');
 </script>
 <?= add('modals.confirmation', ['action' => 'remove']) ?>
 <section>
