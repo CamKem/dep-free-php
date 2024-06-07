@@ -20,10 +20,8 @@
         <?php else: ?>
             <ul class="orders">
                 <p class="order-heading">Here are some of your recent orders:</p>
-                <?php $count = 0; ?>
-                <?php foreach ($orders->toArray() as $index => $order): ?>
-                    <?php $count++; ?>
-                    <li class="order-item-grid <?= $count % 2 === 0 ?: 'bg-light-grey' ?>">
+                <?php foreach ($orders->toArray() as $order): ?>
+                    <li class="order-item-grid">
                         <div class="flex-center align-start">
                             <a class="order-link"
                                href="<?= route('orders.show', ['order' => $order['id']]) ?>">

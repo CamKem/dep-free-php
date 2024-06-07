@@ -32,8 +32,13 @@
     }
 }
 
-.bg-light-grey {
+.order-item-grid:nth-child(odd) {
     background-color: var(--very-light-grey-color);
+}
+
+.order-item-grid:last-child {
+    border-bottom-left-radius: var(--medium-radius);
+    border-bottom-right-radius: var(--medium-radius);
 }
 
 .orders {
