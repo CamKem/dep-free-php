@@ -8,7 +8,6 @@ use JsonSerializable;
 use Traversable;
 
 /** Hold array items to perform operations on */
-
 class Collection implements Arrayable, JsonSerializable
 {
 
