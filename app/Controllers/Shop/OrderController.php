@@ -15,13 +15,21 @@ class OrderController extends Controller
 
     public function show(Request $request): Template
     {
+        $order = (new Order())
+            ->query()
+            ->with('products')
+            ->find($request->get('order'))
+            ->get();
+
+        // load the category for each product
+        foreach ($order->products as $product) {
+            /* @var Product $product */
+            $product->load('category');
+        }
+
         return view('shop.order', [
             'title' => 'Order',
-            'order' => (new Order())
-                ->query()
-                ->with('products')
-                ->find($request->get('order'))
-                ->first(),
+            'order' => $order,
             'shipping' => '10',
             'tax' => '.10',
         ]);
@@ -99,7 +107,6 @@ class OrderController extends Controller
             }
         }
         unset($item);
-
 
 
         // find the order we just created
