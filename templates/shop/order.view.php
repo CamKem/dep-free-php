@@ -11,10 +11,9 @@
                 <p><strong>Shipping Cost:</strong>
                     $<?= number_format($shipping, 2) ?></p>
                 <p><strong>Order Tax:</strong>
-                    $<?= number_format(($order->total * $tax), 2) ?></p>
-                <?php $total = $order->total += $shipping + ($order->total * $tax); ?>
+                    $<?= number_format(($tax * $order->total), 2) ?></p>
                 <p><strong>Order Total:</strong>
-                    $<?= number_format($total, 2) ?></p>
+                    $<?= number_format(($order->total + $shipping + ($order->total * $tax)), 2) ?></p>
             </div>
             <h3 class="order__heading__middle">Products</h3>
             <div class="order__products">
@@ -32,7 +31,6 @@
                             </div>
                             <div class="cartSection product-title-section">
                                 <h3>
-                                    <?= dd($item->category) ?>
                                     <a href="<?= route('products.show', [
                                         'category' => $item->category->slug,
                                         'product' => $item->slug
@@ -44,11 +42,9 @@
 
                             <div class="cartSection quantity-price-section">
                                 <div>
-                                    <input type="hidden" name="product_id"
-                                           value="<?= $item->id ?>">
                                     <label for="quantity">
-                                        <input type="number" class="qty"
-                                               value="<?= $item->quantity ?>"/>
+                                        <?php $quantity = $item->toArray()['pivot']['quantity'] ?>
+                                        <span class="qty"><?= $quantity ?></span>
                                     </label>
                                     <p id="price" class="price">
                                         <span>x </span>
@@ -59,12 +55,8 @@
 
                             <div class="prodTotal cartSection"
                                  id="prodTotal">
-                                <?php
-                                $line = ($item->price * $item->quantity);
-                                $total += $line;
-                                ?>
                                 <p class="line-price" id="line-price">
-                                    <span>$<?= number_format($line, 2) ?></span>
+                                    <span>$<?= number_format(($quantity * $item->price), 2) ?></span>
                                 </p>
                             </div>
                         </li>
