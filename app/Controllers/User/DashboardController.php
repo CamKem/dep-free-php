@@ -16,7 +16,7 @@ class DashboardController
                 ->query()
                 ->with('products')
                 ->where('user_id', auth()->user()->id)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->limit(5)
                 ->get(),
         ]);
