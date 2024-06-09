@@ -11,14 +11,16 @@ use App\Core\Routing\Router;
 use App\Core\Session;
 use App\Core\Template;
 
-function dd(...$values): void
-{
-    foreach ($values as $value) {
-        echo "<pre>";
-        var_dump($value);
-        echo "</pre>";
+if (! function_exists('dd')) {
+    function dd(...$values): void
+    {
+        foreach ($values as $value) {
+            echo "<pre>";
+            var_dump($value);
+            echo "</pre>";
+        }
+        die();
     }
-    die();
 }
 
 function urlIs($value): bool
@@ -71,7 +73,7 @@ function authorize($condition, $status = Response::FORBIDDEN): true
     return true;
 }
 
-function base_path($path): string
+function include_path($path): string
 {
     return BASE_PATH . $path;
 }

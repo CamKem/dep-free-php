@@ -70,7 +70,7 @@ class Template
 
     private function createTemplatePath($templateFile): string
     {
-        return base_path(
+        return include_path(
             $this->templateDir
             . DIRECTORY_SEPARATOR
             . str_replace('.', '/', $templateFile)

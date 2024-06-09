@@ -13,10 +13,10 @@ use App\Core\Routing\RouteProxy as Route;
 use App\Models\Order;
 
 // Auth Routes
-include base_path('routes/auth.php');
+include include_path('routes/auth.php');
 
 // Admin Routes
-include base_path('routes/admin.php');
+include include_path('routes/admin.php');
 
 // Home Route
 Route::get('/')

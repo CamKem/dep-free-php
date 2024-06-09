@@ -14,7 +14,7 @@ class Migrator
 
     public function migrate(): void
     {
-        foreach (glob(base_path('app/Database/Tables/*.php')) as $migrationFile) {
+        foreach (glob(include_path('app/Database/Tables/*.php')) as $migrationFile) {
             $migrationClass = 'app\\Database\\Tables\\' . basename($migrationFile, '.php');
 
             if ($migrationClass === 'app\\Database\\Tables\\Migration') {

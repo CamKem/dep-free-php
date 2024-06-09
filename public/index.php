@@ -14,4 +14,4 @@ spl_autoload_register(static function ($class) {
     require BASE_PATH . "{$class}.php";
 });
 
-require base_path('bootstrap/bootstrap.php');
+require include_path('bootstrap/bootstrap.php');
