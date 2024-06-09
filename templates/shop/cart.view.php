@@ -9,7 +9,9 @@
 <section>
     <h2>Shopping Cart</h2>
     <?php if ($cart->count() === 0): ?>
-        <p class="general-text">Your cart is empty</p>
+        <div class="standard-container">
+            <p class="text-section">Your cart is empty</p>
+        </div>
     <?php else: ?>
         <?php $total = 0; ?>
         <div class="wrap cf">
