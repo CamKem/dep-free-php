@@ -18,7 +18,8 @@
             </div>
             <h3 class="order__heading__middle">Products</h3>
             <div class="order__products">
-                <ul class="cart flex-center">
+                <ul class="flex-center">
+
                     <?php foreach ($order->products as $index => $item): ?>
                         <li class="items">
                             <div class="cartSection product-details-section">
@@ -29,7 +30,6 @@
                                     #QUE-007544-00<?= $index ?>
                                 </p>
                             </div>
-
                             <div class="cartSection product-title-section">
                                 <h3>
                                     <?= dd($item->category) ?>
@@ -70,76 +70,7 @@
                         </li>
                     <?php endforeach; ?>
                 </ul>
-<!--                <ul>-->
-<!--                    --><?php //foreach ($order->products->toArray() as $product) : ?>
-<!--                        <li style="list-style-type: disc;">-->
-<!--                            <a style="color: #0079A6;"-->
-<!--                               href="--><?php //= route('products.show', ['product' => $product['slug']]) ?><!--">-->
-<!--                                --><?php //= $product['name'] ?>
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                    --><?php //endforeach; ?>
-<!--                </ul>-->
             </div>
         </div>
     </div>
 </section>
-
-<style>
-    .order {
-        background-color: var(--very-light-grey-color);
-        border-radius: var(--medium-radius);
-        border: 1px solid var(--light-grey-color);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .order__products {
-        margin-bottom: var(--large-margin);
-        padding: var(--default-padding);
-    }
-
-    .order__heading__top {
-        font-size: var(--font-default);
-        color: var(--grey-color);
-        margin-bottom: var(--small-margin);
-        background-color: var(--light-grey-color);
-        padding: var(--small-padding);
-        border-top-left-radius: var(--medium-radius);
-        border-top-right-radius: var(--medium-radius);
-    }
-
-    .order__heading__middle {
-        font-size: var(--font-default);
-        color: var(--grey-color);
-        margin-bottom: var(--small-margin);
-        background-color: var(--light-grey-color);
-        padding: var(--small-padding);
-    }
-
-    .order__details p, .order__products p {
-        font-size: var(--font-small);
-        color: var(--mid-grey-color);
-        margin-bottom: var(--small-margin);
-        padding-left: var(--default-padding);
-    }
-
-    .order__products ul {
-        list-style-type: disc;
-        margin-left: var(--default-padding);
-    }
-
-    .order__products ul li {
-        margin-bottom: var(--small-margin);
-    }
-
-    .order__products ul li a {
-        color: var(--blue-color);
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    .order__products ul li a:hover {
-        color: var(--dark-blue-color);
-        text-decoration: underline;
-    }
-</style>
