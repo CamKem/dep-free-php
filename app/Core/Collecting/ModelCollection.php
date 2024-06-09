@@ -5,8 +5,9 @@ namespace App\Core\Collecting;
 use app\Core\Database\Model;
 use app\Core\Database\Relations\BelongsTo;
 use Override;
+use Iterator;
 
-class ModelCollection extends Collection
+class ModelCollection extends Collection implements Iterator
 {
 
     // recursively convert the collection to an array
@@ -33,6 +34,7 @@ class ModelCollection extends Collection
                             if (count($models) === 1 && $value->$relation() instanceof BelongsTo) {
                                 // get the first item in the array (keyed by id so used array_values)
                                 $array[$key][$relation] = array_values($models)[0]->toArray();
+
                                 $belongsToRelations = array_values($models)[0]->getRelated();
                                 if (!empty($belongsToRelations)) {
                                     $array[$key][$relation] = $this->toArray($models);
@@ -60,8 +62,35 @@ class ModelCollection extends Collection
     public function __get($name)
     {
         if (count($this->items) === 1) {
-            return $this->items[0]->$name;
+            return array_values($this->items)[0]->$name;
         }
+        return;
     }
 
+    private int $position = 0;
+
+    public function current(): mixed
+    {
+        return $this->items[$this->position];
+    }
+
+    public function next(): void
+    {
+        $this->position++;
+    }
+
+    public function key(): mixed
+    {
+        return $this->position;
+    }
+
+    public function valid(): bool
+    {
+        return isset($this->items[$this->position]);
+    }
+
+    public function rewind(): void
+    {
+        $this->position = 0;
+    }
 }
