@@ -30,6 +30,11 @@ class Model implements Arrayable, JsonSerializable
     {
         // Check if the relation is already loaded
         if (!empty($this->relations) && array_key_exists($name, $this->relations)) {
+            // if the relation is a ModelCollection, return it directly
+            if ($this->relations[$name] instanceof ModelCollection) {
+                return $this->relations[$name];
+            }
+            // if the relation is a single model, return it in an array
             if ($this->relations[$name] instanceof self) {
                 return new ModelCollection([$this->relations[$name]]);
             }
@@ -72,6 +77,9 @@ class Model implements Arrayable, JsonSerializable
 
     public function getAttributes(): array
     {
+        if (isset($this->pivot)) {
+            $this->attributes['pivot'] = (array)$this->pivot;
+        }
         return $this->attributes;
     }
 
@@ -365,7 +373,7 @@ class Model implements Arrayable, JsonSerializable
                 $relatedModels = $relationObject->query()->get();
 
                 // Store the related models in the relations property of the model
-                $this->relations[$relation] = $relatedModels->toArray();
+                $this->relations[$relation] = $relatedModels->getItems();
             }
         }
     }
