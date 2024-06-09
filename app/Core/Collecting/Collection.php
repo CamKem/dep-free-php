@@ -3,14 +3,13 @@
 namespace App\Core\Collecting;
 
 use App\Core\Arrayable;
-use Iterator;
 use JsonException;
 use JsonSerializable;
 use Traversable;
 
 /** Hold array items to perform operations on */
 
-class Collection implements Arrayable, JsonSerializable, Iterator
+class Collection implements Arrayable, JsonSerializable
 {
 
     protected array $items = [];
@@ -37,15 +36,6 @@ class Collection implements Arrayable, JsonSerializable, Iterator
         return $this;
     }
 
-    /**
-     * Get the first item from the collection.
-     * Optionally, a callback can be passed to filter the items
-     * and return the first item that matches the filter.
-     *
-     * @param callable|null $callback
-     * @param mixed $default
-     * @return mixed
-     */
     public function first(?callable $callback = null, mixed $default = null): mixed
     {
         if ($callback === null) {
@@ -158,30 +148,4 @@ class Collection implements Arrayable, JsonSerializable, Iterator
         $this->items = $data;
     }
 
-    private int $position = 0;
-
-    public function current(): mixed
-    {
-        return $this->items[$this->position];
-    }
-
-    public function next(): void
-    {
-        $this->position++;
-    }
-
-    public function key(): int
-    {
-        return $this->position;
-    }
-
-    public function valid(): bool
-    {
-        return isset($this->items[$this->position]);
-    }
-
-    public function rewind(): void
-    {
-        $this->position = 0;
-    }
 }
