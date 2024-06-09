@@ -13,13 +13,18 @@ use App\Models\Product;
 class OrderController extends Controller
 {
 
-    public function show(Request $request): Template
+    public function show(Request $request): Template|Response
     {
         $order = (new Order())
             ->query()
             ->with('products')
             ->find($request->get('order'))
             ->get();
+
+        if ($order->isEmpty()) {
+            session()->flash('flash-message', 'Order not found');
+            return redirect()->route('dashboard.index');
+        }
 
         // load the category for each product
         foreach ($order->products as $product) {
