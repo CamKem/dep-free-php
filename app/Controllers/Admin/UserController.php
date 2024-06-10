@@ -29,11 +29,24 @@ class UserController
         ]);
     }
 
-    public function show(): Template
+    public function show(Request $request): Template
     {
         return view('admin.users.show', [
-            'title' => 'User',
+            'title' => 'Display User',
+            'user' => (new User())->query()->find($request->get('id')),
         ]);
+    }
+
+    public function edit(): Template
+    {
+        return view('admin.users.edit', [
+            'title' => 'Edit User',
+        ]);
+    }
+
+    public function update(): Response
+    {
+        // TODO: save the changes
     }
 
     public function store(Request $request): Response
@@ -57,20 +70,6 @@ class UserController
 
         session()->flash('flash-message', 'You have successfully registered!');
         return redirect(route('admin.users.index'));
-    }
-
-    public function edit(): Template
-    {
-        return view('admin.users.edit', [
-            'title' => 'Edit User',
-        ]);
-    }
-
-    public function update(): Template
-    {
-        return view('admin.users.update', [
-            'title' => 'Update User',
-        ]);
     }
 
     public function destroy(Request $request): Response
