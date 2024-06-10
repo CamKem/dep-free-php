@@ -1,8 +1,12 @@
 <?php
 
+use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\OrderController;
 use App\Controllers\Admin\ProductController;
+use App\Controllers\Admin\ProfileController;
+use App\Controllers\Admin\RoleController;
+use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
 
@@ -10,9 +14,8 @@ use App\Core\Routing\RouteProxy as Route;
 #// DONt save credit card number... put dummy data.
 #// ADMIN and password username and password
 #// DATABASE name sportswh.sql
-#// Upload of the category file.
 
-#// Upload files for new products.
+#// Upload photo files for new products.
 
 // NOTE: implement pagination for the products and users
 
@@ -21,7 +24,6 @@ use App\Core\Routing\RouteProxy as Route;
 // TODO: add the checkout and order routes for the user
 
 // Add an admin layout, that is similar to the user layout, but has the links where the categories are in user layout
-
 
 // Admin must be able to reset password directly from the admin panel
 
@@ -135,3 +137,86 @@ Route::delete('/admin/orders/{id}')
     ->name('admin.orders.destroy');
 
 // Categories
+Route::get('/admin/categories')
+    ->controller([CategoryController::class, 'index'])
+    ->middleware('admin')
+    ->name('admin.categories.index');
+
+Route::get('/admin/categories/create')
+    ->controller([CategoryController::class, 'create'])
+    ->middleware('admin')
+    ->name('admin.categories.create');
+
+Route::post('/admin/categories')
+    ->controller([CategoryController::class, 'store'])
+    ->middleware('admin')
+    ->name('admin.categories.store');
+
+Route::get('/admin/categories/{id}/edit')
+    ->controller([CategoryController::class, 'edit'])
+    ->middleware('admin')
+    ->name('admin.categories.edit');
+
+Route::put('/admin/categories/{id}')
+    ->controller([CategoryController::class, 'update'])
+    ->middleware('admin')
+    ->name('admin.categories.update');
+
+Route::delete('/admin/categories/{id}')
+    ->controller([CategoryController::class, 'destroy'])
+    ->middleware('admin')
+    ->name('admin.categories.destroy');
+
+// Setting - add roles, update password, change profile
+Route::get('/admin/settings')
+    ->controller(SettingsController::class)
+    ->middleware('admin')
+    ->name('admin.settings.index');
+
+// Role Settings
+//The table will show all the details needed for the roles so we don't need a show route
+Route::get('/admin/settings/roles')
+    ->controller([RoleController::class, 'index'])
+    ->middleware('admin')
+    ->name('admin.roles.index');
+
+Route::get('/admin/settings/roles/create')
+    ->controller([RoleController::class, 'create'])
+    ->middleware('admin')
+    ->name('admin.roles.create');
+
+Route::post('/admin/settings/roles')
+    ->controller([RoleController::class, 'store'])
+    ->middleware('admin')
+    ->name('admin.roles.store');
+
+Route::get('/admin/settings/roles/{id}/edit')
+    ->controller([RoleController::class, 'edit'])
+    ->middleware('admin')
+    ->name('admin.roles.edit');
+
+Route::put('/admin/settings/roles/{id}')
+    ->controller([RoleController::class, 'update'])
+    ->middleware('admin')
+    ->name('admin.roles.update');
+
+Route::delete('/admin/settings/roles/{id}')
+    ->controller([RoleController::class, 'destroy'])
+    ->middleware('admin')
+    ->name('admin.roles.destroy');
+
+// Profile Settings
+Route::get('/admin/settings/profile')
+    ->controller([ProfileController::class, 'show'])
+    ->middleware('admin')
+    ->name('admin.profile.show');
+
+Route::get('/admin/settings/profile/edit')
+    ->controller([ProfileController::class, 'edit'])
+    ->middleware('admin')
+    ->name('admin.profile.edit');
+
+Route::put('/admin/settings/profile')
+    ->controller([ProfileController::class, 'update'])
+    ->middleware('admin')
+    ->name('admin.profile.update');
