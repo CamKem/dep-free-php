@@ -10,7 +10,6 @@
 </div>
 
 <div class="admin-content">
-<!--    <h2>--><?php //= $title ?><!--</h2>-->
     <div class="standard-container">
         {{ slot }}
     </div>
