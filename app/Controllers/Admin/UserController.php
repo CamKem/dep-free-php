@@ -2,15 +2,30 @@
 
 namespace App\Controllers\Admin;
 
+use App\Actions\RegisterNewUser;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
 use App\Core\Template;
+use App\Models\User;
 
 class UserController
 {
 
-    public function index(): Template
+    public function index(Request $request): Template
     {
+        $users = (new User())
+            ->query()
+            ->select('id', 'username', 'email', 'created_at')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $users->where('username', 'like', "%{$request->get('search')}%");
+            $users->orWhere('email', 'like', "%{$request->get('search')}%");
+        }
+
         return view('admin.users.index', [
             'title' => 'Users',
+            'users' => $users->paginate(8),
         ]);
     }
 
@@ -21,18 +36,27 @@ class UserController
         ]);
     }
 
-    public function create(): Template
+    public function store(Request $request): Response
     {
-        return view('admin.users.create', [
-            'title' => 'Create User',
-        ]);
-    }
+        $registered = (new RegisterNewUser())->handle($request);
+        if (!$registered) {
+            session()->flash('flash-message', 'There was an error registering the user. Please try again.');
+            return redirect()->back()
+                ->withInput($request->all());
+        }
 
-    public function store(): Template
-    {
-        return view('admin.users.store', [
-            'title' => 'Store User',
-        ]);
+        $user = (new User())
+            ->query()
+            ->where('email', $request->get('email'))
+            ->first();
+
+        if (!$user) {
+            session()->flash('flash-message', 'Error: Something went wrong.');
+            return response()->back();
+        }
+
+        session()->flash('flash-message', 'You have successfully registered!');
+        return redirect(route('admin.users.index'));
     }
 
     public function edit(): Template
@@ -49,11 +73,20 @@ class UserController
         ]);
     }
 
-    public function destroy(): Template
+    public function destroy(Request $request): Response
     {
-        return view('admin.users.destroy', [
-            'title' => 'Destroy User',
-        ]);
+        $user = (new User())->query()
+            ->find($request->get('id'))
+            ->delete()
+            ->save();
+
+        if (!$user) {
+            session()->flash('flash-message', 'Error: User not found.');
+            return response()->back();
+        }
+
+        session()->flash('flash-message', 'User deleted successfully.');
+        return response()->redirect(route('admin.users.index'));
     }
 
 }
