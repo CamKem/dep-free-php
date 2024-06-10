@@ -3,6 +3,7 @@
 namespace app\Core\Database;
 
 use App\Core\Collecting\ModelCollection;
+use App\Core\Collecting\Paginator;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
@@ -20,6 +21,7 @@ class QueryBuilder
     protected array $orConditions = [];
     protected array $orderBy = [];
     protected array $limit = [];
+    protected array $offset = [];
     protected array $updateValues = [];
     protected array $with = [];
     protected ?Relation $relation = null;
@@ -67,6 +69,15 @@ class QueryBuilder
     public function limit(int $limit): static
     {
         $this->limit[] = $limit;
+        return $this;
+    }
+
+    // offset is used to skip a number of rows before starting to return rows
+    // in a query it will look like this:
+    // SELECT * FROM table_name LIMIT 5 OFFSET 2;
+    public function offset(int $offset): static
+    {
+        $this->offset[] = $offset;
         return $this;
     }
 
@@ -147,7 +158,7 @@ class QueryBuilder
             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
         }, $columns);
 
-        $this->select("{$this->table}.*, ".implode(", ", $prefixedColumns));
+        $this->select("{$this->table}.*, " . implode(", ", $prefixedColumns));
         $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
         return array($relatedTable, $foreignColumn);
     }
@@ -241,6 +252,13 @@ class QueryBuilder
         if (!empty($this->limit)) {
             $this->query .= " LIMIT {$this->limit[0]}";
         }
+
+        // handle offset clause
+        if (!empty($this->offset)) {
+            $this->query .= " OFFSET {$this->offset[0]}";
+        }
+
+        logger($this->query);
 
         return $this->query;
     }
@@ -384,6 +402,34 @@ class QueryBuilder
                 $this->toSql(),
                 $this->getBindings(),
             )->count()) > 0;
+    }
+
+    public function paginate(int $perPage = 10): Paginator
+    {
+        $currentPage = request()->get('page', 1) >= 1 ? request()->get('page', 1) : 1;
+
+        $query = $this->toSql();
+        $bindings = $this->getBindings();
+
+        $totalRows = $this->db->execute(
+            $query,
+            $bindings,
+        )->count();
+
+        $lastPage = ceil($totalRows / $perPage);
+        $offset = (min($currentPage, $lastPage) - 1) * $perPage;
+
+        $this->limit($perPage);
+        $this->offset($offset);
+
+        $items = $this->model->hydrate(
+            $this->db->execute(
+                $query,
+                $bindings,
+            )->get()
+        );
+
+        return new Paginator($items, $currentPage, $lastPage);
     }
 
 }
