@@ -3,6 +3,7 @@
 namespace App\Core\Collecting;
 
 use app\Core\Database\Model;
+use ArrayIterator;
 use Iterator;
 use Override;
 
@@ -78,6 +79,11 @@ class ModelCollection extends Collection implements Iterator
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->items);
     }
 
 }
