@@ -2,7 +2,6 @@
 <?= add('layouts.partials.header', ['categories' => session()->get('categories')]) ?>
     <main class="content-container">
 
-        <!-- This is the placeholder where the main content will be rendered-->
         {{ slot }}
 
         <?= add('layouts.partials.brands') ?>
