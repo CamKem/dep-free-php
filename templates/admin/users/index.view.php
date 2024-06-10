@@ -1,49 +1,63 @@
+<script type="module">
+    import ModalManager from "/scripts/modalManager.js";
+    import RemoveManager from "/scripts/remove.js";
+
+    new ModalManager('admin-users-create', 'user-create');
+    new RemoveManager('delete-form');
+</script>
+<?= add('modals.confirmation', ['action' => 'delete']) ?>
+<?= add('modals.admin-user-create') ?>
 <section>
     <div class="admin-form-actions">
-        <a href="<?= route('admin.users.create') ?>"><button>Create User</button></a>
+        <form name="admin-users-create">
+            <button>Create User</button>
+        </form>
         <form class="search-form" action="<?= route('admin.users.index') ?>"
               method="get">
             <label for="search-bar" class="sr-only">Search users</label>
             <input type="text" name="search" id="search-bar"
-                <?php
-                if (request()->getUri() === route('products.index')) {
-                    echo 'value="' . request()->get('search') . '"';
-                }
-                ?>
+                   value="<?= request()->get('search') ?>"
                    placeholder="Search products">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>
     </div>
-    <?= dd($users) ?>
     <?php if ($users->isEmpty()): ?>
-        <p class="text-section">You have no users yet.</p>
+        <p class="text-section">You have no users found.</p>
     <?php else: ?>
-        <div class="content-form">
-            <p class="content-form-heading">List of our users</p>
-            <table style="width: 100%;">
-                <thead class="content-form-heading" style="grid-template-columns: 1fr 2fr 2fr 1fr 1fr 1fr;">
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <?php foreach ($users as $user): ?>
-                <tr>
-                        <td><?= $user->username; ?></td>
-                        <td><?= $user->email; ?></td>
-                    <td><?= $user->created_at; ?></td>
+        <table class="admin-table">
+            <thead class="admin-table-heading">
+            <tr class="admin-heading-row">
+                <th>Username</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <?php foreach ($users as $user): ?>
+                <tr class="admin-table-row">
+                    <td>
+                        <a class="general-link"
+                           href="<?= route('admin.users.show', ['id' => $user->id]) ?>">
+                            <?= $user->username; ?>
+                        </a>
+                    </td>
+                    <td><?= $user->email; ?></td>
+                    <td><?= date('d M Y', strtotime($user->created_at)) ?></td>
                     <td class="form-buttons">
-                        <button>
-                            <a href="<?= route('admin.users.edit', ['id' => $user->id]) ?>">
-                                Edit
-                            </a>
-                        </button>
+                        <script type="module">
+                            import ModalManager from "/scripts/modalManager.js";
+
+                            new ModalManager('admin-users-edit', 'edit-form-<?= $user->id ?>');
+                        </script>
+                        <?= add('modals.admin-user-edit', compact('user')) ?>
+                        <form name="admin-users-edit"
+                              id="edit-form-<?= $user->id ?>">
+                            <button>Edit</button>
+                        </form>
                         <form method="post"
-                              id="delete-form"
+                              id="delete-form-<?= $user->id ?>"
                               name="delete-form"
                               action="<?= route('admin.users.destroy', ['id' => $user->id]) ?>">
                             <input type="hidden" name="_method"
@@ -54,15 +68,39 @@
                         </form>
                     </td>
                 </tr>
-                <?php endforeach; ?>
+                </a>
+            <?php endforeach; ?>
+            <?php if ($users->links() && count($users->links()) > 1): ?>
                 <tfoot>
                 <tr>
                     <td colspan="6">
-                        pagination
+                        <div class="row-between">
+                            <a class="pagination-link"
+                                <?php if ($users->previousPageUrl()): ?>
+                                    disabled
+                                <?php endif; ?>
+                               href="<?= $users->previousPageUrl() ?>"
+                            >
+                                Previous
+                            </a>
+                            <?php foreach ($users->links() as $index => $link): ?>
+                                <a class="pagination-link" href="<?= $link ?>">
+                                    <?= $index + 1 ?>
+                                </a>
+                            <?php endforeach; ?>
+                            <a class="pagination-link"
+                                <?php if ($users->nextPageUrl()): ?>
+                                    disabled
+                                <?php endif; ?>
+                               href="<?= $users->nextPageUrl() ?>"
+                            >
+                                Next
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 </tfoot>
-            </table>
-        </div>
+            <?php endif; ?>
+        </table>
     <?php endif; ?>
 </section>
