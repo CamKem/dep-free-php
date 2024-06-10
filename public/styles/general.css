@@ -141,3 +141,24 @@ a {
         gap: var(--large-gap);
     }
 }
+
+/* Reset padding and margin for the table head cells */
+table, thead, th, td {
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+    border-spacing: 0; /* Ensure no spacing between cells */
+    text-align: left; /* Align text as needed */
+    border-collapse: collapse; /* Ensure borders collapse into each other */
+}
+
+/* If you have additional spacing between columns */
+table {
+    border-collapse: collapse; /* Ensure no extra spacing between cells */
+    width: 100%; /* Ensure table takes full width */
+}
+
+table thead {
+    text-align: center; /* Align text as needed */
+    position: sticky; /* Ensure thead remains visible */
+    display: table-header-group; /* Ensure thead remains visible */
+}
