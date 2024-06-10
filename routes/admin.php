@@ -59,10 +59,6 @@ Route::get('/admin/users/{id}')
     ->controller([UserController::class, 'show'])
     ->middleware('admin')
     ->name('admin.users.show');
-Route::get('/admin/users/create')
-    ->controller([UserController::class, 'create'])
-    ->middleware('admin')
-    ->name('admin.users.create');
 Route::post('/admin/users')
     ->controller([UserController::class, 'store'])
     ->middleware('admin')

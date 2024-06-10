@@ -1,5 +1,5 @@
 <script type="module">
-    import Modal from './scripts/modal.js';
+    import Modal from '/scripts/modal.js';
     let modal = new Modal('<?= $action ?>');
     document.addEventListener('openModal', (event) => {
         if (event.detail.action === 'open') {
