@@ -67,7 +67,7 @@ class HasManyThrough extends Relation
         }
 
         $query->join("{$this->pivot->getTable()} AS pivot", "pivot.{$this->getRelatedKey()}", "=", "id")
-            ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}")
+            ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}", "LEFT")
             ->where("origin.id", "=", $this->getParentId());
 
         return $query;

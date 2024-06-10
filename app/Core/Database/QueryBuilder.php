@@ -44,9 +44,9 @@ class QueryBuilder
         return $this;
     }
 
-    public function join(string $table, string $first, string $operator, string $second): static
+    public function join(string $table, string $first, string $operator, string $second, string $type = 'INNER'): static
     {
-        $this->query .= " INNER JOIN {$table} ON {$first} {$operator} {$second}";
+        $this->query .= " {$type} JOIN {$table} ON {$first} {$operator} {$second}";
         return $this;
     }
 
