@@ -294,6 +294,18 @@ class QueryBuilder
         return $column;
     }
 
+    /**
+     * @return void
+     */
+    public function clearConditions(): void
+    {
+        $this->conditions = [];
+        $this->orConditions = [];
+        $this->orderBy = [];
+        $this->limit = [];
+        $this->offset = [];
+    }
+
     protected function getConditionsFromAttributes(): void
     {
         foreach ($this->model->getAttributes() as $attribute => $value) {
@@ -405,24 +417,24 @@ class QueryBuilder
     public function paginate(int $perPage = 10): Paginator
     {
         $currentPage = request()->get('page', 1) >= 1 ? request()->get('page', 1) : 1;
-
-        $query = $this->toSql();
         $bindings = $this->getBindings();
 
         $totalRows = $this->db->execute(
-            $query,
+            $this->toSql(),
             $bindings,
         )->count();
 
         $lastPage = ceil($totalRows / $perPage);
         $offset = (min($currentPage, $lastPage) - 1) * $perPage;
 
+        $this->clearConditions();
+
         $this->limit($perPage);
         $this->offset($offset);
 
         $items = $this->model->hydrate(
             $this->db->execute(
-                $query,
+                $this->toSql(),
                 $bindings,
             )->get()
         );
