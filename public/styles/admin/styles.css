@@ -2,6 +2,10 @@
 @import url('../general.css');
 @import url('../forms.css');
 @import url('../footer-bottom.css');
+@import url('../dashboard.css');
+@import url('../search.css');
+@import url('../modal.css');
+@import url('../flash.css');
 
 body {
     font-family: 'Arial', sans-serif;
@@ -166,4 +170,78 @@ body {
 .dashboard-card > span {
     font-size: calc(var(--font-large) * 1.5);
     color: var(--mid-grey-color);
+}
+
+/* Form styles */
+.admin-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--default-margin);
+    width: 100%;
+    gap: var(--default-gap);
+    margin-bottom: var(--default-margin);
+}
+
+.admin-table {
+    border-collapse: unset;
+    border-radius: var(--medium-radius);
+    border: 1px solid var(--light-grey-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.admin-table-heading {
+    background-color: var(--light-grey-color);
+    color: var(--mid-blue-color);
+    font-weight: bold;
+    padding: var(--default-padding);
+    font-size: var(--font-small);
+    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
+    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
+}
+
+.admin-heading-row {
+    background-color: var(--light-grey-color);
+    padding: var(--default-padding);
+    border-collapse: unset;
+    border-bottom: 1px solid var(--light-grey-color); /* Optional: Border around cells */
+}
+
+.admin-heading-row > th {
+    background-color: var(--light-grey-color);
+    padding: var(--default-padding) var(--small-padding);
+}
+
+.admin-table-row {
+    padding: var(--default-padding);
+    border-collapse: unset;
+    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
+    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
+}
+
+.admin-table-row > td {
+    padding: var(--default-padding) var(--small-padding);
+}
+
+.admin-table-row:nth-child(odd) {
+    background-color: var(--very-light-grey-color);
+}
+
+.admin-table-row:hover {
+    background-color: var(--very-light-blue-color);
+}
+
+/* Pagination styles */
+.pagination-link {
+    padding: var(--small-padding);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+    margin: var(--small-margin);
+    color: var(--mid-blue-color);
+    text-decoration: none;
+}
+
+.pagination-link:hover {
+    background-color: var(--very-light-blue-color);
 }
