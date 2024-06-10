@@ -258,8 +258,6 @@ class QueryBuilder
             $this->query .= " OFFSET {$this->offset[0]}";
         }
 
-        logger($this->query);
-
         return $this->query;
     }
 
