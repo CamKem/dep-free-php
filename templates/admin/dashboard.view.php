@@ -1,19 +1,39 @@
 <div class="dashboard">
-    <div class="statistic">
-        <h3>Users</h3>
-        <p id="userCount"><?= $users->count() ?></p>
-    </div>
-    <div class="statistic">
-        <h3>Orders</h3>
-        <p id="orderCount"><?= $orders->count() ?></p>
-    </div>
-    <div class="statistic">
-        <h3>Products</h3>
-        <p id="productCount"><?= $products->count() ?></p>
-    </div>
-    <div class="statistic">
-        <h3>Categories</h3>
-        <p id="categoryCount"><?= session()->get('categories')->count() ?></p>
-    </div>
+    <a href="<?= route('admin.users.index') ?>" class="dashboard-link">
+        <div class="dashboard-card">
+            <div>
+                <i class="fas fa-users"></i>
+                <h3>Users</h3>
+            </div>
+            <span><?= $users->count() ?></span>
+        </div>
+    </a>
+    <a href="<?= route('admin.orders.index') ?>" class="dashboard-link">
+        <div class="dashboard-card">
+            <div>
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Orders</h3>
+            </div>
+            <span><?= $orders->count() ?></span>
+        </div>
+    </a>
+    <a href="<?= route('admin.products.index') ?>" class="dashboard-link">
+        <div class="dashboard-card">
+            <div>
+                <i class="fas fa-boxes"></i>
+                <h3>Products</h3>
+            </div>
+            <span><?= $products->count() ?></span>
+        </div>
+    </a>
+    <a href="<?= route('admin.categories.index') ?>" class="dashboard-link">
+        <div class="dashboard-card">
+            <div>
+                <i class="fas fa-tags"></i>
+                <h3>Categories</h3>
+            </div>
+            <span><?= $categories->count() ?></span>
+        </div>
+    </a>
     <!-- Add more statistics here -->
 </div>
