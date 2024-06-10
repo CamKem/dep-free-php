@@ -1,7 +1,7 @@
 export default class Modal {
     constructor(action) {
         this.action = action;
-        let elementId = action + "-confirmation-modal";
+        let elementId = action + "-modal";
         this.modal = document.getElementById(elementId);
 
         if (this.modal) {
