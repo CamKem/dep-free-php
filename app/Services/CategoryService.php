@@ -19,7 +19,7 @@ class CategoryService extends ServiceProvider
             $categories = (new Category())
                 ->query()
                 ->get();
-            session()->set('categories', $categories->toArray());
+            session()->set('categories', $categories);
         }
     }
 }

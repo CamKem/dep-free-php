@@ -26,7 +26,7 @@
                 <ul class="footer-nav">
                     <?php
                     foreach ($categories as $category) {
-                        echo "<li><a aria-label=\"{$category['name']}\" href=\"" . route('categories.show', ['category' => $category['slug']]) . "\">{$category['name']}</a></li>";
+                        echo "<li><a aria-label=\"{$category->name}\" href=\"" . route('categories.show', ['category' => $category->slug]) . "\">{$category->name}</a></li>";
                     }
                     ?>
                 </ul>

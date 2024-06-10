@@ -70,12 +70,12 @@
             // get the active categories to make it styled on active state
             $active = request()->get('category');
             foreach ($categories as $category) {
-                echo "<a aria-label=\"{$category['name']}\"
-                         href=\"" . route('categories.show', ['category' => $category['slug']]) . "\"
-                         class=\"" . ($active === $category['slug'] ? 'category-active' : '') . "\"
+                echo "<a aria-label=\"{$category->name}\"
+                         href=\"" . route('categories.show', ['category' => $category->slug]) . "\"
+                         class=\"" . ($active === $category->slug ? 'category-active' : '') . "\"
                       >
-                          <li class=\"" . ($active === $category['slug'] ? 'category-active' : '') . "\">
-                              {$category['name']}
+                          <li class=\"" . ($active === $category->slug ? 'category-active' : '') . "\">
+                              {$category->name}
                           </li>
                       </a>";
             }
