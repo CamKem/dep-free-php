@@ -13,8 +13,8 @@
             <a href="<?= route('admin.categories.index') ?>">
                 <li class="nav-links">Categories</li>
             </a>
-            <a href="<?= route('admin.roles.index') ?>">
-                <li class="nav-links">Roles</li>
+            <a href="<?= route('admin.settings.index') ?>">
+                <li class="nav-links">Settings</li>
             </a>
             <a href="<?= route('logout') ?>">
                 <li class="nav-links-logout">Logout</li>

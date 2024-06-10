@@ -7,9 +7,7 @@
     </div>
     <script type="module">
         import { MenuToggle } from '/scripts/menuToggle.js';
-        window.onload = () => {
-            new MenuToggle('menu-icon', 'menu-nav');
-        }
+        new MenuToggle('menu-icon', 'menu-nav');
     </script>
     <div class="menu-icon-container">
         <a id="menu-icon">
