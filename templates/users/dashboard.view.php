@@ -18,10 +18,10 @@
         <?php if ($orders->isEmpty()): ?>
             <p class="text-section">You have no orders yet.</p>
         <?php else: ?>
-            <ul class="orders">
-                <p class="order-heading">Here are some of your recent orders:</p>
+            <ul class="content-form">
+                <p class="content-form-heading">Here are some of your recent orders:</p>
                 <?php foreach ($orders->toArray() as $order): ?>
-                    <li class="order-item-grid">
+                    <li class="content-form-item">
                         <div class="flex-center align-start">
                             <a class="order-link"
                                href="<?= route('orders.show', ['order' => $order['id']]) ?>">
@@ -32,7 +32,7 @@
                         <div class="status">
                             <?= $order['status']; ?>
                         </div>
-                        <div class="order-buttons">
+                        <div class="form-buttons">
                             <button class="desktop-only">
                                 <a href="<?= route('orders.show', ['order' => $order['id']]) ?>">
                                     Track Order
