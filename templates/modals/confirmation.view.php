@@ -8,7 +8,7 @@
     });
 </script>
 
-<div id="<?= $action ?>-confirmation-modal" class="modal">
+<div id="<?= $action ?>-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
         <h2 class="general-heading">Confirm <?= ucfirst($action) ?></h2>
