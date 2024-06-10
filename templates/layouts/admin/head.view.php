@@ -13,6 +13,5 @@
     >
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap"
           rel="stylesheet">
-    <script type="module" src="/scripts/main.js"></script>
 </head>
 <body>
