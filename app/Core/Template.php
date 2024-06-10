@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Core;
 
 use RuntimeException;
@@ -8,14 +7,19 @@ class Template
 {
     private array $variables = [];
     private mixed $templateDir;
-    private mixed $layout;
+    private static mixed $layout;
     private string $content;
     private bool $isNestedView = false;
 
     public function __construct()
     {
         $this->templateDir = config('template.paths.views');
-        $this->layout = config('template.layout');
+        self::$layout = self::$layout ?? config('template.layout');
+    }
+
+    public static function layout($layout): void
+    {
+        self::$layout = $layout;
     }
 
     public function set($name, $value): self
@@ -33,8 +37,8 @@ class Template
     public function render(): string
     {
         $content = $this->compileTemplate($this->content);
-        if (!$this->isNestedView && $this->layout) {
-            $layout = $this->compileTemplate($this->layout);
+        if (!$this->isNestedView && self::$layout) {
+            $layout = $this->compileTemplate(self::$layout);
             return str_replace('{{ slot }}', $content, $layout);
         }
         return $content;
