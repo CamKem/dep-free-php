@@ -36,7 +36,7 @@ class RouteCollection
      * @param Request $request
      * @return Route|null
      */
-    public function match(Request $request): Route|null
+    public function match(Request $request): ?Route
     {
         foreach ($this->routes->toArray() as $route) {
             if ($route->matches(

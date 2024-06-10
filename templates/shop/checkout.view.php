@@ -68,20 +68,20 @@
                 <h3 class="general-heading">Order Summary</h3>
                 <?php $total = 0; ?>
                 <ul>
-                    <?php foreach ($cart->toArray() as $index => $item): ?>
+                    <?php foreach ($cart as $item): ?>
                         <a href="<?= route('products.show', [
-                            'category' => $item['category']['slug'],
-                            'product' => $item['slug'],
+                            'category' => $item->category->slug,
+                            'product' => $item->slug,
                         ]) ?>"
                         >
                             <li class="order-item">
-                                <p class="general-link"><?= ucwords($item['name']) ?></p>
+                                <p class="general-link"><?= ucwords($item->name) ?></p>
                                 <div class="row-between">
-                                    <p>Quantity: <?= $item['quantity'] ?></p>
-                                    <p>Price: $<?= $item['price'] ?></p>
+                                    <p>Quantity: <?= $item->quantity ?></p>
+                                    <p>Price: $<?= $item->price ?></p>
                                     <p>Total:
                                         $<?php
-                                        $total += $item['price'] * $item['quantity'];
+                                        $total += $item->price * $item->quantity;
                                         echo number_format($total, 2);
                                         ?>
                                     </p>
@@ -204,7 +204,13 @@
                                data-validate=true>
                         <p class="error-message"></p>
 
-                        <label for="card_number">Card Number:</label>
+                        <label style="display: inline-flex"
+                               class="center"
+                               for="card_number"
+                        >
+                            Card Number:
+                            <span class="warning-text">Demo Purposes Only</span>
+                        </label>
                         <input type="hidden"
                                name="card_number"
                                title="Card Number"

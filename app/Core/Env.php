@@ -11,7 +11,7 @@ class Env
     public function load(): void
     {
         if (empty($this->env)) {
-            $envFilePath = base_path('.env');
+            $envFilePath = include_path('.env');
 
             if (!file_exists($envFilePath) || !is_readable($envFilePath)) {
                 throw new RuntimeException("Environment file not found or unreadable.");

@@ -1,9 +1,20 @@
 <?php
 
 use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\OrderController;
 use App\Controllers\Admin\ProductController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
+
+
+#// DONt save credit card number... put dummy data.
+#// ADMIN and password username and password
+#// DATABASE name sportswh.sql
+#// Upload of the category file.
+
+#// Upload files for new products.
+
+// NOTE: implement pagination for the products and users
 
 // TODO: Add the routes for the admin panel
 
@@ -31,11 +42,13 @@ use App\Core\Routing\RouteProxy as Route;
 // create, update, delete
 
 
+// Dashboard
 Route::get('/admin')
-    ->controller([DashboardController::class, 'index'])
+    ->controller(DashboardController::class)
     ->middleware('admin')
     ->name('admin.index');
 
+// Users
 Route::get('/admin/users')
     ->controller([UserController::class, 'index'])
     ->middleware('admin')
@@ -65,6 +78,7 @@ Route::delete('/admin/users/{id}')
     ->middleware('admin')
     ->name('admin.users.destroy');
 
+// Products
 Route::get('/admin/products')
     ->controller([ProductController::class, 'index'])
     ->middleware('admin')
@@ -93,3 +107,31 @@ Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
     ->middleware('admin')
     ->name('admin.products.destroy');
+
+// Orders
+Route::get('/admin/orders')
+    ->controller([OrderController::class, 'index'])
+    ->middleware('admin')
+    ->name('admin.orders.index');
+
+Route::get('/admin/orders/{id}')
+    ->controller([OrderController::class, 'show'])
+    ->middleware('admin')
+    ->name('admin.orders.show');
+
+Route::get('/admin/orders/{id}/edit')
+    ->controller([OrderController::class, 'edit'])
+    ->middleware('admin')
+    ->name('admin.orders.edit');
+
+Route::put('/admin/orders/{id}')
+    ->controller([OrderController::class, 'update'])
+    ->middleware('admin')
+    ->name('admin.orders.update');
+
+Route::delete('/admin/orders/{id}')
+    ->controller([OrderController::class, 'destroy'])
+    ->middleware('admin')
+    ->name('admin.orders.destroy');
+
+// Categories

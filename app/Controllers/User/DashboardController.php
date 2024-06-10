@@ -3,21 +3,22 @@
 namespace app\Controllers\User;
 
 use App\Core\Template;
+use App\Models\Order;
 
 class DashboardController
 {
     public function __invoke(): Template
     {
-        $orders = auth()->user()?->orders()
-            ->query()
-            //->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
         return view('users.dashboard', [
             'title' => 'Dashboard',
             'user' => auth()->user(),
-            'orders' => $orders,
+            'orders' => (new Order())
+                ->query()
+                ->with('products')
+                ->where('user_id', auth()->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get(),
         ]);
     }
 

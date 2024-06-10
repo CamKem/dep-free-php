@@ -20,7 +20,7 @@ class Config
 
     public function loadConfig(): array
     {
-        $configPaths = glob(base_path('config/*.php'));
+        $configPaths = glob(include_path('config/*.php'));
         if (empty($configPaths)) {
             throw new RuntimeException("Failed to find config files");
         }

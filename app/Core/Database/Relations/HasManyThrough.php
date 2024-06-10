@@ -56,13 +56,23 @@ class HasManyThrough extends Relation
     #[Override]
     public function query(): QueryBuilder
     {
-        return $this->related->query()
+        $query = $this->related->query()
             ->setRelation($this)
-            ->select("{$this->getRelatedTable()}.*")
-            ->join("{$this->pivot->getTable()} AS pivot", "pivot.{$this->getRelatedKey()}", "=", "id")
+            ->select("{$this->getRelatedTable()}.*");
+
+        if ($this->withPivot) {
+            // TODO: make sure this works & return the pivot columns
+            //  to be mapped to the related model
+            $query->select("pivot.*");
+        }
+
+        $query->join("{$this->pivot->getTable()} AS pivot", "pivot.{$this->getRelatedKey()}", "=", "id")
             ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}")
             ->where("origin.id", "=", $this->getParentId());
+
+        return $query;
     }
+
     public function attach(array $items): void
     {
         foreach ($items as $item) {
@@ -72,9 +82,12 @@ class HasManyThrough extends Relation
                 $this->getForeignKey() => $this->getParentId(),
                 $this->getRelatedKey() => $item[$this->getRelatedKey()],
                 ...$remainingItems
+            ])->save();
         }
     }
+
     // detach items from the pivot model
+    // TODO: to attaches & deletes that use whereIn, so it's not n+1 loop
     public function detach(array $items): void
     {
         foreach ($items as $item) {
@@ -84,6 +97,12 @@ class HasManyThrough extends Relation
                 ->delete()->save();
         }
     }
+//    public function detach(array $items): void
+//    {
+//        $ids = implode(", ", array_map(fn($item) => $item->id, $items));
+//        $this->pivot->query()
+//            ->raw("DELETE FROM {$this->pivot->getTable()} WHERE {$this->getForeignKey()} = {$this->getParentId()} AND {$this->getRelatedKey()} IN ({$ids})");
+//    }
 
     public function getRelationName(): string
     {

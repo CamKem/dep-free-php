@@ -1,7 +1,6 @@
 <?php
 
 use App\Controllers\AboutController;
-use App\Controllers\Admin\SnsController;
 use App\Controllers\CategoryController;
 use App\Controllers\ContactController;
 use App\Controllers\HomeController;
@@ -11,13 +10,13 @@ use app\Controllers\Shop\CheckoutController;
 use app\Controllers\Shop\OrderController;
 use app\Controllers\User\DashboardController;
 use App\Core\Routing\RouteProxy as Route;
+use App\Models\Order;
 
 // Auth Routes
-include base_path('routes/auth.php');
+include include_path('routes/auth.php');
 
 // Admin Routes
-include base_path('routes/admin.php');
-
+include include_path('routes/admin.php');
 
 // Home Route
 Route::get('/')
@@ -58,11 +57,6 @@ Route::get('/dashboard')
     ->middleware('auth');
 
 // Order Routes
-Route::get('/orders')
-    ->controller([OrderController::class, 'index'])
-    ->name('orders.index')
-    ->middleware('auth');
-
 Route::get('/orders/create')
     ->controller([OrderController::class, 'create'])
     ->name('orders.create')
@@ -101,13 +95,7 @@ Route::put('/cart')
     ->name('cart.update');
 
 // Checkout Routes
-
 Route::get('/checkout')
     ->controller(CheckoutController::class)
     ->name('checkout')
-    ->middleware('auth');
-
-Route::post('/orders')
-    ->controller([OrderController::class, 'store'])
-    ->name('orders.store')
     ->middleware('auth');

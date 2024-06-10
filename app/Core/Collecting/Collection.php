@@ -8,7 +8,6 @@ use JsonSerializable;
 use Traversable;
 
 /** Hold array items to perform operations on */
-
 class Collection implements Arrayable, JsonSerializable
 {
 
@@ -36,15 +35,6 @@ class Collection implements Arrayable, JsonSerializable
         return $this;
     }
 
-    /**
-     * Get the first item from the collection.
-     * Optionally, a callback can be passed to filter the items
-     * and return the first item that matches the filter.
-     *
-     * @param callable|null $callback
-     * @param mixed $default
-     * @return mixed
-     */
     public function first(?callable $callback = null, mixed $default = null): mixed
     {
         if ($callback === null) {
@@ -140,6 +130,11 @@ class Collection implements Arrayable, JsonSerializable
         }
 
         return new static($grouped);
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
     }
 
     public function __serialize(): array

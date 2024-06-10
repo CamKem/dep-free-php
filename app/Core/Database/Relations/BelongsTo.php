@@ -37,18 +37,21 @@ class BelongsTo extends Relation
     #[Override]
     public function getForeignKey(): string
     {
-        return strtolower(class_basename($this->related)) . '_id';
+        return $this->getRelationName() . '_id';
     }
 
-    // TODO: check that this is working
     #[Override]
     public function query(): QueryBuilder
     {
+        $value = $this->parent->{$this->getForeignKey()} ?? $this->parent->{$this->getRelationName()}->id;
+
+        // we need to query the related model, for the getForeignKey() value
         return $this->related->query()
             ->setRelation($this)
             ->where(
-                $this->getForeignKey(),
-                $this->parent->{$this->getRelatedKey()}
+                'id',
+                $value
+            //$this->parent->{$this->getForeignKey()}
             );
     }
 

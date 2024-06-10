@@ -13,15 +13,30 @@ use App\Models\Product;
 class OrderController extends Controller
 {
 
-    public function show(Request $request): Template
+    public function show(Request $request): Template|Response
     {
+        $order = (new Order())
+            ->query()
+            ->with('products')
+            ->find($request->get('order'))
+            ->get();
+
+        if ($order->isEmpty()) {
+            session()->flash('flash-message', 'Order not found');
+            return redirect()->route('dashboard.index');
+        }
+
+        // load the category for each product
+        foreach ($order->products as $product) {
+            /* @var Product $product */
+            $product->load('category');
+        }
+
         return view('shop.order', [
             'title' => 'Order',
-            'order' => (new Order())
-                ->query()
-                ->with('products')
-                ->find($request->get('order'))
-                ->get(),
+            'order' => $order,
+            'shipping' => '10',
+            'tax' => '.10',
         ]);
     }
 
@@ -42,6 +57,27 @@ class OrderController extends Controller
             'ccv' => 'required',
         ]);
 
+        $ids = array_values(
+            array_map(fn($item) => $item['product_id'], session()->get('cart'))
+        );
+
+        $products = (new Product())
+            ->query()
+            ->select('id', 'price')
+            ->whereIn('id', $ids)
+            ->get();
+
+        $items = session()->get('cart');
+
+        $total = 0;
+        foreach ($products->toArray() as $product) {
+            foreach ($items as $item) {
+                if ($item['product_id'] == $product['id']) {
+                    $total += $product['price'] * $item['quantity'];
+                }
+            }
+        }
+
         // concatenate the address
         $address = $validated['address'] . ', ' . $validated['city'] . ', ' . $validated['state'] . ', ' . $validated['postcode'];
 
@@ -59,12 +95,24 @@ class OrderController extends Controller
                 'expiry_date' => $validated['expiry_date'],
                 'ccv' => $validated['ccv'],
                 'purchase_date' => now(),
+                'total' => $total,
             ])->save();
 
         if ($new === false) {
-            session()->flash('error', 'Error: Order not created');
+            session()->flash('flash-message', 'Error: Order not created');
             return redirect()->back();
         }
+
+        foreach ($products->toArray() as $product) {
+            foreach ($items as &$item) {
+                // do not use strict comparison here
+                if ($item['product_id'] == $product['id']) {
+                    $item['price'] = $product['price'];
+                }
+            }
+        }
+        unset($item);
+
 
         // find the order we just created
         $order = (new Order())
@@ -73,25 +121,6 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
-        $ids = array_values(array_map(fn($item) => $item['product_id'], session()->get('cart')));
-
-        $products = (new Product())
-            ->query()
-            ->select('id', 'price')
-            ->whereIn('id', $ids)
-            ->get();
-
-        $items = session()->get('cart');
-
-        foreach ($products->toArray() as $product) {
-            foreach ($items as &$item) {
-                if ($item['product_id'] == $product['id']) {
-                    $item['price'] = $product['price'];
-                }
-            }
-        }
-        unset($item);
-
         // attach the products to the order
         $order->products()->attach($items);
 
@@ -99,20 +128,27 @@ class OrderController extends Controller
         session()->remove('cart');
 
         // add the cart items to the order
-        session()->flash('success', 'Order created successfully');
+        session()->flash('flash-message', 'Order created successfully');
 
-        redirect()->route('orders.show', ['order' => $order->id]);
+        return redirect()->route('orders.show', ['order' => $order->id]);
     }
 
-    public function destroy(Order $order): void
+    public function destroy(Request $request): Response
     {
-        $order
-            ->query()
-            ->delete();
 
-        session()->flash('success', 'Order deleted successfully');
+        // find the order & delete it,
+        //products will be deleted to because of cascade
+        $removed = (new Order())->query()->find($request->get('order'))
+            ->delete()->save();
 
-        redirect()->route('orders.index');
+        // check order was deleted
+        if ($removed === false) {
+            session()->flash('flash-message', 'Error: Order not deleted');
+            return redirect()->back();
+        }
+
+        session()->flash('flash-message', 'Order deleted successfully');
+        return redirect()->route('dashboard.index');
     }
 
 }

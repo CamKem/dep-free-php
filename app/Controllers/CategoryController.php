@@ -28,6 +28,7 @@ class CategoryController extends Controller
             'products' => (new Product())
                 ->query()
                 ->where('category_id', $category->id)
+                ->with('category')
                 ->get()
         ]);
     }

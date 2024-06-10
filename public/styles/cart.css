@@ -1,7 +1,7 @@
 /* Cart styles */
 .cart {
     border: var(--thin-border) solid var(--light-grey-color);
-    border-radius: var(--small-radius);
+    border-radius: var(--medium-radius);
 }
 
 .cf:before,
@@ -36,8 +36,13 @@
     }
 }
 
-.items.even {
+.items:nth-child(even) {
     background: var(--very-light-grey-color);
+}
+
+.items:last-child {
+    border-bottom-left-radius: var(--medium-radius);
+    border-bottom-right-radius: var(--medium-radius);
 }
 
 .product-details-section, .prodTotal, .removeWrap {

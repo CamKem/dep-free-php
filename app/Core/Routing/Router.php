@@ -142,7 +142,7 @@ class Router
      */
     public function loadRoutes(): void
     {
-        require base_path('routes/web.php');
+        require include_path('routes/web.php');
     }
 
     /**

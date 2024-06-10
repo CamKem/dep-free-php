@@ -1,23 +1,26 @@
 <script type="module">
-    import {Cart, RemoveManager} from '/scripts/cart.js'
+    import Cart from '/scripts/cart.js';
+    import RemoveManager from '/scripts/remove.js';
 
     new Cart(<?= $taxRate ?>, <?= $shipping ?>);
-    new RemoveManager();
+    new RemoveManager('remove-form');
 </script>
 <?= add('modals.confirmation', ['action' => 'remove']) ?>
 <section>
     <h2>Shopping Cart</h2>
     <?php if ($cart->count() === 0): ?>
-        <p class="general-text">Your cart is empty</p>
+        <div class="standard-container">
+            <p class="text-section">Your cart is empty</p>
+        </div>
     <?php else: ?>
         <?php $total = 0; ?>
         <div class="wrap cf">
             <ul class="cart flex-center">
-                <?php foreach ($cart->toArray() as $index => $item): ?>
+                <?php foreach ($cart as $index => $item): ?>
                     <li class="items <?= $index % 2 === 0 ? '' : 'even' ?>">
                         <div class="cartSection product-details-section">
-                            <img src="/images/products/<?= $item['image'] ?>"
-                                 alt="<?= $item['name'] ?>"
+                            <img src="/images/products/<?= $item->image ?>"
+                                 alt="<?= $item->name ?>"
                                  class="itemImg">
                             <p class="itemNumber">
                                 #QUE-007544-00<?= $index ?>
@@ -27,10 +30,10 @@
                         <div class="cartSection product-title-section">
                             <h3>
                                 <a href="<?= route('products.show', [
-                                    'category' => $item['category']['slug'],
-                                    'product' => $item['slug']
+                                    'category' => $item->category->slug,
+                                    'product' => $item->slug
                                 ]) ?>">
-                                    <?= ucwords($item['name']) ?>
+                                    <?= ucwords($item->name) ?>
                                 </a>
                             </h3>
                         </div>
@@ -38,12 +41,12 @@
                         <div class="cartSection quantity-price-section">
                             <div>
                                 <input type="hidden" name="product_id"
-                                       value="<?= $item['id'] ?>">
+                                       value="<?= $item->id ?>">
                                 <input type="number" class="qty"
-                                       value="<?= $item['quantity'] ?>"/>
+                                       value="<?= $item->quantity ?>"/>
                                 <p id="price" class="price">
                                     <span>x </span>
-                                    <span>$<?= $item['price'] ?></span>
+                                    <span>$<?= $item->price ?></span>
                                 </p>
                             </div>
 
@@ -54,7 +57,7 @@
                         <div class="prodTotal cartSection"
                              id="prodTotal">
                             <?php
-                            $line = ($item['price'] * $item['quantity']);
+                            $line = ($item->price * $item->quantity);
                             $total += $line;
                             ?>
                             <p class="line-price" id="line-price">
@@ -70,7 +73,7 @@
                                 <input type="hidden" name="_method"
                                        value="DELETE">
                                 <input type="hidden" name="product_id"
-                                       value="<?= $item['id'] ?>">
+                                       value="<?= $item->id ?>">
                                 <button type="submit"
                                         class="remove"
                                         aria-label="remove from cart">
