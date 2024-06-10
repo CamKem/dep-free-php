@@ -29,9 +29,14 @@ class Paginator implements IteratorAggregate
         return $this->items;
     }
 
-    public function pages(): array
+    public function links(): array
     {
-        return range(1, $this->lastPage);
+        $pages = [];
+        // iterated of $number and return the array of page number
+        foreach (range(1, $this->lastPage) as $page) {
+            $pages[] = request()->getUri() . '?page=' . $page;
+        }
+        return $pages;
     }
 
     public function currentPage(): int
