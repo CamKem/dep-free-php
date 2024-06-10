@@ -1,0 +1,14 @@
+.bottom-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: var(--very-light-grey-color);
+    padding: var(--default-padding);
+}
+
+.bottom-footer a {
+    color: var(--link-blue-color);
+    margin: 0 var(--small-margin);
+    text-decoration: none;
+}
