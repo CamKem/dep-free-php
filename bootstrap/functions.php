@@ -147,7 +147,7 @@ function auth(): Auth
  * @param string|null $key
  * @return object
  */
-function app(string|null $key = null): object
+function app(?string $key = null): object
 {
     if ($key === null) {
         return App::getContainer();
