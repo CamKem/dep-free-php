@@ -137,6 +137,10 @@ class Model implements Arrayable, JsonSerializable
                         ? $parts[0]
                         : $this->convertToSingular($parts[0]);
 
+                    if ($value === null) {
+                        continue;
+                    }
+
                     if ($relation !== 'pivot' && end($parts) === 'id' && count($parts) > 1) {
 
                         $relatedModelClass = "App\\Models\\" . ucfirst($this->convertToSingular($parts[0]));
