@@ -93,7 +93,7 @@ class HasManyThrough extends Relation
         foreach ($items as $item) {
             $this->pivot->query()
                 ->where($this->getForeignKey(), $this->getParentId())
-                ->where($this->getRelatedKey(), $item->id)
+                ->where($this->getRelatedKey(), $item)
                 ->delete()->save();
         }
     }
