@@ -3,9 +3,23 @@
 
 <div class="admin-breadcrumbs">
     <div class="breadcrumbs">
-        <a class="breadcrumb__item" href="<?= route('admin.index') ?>">Admin</a>
+        <a class="breadcrumb__item" href="<?= route('admin.index') ?>">
+            Admin
+        </a>
         <span>></span>
-        <a class="breadcrumb__item" href="<?= route(request()->route()->getName()) ?>"><?= $title ?></a>
+        <?php if (isset($crumbs)): ?>
+            <?php foreach ($crumbs as $name => $route): ?>
+                <a class="breadcrumb__item"
+                   href="<?= $route ?>"><?= $name ?></a>
+                <?php if ($name !== array_key_last($crumbs)): ?>
+                    <span>></span>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <a class="breadcrumb__item" href="<?= route(request()->route()->getName()) ?>">
+                <?= $title ?>
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
