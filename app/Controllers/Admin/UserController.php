@@ -33,20 +33,17 @@ class UserController
     {
         return view('admin.users.show', [
             'title' => 'Display User',
+            'crumbs' => [
+                'Users' => route('admin.users.index'),
+                'Display User' => route('admin.users.show', ['id' => $request->get('id')]),
+            ],
             'user' => (new User())->query()->find($request->get('id')),
         ]);
     }
 
-    public function edit(): Template
+    public function update(Request $request): Response
     {
-        return view('admin.users.edit', [
-            'title' => 'Edit User',
-        ]);
-    }
-
-    public function update(): Response
-    {
-        // TODO: save the changes
+        dd($request->all());
     }
 
     public function store(Request $request): Response
