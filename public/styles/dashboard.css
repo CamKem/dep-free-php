@@ -114,11 +114,13 @@
     color: var(--dark-blue-color);
     text-decoration: underline;
 }
+
 .content-form-heading {
-    font-size: var(--font-small);
-    padding: var(--small-padding);
     width: 100%;
+    font-size: var(--font-default);
+    color: var(--grey-color);
     background-color: var(--light-grey-color);
-    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
-    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
+    padding: var(--small-padding);
+    border-top-left-radius: var(--medium-radius);
+    border-top-right-radius: var(--medium-radius);
 }
