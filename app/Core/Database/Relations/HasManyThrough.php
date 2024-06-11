@@ -16,8 +16,10 @@ class HasManyThrough extends Relation
         protected Model  $pivot,
         protected string $foreignKey,
         protected string $relatedKey,
-        public bool $withPivot = false
-    ){}
+        public bool      $withPivot = false
+    )
+    {
+    }
 
     #[Override]
     public function getParentTable(): string
@@ -88,6 +90,13 @@ class HasManyThrough extends Relation
 
     // detach items from the pivot model
     // TODO: to attaches & deletes that use whereIn, so it's not n+1 loop
+    //    public function detach(array $items): void
+//    {
+//        $ids = implode(", ", array_map(fn($item) => $item->id, $items));
+//        $this->pivot->query()
+//                ->where($this->getForeignKey(), $this->getParentId())
+//                ->whereIn($this->getRelatedKey(), $ids)
+//    }
     public function detach(array $items): void
     {
         foreach ($items as $item) {
@@ -97,12 +106,14 @@ class HasManyThrough extends Relation
                 ->delete()->save();
         }
     }
-//    public function detach(array $items): void
-//    {
-//        $ids = implode(", ", array_map(fn($item) => $item->id, $items));
-//        $this->pivot->query()
-//            ->raw("DELETE FROM {$this->pivot->getTable()} WHERE {$this->getForeignKey()} = {$this->getParentId()} AND {$this->getRelatedKey()} IN ({$ids})");
-//    }
+
+    public function sync(array $items): void
+    {
+        $this->pivot->query()
+            ->where($this->getForeignKey(), $this->getParentId())
+            ->delete()->save();
+        $this->attach($items);
+    }
 
     public function getRelationName(): string
     {
