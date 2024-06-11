@@ -34,7 +34,6 @@ use App\Core\Routing\RouteProxy as Route;
 // Admin must be able to view all products
 // Admin must be able to create, update, delete products
 
-// Admin must be able to view all orders
 // Admin must be able to update the status of an order
 
 // Admin must be able to view all categories
@@ -63,10 +62,6 @@ Route::post('/admin/users')
     ->controller([UserController::class, 'store'])
     ->middleware(['auth', 'admin'])
     ->name('admin.users.store');
-Route::get('/admin/users/{id}/edit')
-    ->controller([UserController::class, 'edit'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.users.edit');
 Route::put('/admin/users/{id}')
     ->controller([UserController::class, 'update'])
     ->middleware(['auth', 'admin'])
@@ -75,6 +70,29 @@ Route::delete('/admin/users/{id}')
     ->controller([UserController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.users.destroy');
+
+// Orders
+Route::get('/admin/orders')
+    ->controller([OrderController::class, 'index'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.orders.index');
+
+Route::get('/admin/orders/{id}')
+    ->controller([OrderController::class, 'show'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.orders.show');
+
+Route::put('/admin/orders/{id}')
+    ->controller([OrderController::class, 'update'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.orders.update');
+
+Route::delete('/admin/orders/{id}')
+    ->controller([OrderController::class, 'destroy'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.orders.destroy');
+
+########## NOTE: up to here::
 
 // Products
 Route::get('/admin/products')
@@ -105,32 +123,6 @@ Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.destroy');
-
-// Orders
-Route::get('/admin/orders')
-    ->controller([OrderController::class, 'index'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.orders.index');
-
-Route::get('/admin/orders/{id}')
-    ->controller([OrderController::class, 'show'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.orders.show');
-
-Route::get('/admin/orders/{id}/edit')
-    ->controller([OrderController::class, 'edit'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.orders.edit');
-
-Route::put('/admin/orders/{id}')
-    ->controller([OrderController::class, 'update'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.orders.update');
-
-Route::delete('/admin/orders/{id}')
-    ->controller([OrderController::class, 'destroy'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.orders.destroy');
 
 // Categories
 Route::get('/admin/categories')
