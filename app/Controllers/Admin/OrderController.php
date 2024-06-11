@@ -56,6 +56,24 @@ class OrderController
         ]);
     }
 
+    public function update(Request $request): Response
+    {
+        $updated = (new Order())->query()
+            ->find($request->get('id'))
+            ->update([
+                'status' => $request->get('status'),
+            ])
+            ->save();
+
+        if (!$updated) {
+            session()->flash('flash-message', 'Order could not be updated.');
+            return redirect()->route('admin.orders.index');
+        }
+
+        session()->flash('flash-message', 'Order has been updated.');
+        return redirect()->route('admin.orders.show', ['id' => $request->get('id')]);
+    }
+
     public function destroy(Request $request): Response
     {
         $deleted = (new Order())->query()

@@ -6,7 +6,36 @@
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <div class="standard-container">
     <div class="admin-form-actions">
-        <span></span>
+        <script>
+            window.onload = function () {
+                const status = document.getElementById('order-status');
+                status.addEventListener('change', function () {
+                    document.getElementById('order-status-<?= $order->id ?>').submit();
+                });
+            };
+        </script>
+        <form method="post"
+              class="status-form"
+              id="order-status-<?= $order->id ?>"
+              action="<?= route('admin.orders.update', ['id' => $order->id]) ?>">
+            <input type="hidden" name="_method"
+                   value="PUT">
+            <label for="status">Update Status:</label>
+            <select name="status" id="order-status">
+                <option value="pending"
+                    <?= $order->status === 'pending' ? 'selected' : '' ?>
+                >Pending</option>
+                <option value="processing"
+                    <?= $order->status === 'processing' ? 'selected' : '' ?>
+                >Processing</option>
+                <option value="shipped"
+                    <?= $order->status === 'shipped' ? 'selected' : '' ?>
+                >Shipped</option>
+                <option value="delivered"
+                    <?= $order->status === 'delivered' ? 'selected' : '' ?>
+                >Delivered</option>
+            </select>
+        </form>
         <form method="post"
               id="delete-order-<?= $order->id ?>"
               name="admin-order-delete"
