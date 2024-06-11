@@ -7,6 +7,7 @@
 @import url('../modal.css');
 @import url('../flash.css');
 @import url('../order.css');
+@import url('../pagination.css');
 
 body {
     font-family: 'Arial', sans-serif;
@@ -233,22 +234,8 @@ body {
     background-color: var(--very-light-blue-color);
 }
 
-/* Pagination styles */
-.pagination-link {
-    padding: var(--small-padding);
-    border: var(--thin-border) solid var(--light-grey-color);
-    border-radius: var(--small-radius);
-    margin: var(--small-margin);
-    color: var(--mid-blue-color);
-    text-decoration: none;
-}
-
-.pagination-link:hover {
-    background-color: var(--very-light-blue-color);
-}
-
 /* show user roles */
-.roles {
+.content__list {
     padding: var(--default-padding);
     display: flex;
     flex-direction: column;
