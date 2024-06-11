@@ -1,7 +1,7 @@
 <script type="module">
-    import RemoveManager from '/scripts/remove.js';
+    import ModalManager from '/scripts/modalManager.js';
 
-    new RemoveManager('delete-form');
+    new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <section>
