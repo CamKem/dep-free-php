@@ -7,6 +7,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
 use app\Mailing\NewUserMail;
+use App\Models\Role;
 use App\Models\User;
 
 class RegisterNewUser
@@ -22,6 +23,8 @@ class RegisterNewUser
         if (!$created) {
             return false;
         }
+
+        $this->addUserRole();
 
         $sent = $this->sendWelcomeEmail();
 
@@ -81,6 +84,34 @@ class RegisterNewUser
         }
 
         return true;
+    }
+
+    private function addUserRole(): void
+    {
+        $user = (new User())
+            ->query()
+            ->where('email', $this->validated->get('email'))
+            ->first();
+
+        if ($user) {
+            // fine the role with name of 'user' and attach it to the user
+            $role = (new Role())
+                ->query()
+                ->select('id')
+                ->where('name', 'user')
+                ->first();
+
+            if ($role) {
+                $id = $role->toArray();
+                $id['role_id'] = $id['id'];
+                unset($id['id']);
+                // we need to wrap the id in an array
+                // because the attach method expects the related_id
+                // to be nested in an array
+                $user->roles()->attach([$id]);
+            }
+        }
+
     }
 
     private function sendWelcomeEmail(): bool

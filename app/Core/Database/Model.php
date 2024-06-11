@@ -110,12 +110,13 @@ class Model implements Arrayable, JsonSerializable
 
     // NOTE: we can then refactor the code to make it abstract and reusable
     // TODO: Problem to solve, allow for n number of nested relations, recursively
-    // TODO: need a better way to store the current relation name & id, because there might be multiple in a row
     public function hydrate(array $results): ModelCollection
     {
         $models = [];
 
-        foreach ($results as $row) {
+        $lastRowsLookup = [];
+
+        foreach ($results as $number => $row) {
             $modelId = $row['id'];
 
             $modelIndex = $this->searchModelsById($models, $modelId);
@@ -137,6 +138,10 @@ class Model implements Arrayable, JsonSerializable
                         ? $parts[0]
                         : $this->convertToSingular($parts[0]);
 
+                    if ($value === null) {
+                        continue;
+                    }
+
                     if ($relation !== 'pivot' && end($parts) === 'id' && count($parts) > 1) {
 
                         $relatedModelClass = "App\\Models\\" . ucfirst($this->convertToSingular($parts[0]));
@@ -155,26 +160,43 @@ class Model implements Arrayable, JsonSerializable
                                 $this->addRelationToLookup($currentLookup, $relation, $relatedModel);
                             }
                         } else if (count($parts) === 3) {
-                            // Nested relation (e.g., products_details_id)
-                            $relatedModel = $this->checkForRelation($relation, $currentLookup);
-                            $nestedRelation = method_exists($relatedModel, $parts[1])
-                                ? $parts[1]
-                                : $this->convertToSingular($parts[1]);
+                            // make sure the nested relation wasn't already set on a previous iteration
+                            // check both singular and plural forms
+                            $existingRelation = $this->searchLookupReturnModel($lastRowsLookup, $this->convertToSingular($parts[1]));
+                            if (!$existingRelation) {
+                                $existingRelation = $this->searchLookupReturnModel($lastRowsLookup, $this->convertToPlural($parts[1]));
+                            }
+                            // we need to allow for the fact the some of the time, we might be getting the same model
+                            // on subsequent iterations, for example if 2 products have the same category
+                            // in this case we need to allow it, so what we can check is that $relatedModel->id is different
+                            // from the $related model in the lookup
+                            if ($existingRelation) {
+                                $lastKey = array_key_last($currentLookup);
+                                $currentLastItem = end($currentLookup[$lastKey]);
+                                $lastItem = end($lastRowsLookup[$lastKey]);
+                            }
+                            if (!$existingRelation || $existingRelation->id !== $value || $lastItem->id !== $currentLastItem->id) {
+                                // don't need to create a new relation, just set the property
+                                $nestedRelation = method_exists($relatedModel, $parts[1])
+                                    ? $parts[1]
+                                    : $this->convertToSingular($parts[1]);
 
-                            if (!$this->relationModelExists($relatedModel, $nestedRelation, $value)) {
-                                $nestedRelationModelClass = "App\\Models\\" . ucfirst($nestedRelation);
-                                $nestedRelationModel = new $nestedRelationModelClass;
-                                $nestedRelationModel->id = $value;
+                                if (!$this->relationModelExists($relatedModel, $nestedRelation, $value)) {
+                                    $nestedRelationModelClass = "App\\Models\\" . ucfirst($nestedRelation);
+                                    $nestedRelationModel = new $nestedRelationModelClass;
+                                    $nestedRelationModel->id = $value;
 
-                                if (!isset($relatedModel->relations[$nestedRelation])) {
-                                    $relatedModel->relations[$nestedRelation] = [];
+                                    if (!isset($relatedModel->relations[$nestedRelation])) {
+                                        $relatedModel->relations[$nestedRelation] = [];
+                                    }
+
+                                    $relatedModel->relations[$nestedRelation][] = $nestedRelationModel;
+                                    $this->addRelationToLookup($currentLookup, $nestedRelation, $nestedRelationModel);
                                 }
-
-                                $relatedModel->relations[$nestedRelation][] = $nestedRelationModel;
-                                $this->addRelationToLookup($currentLookup, $nestedRelation, $nestedRelationModel);
                             }
                         } else {
                             // TODO: handle recursive n number of nested relations
+                            //  I think we can use the $lastRowLookup & $currentLookup to handle this
                         }
                     } else if ($relation === 'pivot') {
                         $pivotColumns[$column] = $value;
@@ -183,10 +205,10 @@ class Model implements Arrayable, JsonSerializable
                     }
                 }
             }
-
             if (!empty($pivotColumns)) {
                 $this->mapPivotColumns($pivotColumns, $currentLookup);
             }
+            $lastRowsLookup = $currentLookup;
         }
 
         return new ModelCollection($models);

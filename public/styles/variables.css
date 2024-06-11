@@ -1,5 +1,6 @@
 :root {
     --white-color: #FFFFFF;
+    --very-light-blue-color: #e6f7ff;
     --pale-blue-color: #3eb7ff;
     --blue-color: #00aced;
     --link-blue-color: #3b82f6;
@@ -12,6 +13,7 @@
     --light-grey-color: #d3d3d3;
     --mid-grey-color: #8C8C8C;
     --grey-color: #595959;
+    --charcol-grey-color: #343a40;
     --dark-grey-color: #1e1e1e;
     --button-orange-color: #f69679;
     --mid-orange-color: #E55D1B;
@@ -46,4 +48,5 @@
     --small-gap: 5px;
     --default-gap: 10px;
     --large-gap: 15px;
+    --extra-large-gap: 20px;
 }

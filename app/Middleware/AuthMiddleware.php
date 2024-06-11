@@ -13,6 +13,7 @@ class AuthMiddleware extends Middleware
     public function handle(Request $request, Closure $next): Closure
     {
         if (!auth()->check()) {
+            session()->flash('flash-message', 'You must be logged in to view this page.');
             redirect()->route('login.index');
         }
 

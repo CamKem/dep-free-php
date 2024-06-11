@@ -26,11 +26,18 @@ class Validator
 
         if (!empty($this->errors)) {
             // TODO: work out a way to return the errors instead of throwing an exception
-            //return $this->errors;
-            throw new ValidationException($this->errors);
+            return $this->errors;
+            //throw new ValidationException($this->errors);
         }
 
         return $data;
+    }
+
+    protected function array(array $data, string $field)
+    {
+        if (!is_array($data[$field])) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be an array.';
+        }
     }
 
     protected function required(array $data, string $field)

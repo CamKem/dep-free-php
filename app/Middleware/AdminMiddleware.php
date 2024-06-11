@@ -13,8 +13,9 @@ class AdminMiddleware extends Middleware
     #[Override]
     public function handle(Request $request, Closure $next): Closure
     {
-        if (!auth()->check() || !auth()->user()?->isAdmin()) {
-            abort(403);
+        if (!auth()->user()->isAdmin()) {
+            session()->flash('flash-message', 'You are not authorized to view this page.');
+            redirect()->route('home');
         }
 
         Template::layout('layouts.admin');

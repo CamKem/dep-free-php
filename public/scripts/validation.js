@@ -122,7 +122,7 @@ export default class FormValidator {
                 errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
-            if (field.value.length < 3) {
+            if (field.value.length < 3 && field.tagName !== 'SELECT') {
                 this.addInvalidClass(field);
                 errorMessage = `${field.title} must be at least 3 characters long`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);

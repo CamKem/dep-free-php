@@ -3,6 +3,7 @@
 namespace app\Core\Database;
 
 use App\Core\Collecting\ModelCollection;
+use App\Core\Collecting\Paginator;
 use app\Core\Database\Relations\BelongsTo;
 use app\Core\Database\Relations\HasMany;
 use app\Core\Database\Relations\HasManyThrough;
@@ -15,11 +16,13 @@ class QueryBuilder
     public Database $db;
     protected string $query;
     protected string $table;
-    protected string $select = "*";
+    protected array $select = ["*"];
     protected array $conditions = [];
     protected array $orConditions = [];
     protected array $orderBy = [];
     protected array $limit = [];
+    protected array $offset = [];
+    protected array $joins = [];
     protected array $updateValues = [];
     protected array $with = [];
     protected ?Relation $relation = null;
@@ -28,7 +31,7 @@ class QueryBuilder
     {
         $this->table = $model->getTable();
         $this->db = app(Database::class);
-        $this->query = "SELECT {$this->select} FROM {$this->table}";
+        $this->query = "SELECT ".implode($this->select)." FROM {$this->table}";
     }
 
     public function setRelation(Relation $relation): static
@@ -44,16 +47,28 @@ class QueryBuilder
         return $this;
     }
 
-    public function join(string $table, string $first, string $operator, string $second): static
+    public function join(string $table, string $first, string $operator, string $second, string $type = 'LEFT'): static
     {
-        $this->query .= " INNER JOIN {$table} ON {$first} {$operator} {$second}";
+        $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
         return $this;
     }
 
-    public function select(string|array ...$columns): static
+    public function select(string|array $columns): static
     {
-        $this->select = implode(", ", $columns);
-        $this->query = str_replace("SELECT *", "SELECT {$this->select}", $this->query);
+
+        // If the SELECT clause has already been modified, append the new columns
+        if ($this->select !== ['*']) {
+            if (is_array($columns)) {
+                $this->select = array_merge($this->select, $columns);
+            } else {
+                $this->select[] = $columns;
+            }
+        } else if (is_array($columns)) {
+            $this->select = $columns;
+        } else {
+            $this->select = [$columns];
+        }
+
         return $this;
     }
 
@@ -67,6 +82,15 @@ class QueryBuilder
     public function limit(int $limit): static
     {
         $this->limit[] = $limit;
+        return $this;
+    }
+
+    // offset is used to skip a number of rows before starting to return rows
+    // in a query it will look like this:
+    // SELECT * FROM table_name LIMIT 5 OFFSET 2;
+    public function offset(int $offset): static
+    {
+        $this->offset[] = $offset;
         return $this;
     }
 
@@ -147,8 +171,10 @@ class QueryBuilder
             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
         }, $columns);
 
-        $this->select("{$this->table}.*, ".implode(", ", $prefixedColumns));
-        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+        // add the main table select to the start of the $prefixedColumns array ("{$this->table}.*")
+        array_unshift($prefixedColumns, "{$this->table}.*");
+
+        $this->select($prefixedColumns);
         return array($relatedTable, $foreignColumn);
     }
 
@@ -175,7 +201,9 @@ class QueryBuilder
                         $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
                             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
                         }, $columns);
-                        //$this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+
+                        // add the parent table select to the start of the $prefixedColumns array ("{$parentTable}.*")
+                        array_unshift($prefixedColumns, "{$parentTable}.*");
 
                         // if relation method on the model is defined with withPivot = true, then select the pivot columns
                         if ($relation->withPivot) {
@@ -183,10 +211,10 @@ class QueryBuilder
                             $prefixedPivotColumns = array_map(static function ($column) use ($pivotTable, $relation) {
                                 return "{$pivotTable}.{$column['Field']} as pivot_{$column['Field']}";
                             }, $pivotColumns);
-                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns) . ", " . implode(", ", $prefixedPivotColumns));
-                        } else {
-                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+                            // add the pivot table columns to the end of the $prefixedColumns array
+                            array_push($prefixedColumns, ...$prefixedPivotColumns);
                         }
+                        $this->select($prefixedColumns);
 
                         $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", "=", "{$parentTable}.id");
                         $this->join($relatedTable, "{$relatedTable}.id", "=", "{$pivotTable}.{$relatedColumn}");
@@ -204,8 +232,26 @@ class QueryBuilder
             }
         }
 
+        // ensure the select array only has unique values
+        $this->select = array_unique($this->select);
+        // handle select clause
+        $this->query = str_replace("SELECT *", "SELECT " . implode(", ", $this->select), $this->query);
+
+
+        // handle join clause
+        if (!empty($this->joins)) {
+            // ensure they joins are unique
+            $this->joins = array_unique($this->joins);
+            foreach ($this->joins as $join) {
+                // search the query for the join needle and ensure it's not already in the query
+                if (!str_contains($this->query, $join)) {
+                    $this->query .= " {$join}";
+                }
+            }
+        }
+
         // handle where clause
-        if (!empty($this->conditions)) {
+        if (!empty($this->conditions) && !str_contains($this->query, 'WHERE')) {
             $this->query .= " WHERE ";
             foreach ($this->conditions as $index => $condition) {
                 if ($index > 0) {
@@ -216,7 +262,7 @@ class QueryBuilder
         }
 
         // handle orWhere clause
-        if (!empty($this->orConditions)) {
+        if (!empty($this->orConditions) && !str_contains($this->query, 'OR')) {
             $this->query .= " OR ";
             foreach ($this->orConditions as $index => $condition) {
                 if ($index > 0) {
@@ -227,7 +273,7 @@ class QueryBuilder
         }
 
         // handle order by clause
-        if (!empty($this->orderBy)) {
+        if (!empty($this->orderBy) && !str_contains($this->query, 'ORDER BY')) {
             $this->query .= " ORDER BY ";
             foreach ($this->orderBy as $index => $order) {
                 if ($index > 0) {
@@ -238,8 +284,13 @@ class QueryBuilder
         }
 
         // handle limit clause
-        if (!empty($this->limit)) {
+        if (!empty($this->limit) && !str_contains($this->query, 'LIMIT')) {
             $this->query .= " LIMIT {$this->limit[0]}";
+        }
+
+        // handle offset clause
+        if (!empty($this->offset) && !str_contains($this->query, 'OFFSET')) {
+            $this->query .= " OFFSET {$this->offset[0]}";
         }
 
         return $this->query;
@@ -276,6 +327,20 @@ class QueryBuilder
             $column = "{$this->relation->getRelatedTable()}.{$column}";
         }
         return $column;
+    }
+
+    /**
+     * @return void
+     */
+    public function clearConditions(): void
+    {
+        $this->joins = [];
+        $this->select = ["*"];
+        $this->conditions = [];
+        $this->orConditions = [];
+        $this->orderBy = [];
+        $this->limit = [];
+        $this->offset = [];
     }
 
     protected function getConditionsFromAttributes(): void
@@ -384,6 +449,34 @@ class QueryBuilder
                 $this->toSql(),
                 $this->getBindings(),
             )->count()) > 0;
+    }
+
+    public function paginate(int $perPage = 10): Paginator
+    {
+        $currentPage = (int)request()->get('page', 1) >= 1 ? request()->get('page', 1) : 1;
+        $bindings = $this->getBindings();
+
+        $totalRows = $this->db->execute(
+            $this->toSql(),
+            $bindings,
+        )->count();
+
+        $lastPage = round(ceil($totalRows / $perPage));
+        $offset = max(0, ((min($currentPage, $lastPage) - 1) * $perPage));
+
+        $this->clearConditions();
+
+        $this->limit($perPage);
+        $this->offset($offset);
+
+        $items = $this->model->hydrate(
+            $this->db->execute(
+                $this->toSql(),
+                $bindings,
+            )->get()
+        );
+
+        return new Paginator($items, $currentPage, $lastPage);
     }
 
 }

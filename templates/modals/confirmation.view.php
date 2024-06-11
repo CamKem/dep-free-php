@@ -1,14 +1,14 @@
 <script type="module">
-    import Modal from './scripts/modal.js';
-    let modal = new Modal('<?= $action ?>');
+    import Modal from '/scripts/modal.js';
     document.addEventListener('openModal', (event) => {
-        if (event.detail.action === 'open') {
+        if (event.detail.action === '<?= $action ?>') {
+            let modal = new Modal('<?= $action ?>', event.detail.form);
             modal.openModal();
         }
     });
 </script>
 
-<div id="<?= $action ?>-confirmation-modal" class="modal">
+<div id="<?= $action ?>-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
         <h2 class="general-heading">Confirm <?= ucfirst($action) ?></h2>

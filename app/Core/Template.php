@@ -36,6 +36,17 @@ class Template
 
     public function render(): string
     {
+        // TODO: implement config caching
+        if (config('template.cache')) {
+            $cache = new Cache($filePath);
+            if ($cache->isFresh()) {
+                return $cache->read();
+            }
+            $content = $this->compileTemplate($filePath);
+            $cache->write($content);
+            return $content;
+        }
+
         $content = $this->compileTemplate($this->content);
         if (!$this->isNestedView && self::$layout) {
             $layout = $this->compileTemplate(self::$layout);
@@ -50,6 +61,7 @@ class Template
         $view = new self();
         $view->isNestedView = $nested;
         $view->content($file);
+
         foreach ($variables as $key => $value) {
             $view->set($key, $value);
         }
@@ -68,7 +80,7 @@ class Template
 
         ob_start();
         extract($this->variables, \EXTR_SKIP);
-        require_once($filePath);
+        require($filePath);
         return ob_get_clean();
     }
 

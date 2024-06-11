@@ -10,7 +10,7 @@ class Route
 {
     protected string $uri;
     protected string|Closure $controller;
-    protected string|null $action;
+    protected ?string $action;
     protected array $middleware = [];
     protected array $parameters = [];
     protected string $method;

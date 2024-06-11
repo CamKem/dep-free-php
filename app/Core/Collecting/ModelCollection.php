@@ -2,9 +2,11 @@
 
 namespace App\Core\Collecting;
 
-use app\Core\Database\Model;
+use App\Core\Database\Model;
+use ArrayIterator;
 use Iterator;
 use Override;
+use stdClass;
 
 class ModelCollection extends Collection implements Iterator
 {
@@ -38,6 +40,21 @@ class ModelCollection extends Collection implements Iterator
             }
         }
         return $array;
+    }
+
+    #[Override]
+    public function contains($value): bool
+    {
+        foreach ($this->items as $item) {
+            if ($item instanceof Model) {
+                foreach ($item->toArray() as $key => $val) {
+                    if ($val === $value) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     // if there is only 1 item in the collection, allow property access
@@ -78,6 +95,11 @@ class ModelCollection extends Collection implements Iterator
     public function getItems(): array
     {
         return $this->items;
+    }
+
+    public function getIterator(): ArrayIterator
+    {
+        return new ArrayIterator($this->items);
     }
 
 }

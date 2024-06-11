@@ -2,3 +2,311 @@
 @import url('../general.css');
 @import url('../forms.css');
 @import url('../footer-bottom.css');
+@import url('../order.css');
+@import url('../cart.css');
+@import url('../dashboard.css');
+@import url('../search.css');
+@import url('../modal.css');
+@import url('../flash.css');
+@import url('../pagination.css');
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    flex-direction: column;
+}
+
+/* Admin header styles */
+.admin-header {
+    background: var(--light-blue-color);
+    color: var(--white-color);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Admin nav styles */
+.fixed {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+#menu-icon {
+    font-size: var(--font-large);
+}
+
+.admin-nav {
+    flex-direction: column;
+    background-color: var(--blue-color);
+    color: var(--white-color);
+    padding: var(--default-padding) 0;
+}
+
+.admin-nav ul {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.admin-nav ul li {
+    font-size: var(--font-small);
+    padding: var(--small-padding) var(--large-padding);
+    width: 296px;
+    border-bottom: var(--thin-border) solid rgba(255, 255, 255, 0.5);
+}
+
+.admin-nav ul li:hover {
+    border-bottom: var(--thin-border) solid var(--white-color);
+}
+
+.nav-links-logout::before {
+    content: "\f023";
+    font-family: "FontAwesome", serif;
+    margin-right: var(--default-margin);
+}
+
+.nav-links::before {
+    content: "\f10c";
+    font-family: "FontAwesome", serif;
+    font-size: var(--font-extra-small);
+    margin-right: var(--default-margin);
+}
+
+/* Logo styles */
+.logo > img {
+    width: 290px;
+    height: 40px;
+    vertical-align: middle;
+}
+
+.admin-breadcrumbs {
+    color: var(--white-color);
+    background: var(--charcol-grey-color);
+    padding: var(--default-padding);
+    width: 100%;
+}
+
+.breadcrumbs {
+    display: inline-block;
+    color: var(--white-color);
+    font-weight: var(--font-extra-small);
+}
+
+.breadcrumb__item {
+    margin: var(--small-margin) var(--default-margin);
+}
+
+.admin-content {
+    flex-grow: 1;
+    padding: 1rem;
+    border-bottom: var(--thin-border) solid var(--light-grey-color);
+}
+
+/* Dashboard styles */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: var(--extra-large-gap);
+    padding: var(--large-padding);
+    height: 100%;
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+        padding: var(--default-padding) 0;
+    }
+}
+
+.dashboard-card {
+    background-color: var(--very-light-grey-color);
+    border: var(--thin-border) solid var(--light-grey-color);
+    padding: 20px;
+    border-radius: var(--small-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 300px;
+    font-size: var(--font-large);
+    font-weight: bold;
+    color: var(--mid-blue-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: var(--default-gap);
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard-card {
+        height: 200px;
+    }
+}
+
+.dashboard-card:hover {
+    background-color: var(--very-light-blue-color);
+}
+
+.dashboard-card div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--extra-large-gap);
+}
+
+.dashboard-card i {
+    font-size: calc(var(--font-large) * 2);
+    color: var(--mid-blue-color);
+}
+
+.dashboard-card h3 {
+    color: var(--mid-blue-color);
+}
+
+.dashboard-card > span {
+    font-size: calc(var(--font-large) * 1.5);
+    color: var(--mid-grey-color);
+}
+
+/* Form styles */
+.admin-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--default-margin);
+    width: 100%;
+    gap: var(--default-gap);
+    margin-bottom: var(--default-margin);
+}
+
+.admin-table {
+    border-collapse: unset;
+    border-radius: var(--medium-radius);
+    border: 1px solid var(--light-grey-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.admin-table-heading {
+    background-color: var(--light-grey-color);
+    color: var(--mid-blue-color);
+    font-weight: bold;
+    padding: var(--default-padding);
+    font-size: var(--font-small);
+    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
+    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
+}
+
+.admin-heading-row {
+    background-color: var(--light-grey-color);
+    padding: var(--default-padding);
+    border-collapse: unset;
+    border-bottom: 1px solid var(--light-grey-color); /* Optional: Border around cells */
+}
+
+.admin-heading-row > th {
+    background-color: var(--light-grey-color);
+    padding: var(--default-padding) var(--small-padding);
+}
+
+.admin-table-row {
+    padding: var(--default-padding);
+    border-collapse: unset;
+    border-top-left-radius: calc((var(--medium-radius) / 5) * 4);
+    border-top-right-radius: calc((var(--medium-radius) / 5) * 4);
+}
+
+.admin-table-row > td {
+    padding: var(--default-padding) var(--small-padding);
+}
+
+.admin-table-row:nth-child(odd) {
+    background-color: var(--very-light-grey-color);
+}
+
+.admin-table-row:hover {
+    background-color: var(--very-light-blue-color);
+}
+
+/* show user roles */
+.content__list {
+    padding: var(--default-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--large-gap);
+}
+
+/* edit user styles */
+/* Style the select box */
+#roles {
+    width: 100%; /* Set width to 100% */
+    border: 1px solid var(--light-grey-color); /* Add a border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: var(--white-color);
+    font-size: var(--font-small);
+    appearance: none; /* Remove default appearance */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+}
+
+/* Change border color on focus */
+#roles:focus {
+    border-color: #007bff; /* Blue border on focus */
+}
+
+/* Style individual options */
+#roles option {
+    padding: var(--default-padding); /* Add some padding */
+    background-color: var(--white-color);
+}
+
+/* Style selected options */
+#roles option:checked {
+    background-color: var(--blue-color); /* Blue background for selected options */
+    color: var(--white-color); /* White text color for selected options */
+}
+
+/* Change background on hover */
+#roles option:hover {
+    color: var(--mid-blue-color);
+    background-color: var(--very-light-blue-color);
+}
+
+#roles option:checked::before {
+    content: "\f10c";
+    font-family: "FontAwesome", serif;
+    font-size: var(--font-extra-small);
+    margin-right: var(--default-margin);
+}
+
+/* Change text color on focus */
+#roles:focus option {
+    color: #000; /* Black text on focus */
+}
+
+/* order status form */
+.status-form {
+    display: inline-block;
+    padding: var(--small-padding);
+    background-color: var(--very-light-grey-color);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+}
+
+.status-form > select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--small-radius);
+    background-color: var(--very-light-blue-color);
+    font-size: var(--font-small);
+    appearance: none;
+    outline: none;
+    transition: border-color 0.3s ease;
+}

@@ -63,7 +63,7 @@ class OrderController extends Controller
 
         $products = (new Product())
             ->query()
-            ->select('id', 'price')
+            ->select(['id', 'price'])
             ->whereIn('id', $ids)
             ->get();
 

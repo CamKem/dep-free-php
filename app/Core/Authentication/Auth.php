@@ -101,10 +101,14 @@ class Auth
             $user = (new User())->query()
                 ->find($userId)
                 ->first();
-            if (password_verify($token, $user->remember_token)) {
+            if ($user && password_verify($token, $user->remember_token)) {
                 $this->login($user);
+            } else {
+                // destroy the cookie
+                setcookie('remember', '', time() - 3600);
             }
         } else {
+            // destroy the cookie
             setcookie('remember', '', time() - 3600);
         }
     }

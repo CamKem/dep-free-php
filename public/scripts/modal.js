@@ -1,7 +1,8 @@
 export default class Modal {
-    constructor(action) {
+    constructor(action, form) {
         this.action = action;
-        let elementId = action + "-confirmation-modal";
+        this.form = form
+        let elementId = action + "-modal";
         this.modal = document.getElementById(elementId);
 
         if (this.modal) {
@@ -24,20 +25,28 @@ export default class Modal {
 
     openModal() {
         this.modal.style.display = "block";
+        this.handleEnter();
     }
 
     closeModal() {
         this.modal.style.display = "none";
     }
 
+    handleEnter() {
+        this.form.addEventListener('keydown', (event) => {
+            event.preventDefault();
+            if (event.key === 'Enter') {
+                this.confirmAction();
+            }
+        })
+    }
+
     confirmAction() {
         let confirm = new CustomEvent('confirmed', {
-            bubbles: true,
-            detail: {
-                action: this.action
-            },
+            bubbles: false,
+            detail: {action: this.action},
         });
-        this.modal.dispatchEvent(confirm);
+        this.form.dispatchEvent(confirm);
         return this.closeModal();
     }
 
