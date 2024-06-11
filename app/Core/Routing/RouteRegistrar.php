@@ -39,9 +39,13 @@ class RouteRegistrar
         return $this;
     }
 
-    public function middleware(string $middleware): self
+    public function middleware(string|array $middleware): self
     {
-        $this->route->setMiddleware([$middleware]);
+        if (is_string($middleware)) {
+            $middleware = [$middleware];
+        }
+
+        $this->route->setMiddleware($middleware);
         return $this;
     }
 
