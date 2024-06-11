@@ -1,3 +1,9 @@
+<script type="module">
+    import ModalManager from "/scripts/modalManager.js";
+
+    new ModalManager('delete-form', 'delete');
+</script>
+<?= add('modals.confirmation', ['action' => 'delete']) ?>
 <section>
     <?php if ($orders->isEmpty()): ?>
         <p class="text-section">No orders are currently found available.</p>
@@ -29,7 +35,7 @@
                         <form action="<?= route('admin.orders.show', ['id' => $order->id]) ?>"
                               name="user-edit"
                               method="get">
-                            <button>Edit</button>
+                            <button>View</button>
                         </form>
                         <form method="post"
                               id="delete-form-<?= $order->id ?>"
