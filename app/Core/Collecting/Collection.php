@@ -71,6 +71,11 @@ class Collection implements Arrayable, JsonSerializable
         return new static(array_combine($keys, $items));
     }
 
+    public function contains(mixed $value): bool
+    {
+        return in_array($value, $this->items, true);
+    }
+
     public function merge(mixed $items): self
     {
         $validatedItems = array_filter($items, $this->getArrayableItems($items));
