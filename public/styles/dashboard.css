@@ -61,9 +61,10 @@
 }
 
 .form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--default-gap)
+    display: inline-flex;
+    justify-content: space-between;
+    gap: var(--default-gap);
+    align-items: center;
 }
 
 .delete-button {
