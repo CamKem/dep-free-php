@@ -110,7 +110,6 @@ class Model implements Arrayable, JsonSerializable
 
     // NOTE: we can then refactor the code to make it abstract and reusable
     // TODO: Problem to solve, allow for n number of nested relations, recursively
-    // TODO: need a better way to store the current relation name & id, because there might be multiple in a row
     public function hydrate(array $results): ModelCollection
     {
         $models = [];
