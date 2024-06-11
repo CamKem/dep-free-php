@@ -6,6 +6,7 @@
 @import url('../search.css');
 @import url('../modal.css');
 @import url('../flash.css');
+@import url('../order.css');
 
 body {
     font-family: 'Arial', sans-serif;
@@ -244,4 +245,60 @@ body {
 
 .pagination-link:hover {
     background-color: var(--very-light-blue-color);
+}
+
+/* show user roles */
+.roles {
+    padding: var(--default-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--large-gap);
+}
+
+/* edit user styles */
+/* Style the select box */
+#roles {
+    width: 100%; /* Set width to 100% */
+    border: 1px solid var(--light-grey-color); /* Add a border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: var(--white-color);
+    font-size: var(--font-small);
+    appearance: none; /* Remove default appearance */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+}
+
+/* Change border color on focus */
+#roles:focus {
+    border-color: #007bff; /* Blue border on focus */
+}
+
+/* Style individual options */
+#roles option {
+    padding: var(--default-padding); /* Add some padding */
+    background-color: var(--white-color);
+}
+
+/* Style selected options */
+#roles option:checked {
+    background-color: var(--blue-color); /* Blue background for selected options */
+    color: var(--white-color); /* White text color for selected options */
+}
+
+/* Change background on hover */
+#roles option:hover {
+    color: var(--mid-blue-color);
+    background-color: var(--very-light-blue-color);
+}
+
+#roles option:checked::before {
+    content: "\f10c";
+    font-family: "FontAwesome", serif;
+    font-size: var(--font-extra-small);
+    margin-right: var(--default-margin);
+}
+
+/* Change text color on focus */
+#roles:focus option {
+    color: #000; /* Black text on focus */
 }

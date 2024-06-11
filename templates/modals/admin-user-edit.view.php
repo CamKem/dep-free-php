@@ -65,7 +65,7 @@
                 >
                     <?php foreach ($roles as $role): ?>
                         <option value="<?= $role->id ?>"
-                            <?php if ($user->roles->contains($role->id)): ?>
+                            <?php if ($user->roles?->contains($role->id)): ?>
                                 selected
                             <?php endif; ?>
                         >

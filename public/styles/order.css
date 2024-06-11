@@ -30,6 +30,10 @@
     padding: var(--small-padding);
 }
 
+content__details {
+    padding: var(--default-padding);
+}
+
 .content__details li {
     display: inline-flex;
     align-items: center;
@@ -51,8 +55,8 @@
 .content__details p, .order__products p {
     font-size: var(--font-small);
     color: var(--mid-grey-color);
-    margin-bottom: var(--small-margin);
-    margin-top: var(--small-margin);
+    margin-bottom: var(--default-margin);
+    margin-top: var(--default-margin);
     padding-left: var(--default-padding);
 }
 
