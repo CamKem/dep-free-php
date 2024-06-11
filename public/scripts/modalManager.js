@@ -28,38 +28,30 @@ class ModalHandler {
 
     handleModal() {
         this.openModalOnSubmit();
-        this.handleEnter();
         this.submitOnConfirm();
     }
 
     openModalOnSubmit() {
         this.form.addEventListener('submit', (event) => {
             event.preventDefault();
-            this.createEvent('openModal', this.action);
+            this.createEvent('openModal', this.action, this.form);
         });
     }
 
     submitOnConfirm() {
-        document.addEventListener('confirmed', (event) => {
+        this.form.addEventListener('confirmed', (event) => {
             if (event.detail.action === this.action) {
                 this.form.submit();
             }
         });
     }
 
-    handleEnter() {
-        this.form.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                this.createEvent('confirmed', this.action);
-            }
-        })
-    }
-
-    createEvent(name, action) {
+    createEvent(name, action, form) {
         let event = new CustomEvent(name, {
             bubbles: true,
-            detail: {action: action}
+            detail: {action: action, form: form}
         });
         this.form.dispatchEvent(event);
     }
+
 }
