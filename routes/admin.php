@@ -47,172 +47,172 @@ use App\Core\Routing\RouteProxy as Route;
 // Dashboard
 Route::get('/admin')
     ->controller(DashboardController::class)
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.index');
 
 // Users
 Route::get('/admin/users')
     ->controller([UserController::class, 'index'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.index');
 Route::get('/admin/users/{id}')
     ->controller([UserController::class, 'show'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.show');
 Route::post('/admin/users')
     ->controller([UserController::class, 'store'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.store');
 Route::get('/admin/users/{id}/edit')
     ->controller([UserController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.edit');
 Route::put('/admin/users/{id}')
     ->controller([UserController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.update');
 Route::delete('/admin/users/{id}')
     ->controller([UserController::class, 'destroy'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.users.destroy');
 
 // Products
 Route::get('/admin/products')
     ->controller([ProductController::class, 'index'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.index');
 Route::get('/admin/products/{id}')
     ->controller([ProductController::class, 'show'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.show');
 Route::get('/admin/products/create')
     ->controller([ProductController::class, 'create'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.create');
 Route::post('/admin/products')
     ->controller([ProductController::class, 'store'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.store');
 Route::get('/admin/products/{id}/edit')
     ->controller([ProductController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.edit');
 Route::put('/admin/products/{id}')
     ->controller([ProductController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.update');
 Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.products.destroy');
 
 // Orders
 Route::get('/admin/orders')
     ->controller([OrderController::class, 'index'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.orders.index');
 
 Route::get('/admin/orders/{id}')
     ->controller([OrderController::class, 'show'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.orders.show');
 
 Route::get('/admin/orders/{id}/edit')
     ->controller([OrderController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.orders.edit');
 
 Route::put('/admin/orders/{id}')
     ->controller([OrderController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.orders.update');
 
 Route::delete('/admin/orders/{id}')
     ->controller([OrderController::class, 'destroy'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.orders.destroy');
 
 // Categories
 Route::get('/admin/categories')
     ->controller([CategoryController::class, 'index'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.index');
 
 Route::get('/admin/categories/create')
     ->controller([CategoryController::class, 'create'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.create');
 
 Route::post('/admin/categories')
     ->controller([CategoryController::class, 'store'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.store');
 
 Route::get('/admin/categories/{id}/edit')
     ->controller([CategoryController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.edit');
 
 Route::put('/admin/categories/{id}')
     ->controller([CategoryController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.update');
 
 Route::delete('/admin/categories/{id}')
     ->controller([CategoryController::class, 'destroy'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.categories.destroy');
 
 // Setting - add roles, update password, change profile
 Route::get('/admin/settings')
     ->controller(SettingsController::class)
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.settings.index');
 
 // Role Settings
 //The table will show all the details needed for the roles so we don't need a show route
 Route::get('/admin/settings/roles')
     ->controller([RoleController::class, 'index'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.index');
 
 Route::get('/admin/settings/roles/create')
     ->controller([RoleController::class, 'create'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.create');
 
 Route::post('/admin/settings/roles')
     ->controller([RoleController::class, 'store'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.store');
 
 Route::get('/admin/settings/roles/{id}/edit')
     ->controller([RoleController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.edit');
 
 Route::put('/admin/settings/roles/{id}')
     ->controller([RoleController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.update');
 
 Route::delete('/admin/settings/roles/{id}')
     ->controller([RoleController::class, 'destroy'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.roles.destroy');
 
 // Profile Settings
 Route::get('/admin/settings/profile')
     ->controller([ProfileController::class, 'show'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.profile.show');
 
 Route::get('/admin/settings/profile/edit')
     ->controller([ProfileController::class, 'edit'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.profile.edit');
 
 Route::put('/admin/settings/profile')
     ->controller([ProfileController::class, 'update'])
-    ->middleware('admin')
+    ->middleware(['auth', 'admin'])
     ->name('admin.profile.update');
