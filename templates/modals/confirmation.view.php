@@ -1,7 +1,7 @@
 <script type="module">
     import Modal from '/scripts/modal.js';
     document.addEventListener('openModal', (event) => {
-        if (event.detail.action === 'open') {
+        if (event.detail.action === '<?= $action ?>') {
             let modal = new Modal('<?= $action ?>', event.detail.form);
             modal.openModal();
         }
