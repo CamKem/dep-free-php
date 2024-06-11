@@ -22,6 +22,7 @@ class QueryBuilder
     protected array $orderBy = [];
     protected array $limit = [];
     protected array $offset = [];
+    protected array $joins = [];
     protected array $updateValues = [];
     protected array $with = [];
     protected ?Relation $relation = null;
@@ -48,7 +49,7 @@ class QueryBuilder
 
     public function join(string $table, string $first, string $operator, string $second, string $type = 'LEFT'): static
     {
-        $this->query .= " {$type} JOIN {$table} ON {$first} {$operator} {$second}";
+        $this->joins[] = "{$type} JOIN {$table} ON {$first} {$operator} {$second}";
         return $this;
     }
 
@@ -236,8 +237,21 @@ class QueryBuilder
         // handle select clause
         $this->query = str_replace("SELECT *", "SELECT " . implode(", ", $this->select), $this->query);
 
+
+        // handle join clause
+        if (!empty($this->joins)) {
+            // ensure they joins are unique
+            $this->joins = array_unique($this->joins);
+            foreach ($this->joins as $join) {
+                // search the query for the join needle and ensure it's not already in the query
+                if (!str_contains($this->query, $join)) {
+                    $this->query .= " {$join}";
+                }
+            }
+        }
+
         // handle where clause
-        if (!empty($this->conditions)) {
+        if (!empty($this->conditions) && !str_contains($this->query, 'WHERE')) {
             $this->query .= " WHERE ";
             foreach ($this->conditions as $index => $condition) {
                 if ($index > 0) {
@@ -248,7 +262,7 @@ class QueryBuilder
         }
 
         // handle orWhere clause
-        if (!empty($this->orConditions)) {
+        if (!empty($this->orConditions) && !str_contains($this->query, 'OR')) {
             $this->query .= " OR ";
             foreach ($this->orConditions as $index => $condition) {
                 if ($index > 0) {
@@ -259,7 +273,7 @@ class QueryBuilder
         }
 
         // handle order by clause
-        if (!empty($this->orderBy)) {
+        if (!empty($this->orderBy) && !str_contains($this->query, 'ORDER BY')) {
             $this->query .= " ORDER BY ";
             foreach ($this->orderBy as $index => $order) {
                 if ($index > 0) {
@@ -270,12 +284,12 @@ class QueryBuilder
         }
 
         // handle limit clause
-        if (!empty($this->limit)) {
+        if (!empty($this->limit) && !str_contains($this->query, 'LIMIT')) {
             $this->query .= " LIMIT {$this->limit[0]}";
         }
 
         // handle offset clause
-        if (!empty($this->offset)) {
+        if (!empty($this->offset) && !str_contains($this->query, 'OFFSET')) {
             $this->query .= " OFFSET {$this->offset[0]}";
         }
 
@@ -320,6 +334,8 @@ class QueryBuilder
      */
     public function clearConditions(): void
     {
+        $this->joins = [];
+        $this->select = ["*"];
         $this->conditions = [];
         $this->orConditions = [];
         $this->orderBy = [];
