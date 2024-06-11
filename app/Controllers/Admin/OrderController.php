@@ -11,16 +11,21 @@ use App\Models\Product;
 class OrderController
 {
 
-    public function index(): Template
+    public function index(Request $request): Template
     {
+        $orders = (new Order())
+            ->query()
+            ->with('user')
+            ->with('products')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $orders->where('status', 'like', "%{$request->get('search')}%");
+        }
+
         return view('admin.orders.index', [
             'title' => 'Orders',
-            'orders' => (new Order())
-                ->query()
-                ->with('user')
-                ->with('products')
-                ->orderBy('created_at', 'desc')
-                ->paginate(8),
+            'orders' => $orders->paginate(15),
         ]);
     }
 

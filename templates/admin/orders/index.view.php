@@ -5,14 +5,28 @@
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <section>
+    <div class="admin-form-actions">
+        <span></span>
+        <form class="search-form" action="<?= route('admin.orders.index') ?>"
+              method="get">
+            <label for="search-bar" class="sr-only">Search users</label>
+            <input type="text" name="search" id="search-bar"
+                   value="<?= request()->get('search', 'pending') ?>"
+                   placeholder="Search order">
+            <button type="submit" id="search-button">
+                <i class="fas fa-search" aria-hidden="true"></i>
+            </button>
+        </form>
+    </div>
     <?php if ($orders->isEmpty()): ?>
         <p class="text-section">No orders are currently found available.</p>
     <?php else: ?>
         <table class="admin-table">
             <thead class="admin-table-heading">
             <tr class="admin-heading-row">
-                <th>Order ID</th>
+                <th>ID</th>
                 <th>User</th>
+                <th>Status</th>
                 <th>Products</th>
                 <th>Total</th>
                 <th>Date</th>
@@ -28,6 +42,7 @@
                         </a>
                     </td>
                     <td><?= $order->user->username ?></td>
+                    <td><?= $order->status ?></td>
                     <td><?= $order->products->count() ?></td>
                     <td>$<?= $order->total ?></td>
                     <td><?= date('d M Y', strtotime($order->created_at)) ?></td>
@@ -54,7 +69,7 @@
             <?php if ($orders->links() && count($orders->links()) > 1): ?>
                 <tfoot>
                 <tr>
-                    <td colspan="6">
+                    <td colspan="7">
                         <?= add('layouts.partials.pagination', ['items' => $orders]) ?>
                     </td>
                 </tr>
