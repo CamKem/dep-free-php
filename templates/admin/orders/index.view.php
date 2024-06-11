@@ -1,27 +1,4 @@
-<script type="module">
-    import ModalManager from "/scripts/modalManager.js";
-
-    new ModalManager('admin-users-create', 'user-create');
-    new ModalManager('delete-form', 'delete');
-</script>
-<?= add('modals.confirmation', ['action' => 'delete']) ?>
-<?= add('modals.admin-user-create') ?>
 <section>
-    <div class="admin-form-actions">
-        <form name="admin-users-create">
-            <button></button>
-        </form>
-        <form class="search-form" action="<?= route('admin.users.index') ?>"
-              method="get">
-            <label for="search-bar" class="sr-only">Search users</label>
-            <input type="text" name="search" id="search-bar"
-                   value="<?= request()->get('search') ?>"
-                   placeholder="Search products">
-            <button type="submit" id="search-button">
-                <i class="fas fa-search" aria-hidden="true"></i>
-            </button>
-        </form>
-    </div>
     <?php if ($orders->isEmpty()): ?>
         <p class="text-section">No orders are currently found available.</p>
     <?php else: ?>
