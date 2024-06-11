@@ -7,7 +7,7 @@ class CategoryController
 
     public function index()
     {
-        return 'Category Index';
+        return view('admin.categories.index');
     }
 
     public function create()
