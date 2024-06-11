@@ -31,7 +31,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Joined</th>
-                <th>Actions</th>
+                <th style="width: 100px">Actions</th>
             </tr>
             </thead>
             <?php foreach ($users as $user): ?>
@@ -68,29 +68,7 @@
                 <tfoot>
                 <tr>
                     <td colspan="6">
-                        <div class="row-between">
-                            <a class="pagination-link"
-                                <?php if ($users->previousPageUrl()): ?>
-                                    disabled
-                                <?php endif; ?>
-                               href="<?= $users->previousPageUrl() ?>"
-                            >
-                                Previous
-                            </a>
-                            <?php foreach ($users->links() as $index => $link): ?>
-                                <a class="pagination-link" href="<?= $link ?>">
-                                    <?= $index + 1 ?>
-                                </a>
-                            <?php endforeach; ?>
-                            <a class="pagination-link"
-                                <?php if ($users->nextPageUrl()): ?>
-                                    disabled
-                                <?php endif; ?>
-                               href="<?= $users->nextPageUrl() ?>"
-                            >
-                                Next
-                            </a>
-                        </div>
+                        <?= add('layouts.partials.pagination', ['items' => $users]) ?>
                     </td>
                 </tr>
                 </tfoot>
