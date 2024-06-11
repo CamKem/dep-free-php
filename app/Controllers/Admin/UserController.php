@@ -6,6 +6,9 @@ use App\Actions\RegisterNewUser;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
+use App\Core\Validator;
+use App\Models\Order;
+use App\Models\Role;
 use App\Models\User;
 
 class UserController
@@ -15,7 +18,7 @@ class UserController
     {
         $users = (new User())
             ->query()
-            ->select('id', 'username', 'email', 'created_at')
+            ->select(['id', 'username', 'email', 'created_at'])
             ->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
@@ -37,7 +40,19 @@ class UserController
                 'Users' => route('admin.users.index'),
                 'Display User' => route('admin.users.show', ['id' => $request->get('id')]),
             ],
-            'user' => (new User())->query()->find($request->get('id')),
+            'user' => (new User())
+                ->query()
+                ->with('roles')
+                ->find($request->get('id'))
+                ->get(),
+            'orders' => (new Order())
+                ->query()
+                ->where('user_id', $request->get('id'))
+                ->paginate(6),
+            'roles' => (new Role())
+                ->query()
+                ->select(['id', 'name'])
+                ->get(),
         ]);
     }
 
