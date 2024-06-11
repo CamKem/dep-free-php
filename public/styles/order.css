@@ -14,7 +14,7 @@
     border-bottom-right-radius: var(--medium-radius);
 }
 
-.order__heading__top {
+.content__heading__top {
     font-size: var(--font-default);
     color: var(--grey-color);
     background-color: var(--light-grey-color);
@@ -23,14 +23,32 @@
     border-top-right-radius: var(--medium-radius);
 }
 
-.order__heading__middle {
+.content__heading__middle {
     font-size: var(--font-default);
     color: var(--grey-color);
     background-color: var(--light-grey-color);
     padding: var(--small-padding);
 }
 
-.order__details p, .order__products p {
+.content__details li {
+    display: inline-flex;
+    align-items: center;
+}
+
+.content__details li > form > button {
+    font-size: var(--font-extra-small);
+    margin-left: var(--default-margin);
+    text-decoration: none;
+}
+
+.content__details li::before {
+    font-family: "FontAwesome", serif;
+    /* font awesome unicode for a bullet point */
+    content: "\f0c8";
+    color: var(--mid-grey-color);
+}
+
+.content__details p, .order__products p {
     font-size: var(--font-small);
     color: var(--mid-grey-color);
     margin-bottom: var(--small-margin);
