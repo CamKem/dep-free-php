@@ -453,7 +453,7 @@ class QueryBuilder
 
     public function paginate(int $perPage = 10): Paginator
     {
-        $currentPage = request()->get('page', 1) >= 1 ? request()->get('page', 1) : 1;
+        $currentPage = (int)request()->get('page', 1) >= 1 ? request()->get('page', 1) : 1;
         $bindings = $this->getBindings();
 
         $totalRows = $this->db->execute(
@@ -461,8 +461,8 @@ class QueryBuilder
             $bindings,
         )->count();
 
-        $lastPage = ceil($totalRows / $perPage);
-        $offset = (min($currentPage, $lastPage) - 1) * $perPage;
+        $lastPage = round(ceil($totalRows / $perPage));
+        $offset = max(0, ((min($currentPage, $lastPage) - 1) * $perPage));
 
         $this->clearConditions();
 
