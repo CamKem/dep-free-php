@@ -1,9 +1,8 @@
 <script type="module">
     import ModalManager from "/scripts/modalManager.js";
-    import RemoveManager from "/scripts/remove.js";
 
     new ModalManager('admin-users-create', 'user-create');
-    new RemoveManager('delete-form');
+    new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-user-create') ?>
@@ -46,14 +45,9 @@
                     <td><?= $user->email; ?></td>
                     <td><?= date('d M Y', strtotime($user->created_at)) ?></td>
                     <td class="form-buttons">
-                        <script type="module">
-                            import ModalManager from "/scripts/modalManager.js";
-
-                            new ModalManager('admin-users-edit', 'edit-form-<?= $user->id ?>');
-                        </script>
-                        <?= add('modals.admin-user-edit', compact('user')) ?>
-                        <form name="admin-users-edit"
-                              id="edit-form-<?= $user->id ?>">
+                        <form action="<?= route('admin.users.show', ['id' => $user->id]) ?>"
+                              name="user-edit"
+                              method="get">
                             <button>Edit</button>
                         </form>
                         <form method="post"
