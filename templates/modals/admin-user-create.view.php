@@ -4,7 +4,7 @@
 
     document.addEventListener('openModal', (event) => {
         if (event.detail.action === 'user-create') {
-            let modal = new Modal('user-create');
+            let modal = new Modal('user-create', event.detail.form);
             modal.openModal();
         }
     });
