@@ -16,7 +16,7 @@ class QueryBuilder
     public Database $db;
     protected string $query;
     protected string $table;
-    protected string $select = "*";
+    protected array $select = ["*"];
     protected array $conditions = [];
     protected array $orConditions = [];
     protected array $orderBy = [];
@@ -30,7 +30,7 @@ class QueryBuilder
     {
         $this->table = $model->getTable();
         $this->db = app(Database::class);
-        $this->query = "SELECT {$this->select} FROM {$this->table}";
+        $this->query = "SELECT ".implode($this->select)." FROM {$this->table}";
     }
 
     public function setRelation(Relation $relation): static
@@ -52,10 +52,22 @@ class QueryBuilder
         return $this;
     }
 
-    public function select(string|array ...$columns): static
+    public function select(string|array $columns): static
     {
-        $this->select = implode(", ", $columns);
-        $this->query = str_replace("SELECT *", "SELECT {$this->select}", $this->query);
+
+        // If the SELECT clause has already been modified, append the new columns
+        if ($this->select !== ['*']) {
+            if (is_array($columns)) {
+                $this->select = array_merge($this->select, $columns);
+            } else {
+                $this->select[] = $columns;
+            }
+        } else if (is_array($columns)) {
+            $this->select = $columns;
+        } else {
+            $this->select = [$columns];
+        }
+
         return $this;
     }
 
@@ -158,8 +170,10 @@ class QueryBuilder
             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
         }, $columns);
 
-        $this->select("{$this->table}.*, " . implode(", ", $prefixedColumns));
-        $this->query = str_replace("SELECT *", "SELECT {$this->table}.*, " . implode(", ", $prefixedColumns), $this->query);
+        // add the main table select to the start of the $prefixedColumns array ("{$this->table}.*")
+        array_unshift($prefixedColumns, "{$this->table}.*");
+
+        $this->select($prefixedColumns);
         return array($relatedTable, $foreignColumn);
     }
 
@@ -186,7 +200,9 @@ class QueryBuilder
                         $prefixedColumns = array_map(static function ($column) use ($relatedTable, $relation) {
                             return "{$relatedTable}.{$column['Field']} as {$relation->getRelationName()}_{$column['Field']}";
                         }, $columns);
-                        //$this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+
+                        // add the parent table select to the start of the $prefixedColumns array ("{$parentTable}.*")
+                        array_unshift($prefixedColumns, "{$parentTable}.*");
 
                         // if relation method on the model is defined with withPivot = true, then select the pivot columns
                         if ($relation->withPivot) {
@@ -194,10 +210,10 @@ class QueryBuilder
                             $prefixedPivotColumns = array_map(static function ($column) use ($pivotTable, $relation) {
                                 return "{$pivotTable}.{$column['Field']} as pivot_{$column['Field']}";
                             }, $pivotColumns);
-                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns) . ", " . implode(", ", $prefixedPivotColumns));
-                        } else {
-                            $this->select("{$parentTable}.*, " . implode(", ", $prefixedColumns));
+                            // add the pivot table columns to the end of the $prefixedColumns array
+                            array_push($prefixedColumns, ...$prefixedPivotColumns);
                         }
+                        $this->select($prefixedColumns);
 
                         $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", "=", "{$parentTable}.id");
                         $this->join($relatedTable, "{$relatedTable}.id", "=", "{$pivotTable}.{$relatedColumn}");
@@ -214,6 +230,11 @@ class QueryBuilder
                 }
             }
         }
+
+        // ensure the select array only has unique values
+        $this->select = array_unique($this->select);
+        // handle select clause
+        $this->query = str_replace("SELECT *", "SELECT " . implode(", ", $this->select), $this->query);
 
         // handle where clause
         if (!empty($this->conditions)) {
