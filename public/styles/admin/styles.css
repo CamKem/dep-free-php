@@ -2,11 +2,12 @@
 @import url('../general.css');
 @import url('../forms.css');
 @import url('../footer-bottom.css');
+@import url('../order.css');
+@import url('../cart.css');
 @import url('../dashboard.css');
 @import url('../search.css');
 @import url('../modal.css');
 @import url('../flash.css');
-@import url('../order.css');
 @import url('../pagination.css');
 
 body {
@@ -288,4 +289,24 @@ body {
 /* Change text color on focus */
 #roles:focus option {
     color: #000; /* Black text on focus */
+}
+
+/* order status form */
+.status-form {
+    display: inline-block;
+    padding: var(--small-padding);
+    background-color: var(--very-light-grey-color);
+    border: var(--thin-border) solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+}
+
+.status-form > select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--small-radius);
+    background-color: var(--very-light-blue-color);
+    font-size: var(--font-small);
+    appearance: none;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
