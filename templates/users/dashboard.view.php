@@ -19,29 +19,30 @@
             <p class="text-section">You have no orders yet.</p>
         <?php else: ?>
             <ul class="content-form">
-                <p class="content-form-heading">Here are some of your recent orders:</p>
-                <?php foreach ($orders->toArray() as $order): ?>
+                <p class="content-form-heading">Here are some of your recent
+                    orders:</p>
+                <?php foreach ($orders as $order): ?>
                     <li class="content-form-item">
                         <div class="flex-center align-start">
                             <a class="order-link"
-                               href="<?= route('orders.show', ['order' => $order['id']]) ?>">
-                                Order #<?= $order['id']; ?>
-                                - <?= date_format(date_create($order['created_at']), 'd/m/Y'); ?>
+                               href="<?= route('orders.show', ['order' => $order->id]) ?>">
+                                Order #<?= $order->id; ?>
+                                - <?= date_format(date_create($order->created_at), 'd/m/Y'); ?>
                             </a>
                         </div>
                         <div class="status">
-                            <?= $order['status']; ?>
+                            <?= $order->status; ?>
                         </div>
                         <div class="form-buttons">
                             <button class="desktop-only">
-                                <a href="<?= route('orders.show', ['order' => $order['id']]) ?>">
+                                <a href="<?= route('orders.show', ['order' => $order->id]) ?>">
                                     Track Order
                                 </a>
                             </button>
                             <form method="post"
                                   id="delete-form"
                                   name="delete-form"
-                                  action="<?= route('orders.destroy', ['order' => $order['id']]) ?>">
+                                  action="<?= route('orders.destroy', ['order' => $order->id]) ?>">
                                 <input type="hidden" name="_method"
                                        value="DELETE">
                                 <button type="submit" class="delete-button">
@@ -51,6 +52,11 @@
                         </div>
                     </li>
                 <?php endforeach; ?>
+                <?php if ($orders->links() && count($orders->links()) > 1): ?>
+                    <li class="content-form-divider">
+                        <?= add('layouts.partials.pagination', ['items' => $orders]) ?>
+                    </li>
+                <?php endif; ?>
             </ul>
         <?php endif; ?>
     </div>

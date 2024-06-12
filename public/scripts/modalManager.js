@@ -33,8 +33,10 @@ class ModalHandler {
 
     openModalOnSubmit() {
         this.form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.createEvent('openModal', this.action, this.form);
+            if (event.target === this.form) {
+                event.preventDefault();
+                this.createEvent('openModal', this.action, this.form);
+            }
         });
     }
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Core\ServiceProvider;
 use App\Models\Category;
+use App\Enums\CategoryStatus;
 
 class CategoryService extends ServiceProvider
 {
@@ -18,6 +19,7 @@ class CategoryService extends ServiceProvider
         if (!session()->has('categories')) {
             $categories = (new Category())
                 ->query()
+                ->where('status', CategoryStatus::ACTIVE->value)
                 ->get();
             session()->set('categories', $categories);
         }

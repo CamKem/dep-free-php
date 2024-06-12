@@ -22,18 +22,11 @@
                    value="PUT">
             <label for="status">Update Status:</label>
             <select name="status" id="order-status">
-                <option value="pending"
-                    <?= $order->status === 'pending' ? 'selected' : '' ?>
-                >Pending</option>
-                <option value="processing"
-                    <?= $order->status === 'processing' ? 'selected' : '' ?>
-                >Processing</option>
-                <option value="shipped"
-                    <?= $order->status === 'shipped' ? 'selected' : '' ?>
-                >Shipped</option>
-                <option value="delivered"
-                    <?= $order->status === 'delivered' ? 'selected' : '' ?>
-                >Delivered</option>
+                <?php foreach ($statuses as $status): ?>
+                    <option value="<?= $status ?>"
+                        <?= $order->status === $status ? 'selected' : '' ?>
+                    ><?= ucwords($status) ?></option>
+                <?php endforeach; ?>
             </select>
         </form>
         <form method="post"

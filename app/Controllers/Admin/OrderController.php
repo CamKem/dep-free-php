@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 
@@ -24,7 +25,7 @@ class OrderController
         }
 
         return view('admin.orders.index', [
-            'title' => 'Orders',
+            'title' => 'Manage Orders',
             'orders' => $orders->paginate(15),
         ]);
     }
@@ -52,12 +53,13 @@ class OrderController
         return view('admin.orders.show', [
             'title' => 'Display Order',
             'crumbs' => [
-                'Orders' => route('admin.orders.index'),
+                'Manage Orders' => route('admin.orders.index'),
                 'Display Order' => route('admin.orders.show', ['id' => $request->get('id')]),
             ],
             'shipping' => 10,
             'tax' => 0.10,
             'order' => $order,
+            'statuses' => OrderStatus::toValues(),
         ]);
     }
 

@@ -108,15 +108,13 @@ class Model implements Arrayable, JsonSerializable
         return new HasManyThrough($this, new $relatedModel, new $pivotTable, $foreignKey, $relatedKey, $withPivot);
     }
 
-    // NOTE: we can then refactor the code to make it abstract and reusable
-    // TODO: Problem to solve, allow for n number of nested relations, recursively
     public function hydrate(array $results): ModelCollection
     {
         $models = [];
 
         $lastRowsLookup = [];
 
-        foreach ($results as $number => $row) {
+        foreach ($results as $row) {
             $modelId = $row['id'];
 
             $modelIndex = $this->searchModelsById($models, $modelId);
@@ -229,7 +227,7 @@ class Model implements Arrayable, JsonSerializable
         return false;
     }
 
-    private function setProperty(&$model, $parts, $value, $relation, &$currentLookup)
+    private function setProperty(&$model, $parts, $value, $relation, &$currentLookup): void
     {
         if (count($parts) === 1) {
             $model->{$parts[0]} = $value;
@@ -374,11 +372,11 @@ class Model implements Arrayable, JsonSerializable
         $this->attributes = $data;
     }
 
-    public
-    function getPrimaryKey(): string
+    public function getPrimaryKey(): string
     {
         return $this->primaryKey;
     }
+
 
     // add a load method so that we can lazily load the relations
     public function load(string $relation): void

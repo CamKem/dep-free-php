@@ -2,37 +2,91 @@
 
 namespace App\Controllers\Admin;
 
+use app\Core\Database\Slugger;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
+use App\Core\Template;
+use App\Core\Validator;
+use App\Enums\CategoryStatus;
+use App\Models\Category;
+
 class CategoryController
 {
 
-    public function index()
+    public function index(Request $request): Template
     {
-        return 'Category Index';
+        $categories = (new Category())
+            ->query()
+            ->with('products')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $categories->where('name', 'like', "%{$request->get('search')}%");
+        }
+
+        return view('admin.categories.index', [
+            'title' => 'Manage Categories',
+            'categories' => $categories->paginate(8),
+            'statuses' => CategoryStatus::toValues(),
+        ]);
     }
 
-    public function create()
+    public function store(Request $request): Response
     {
-        return 'Category Create';
+        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+
+        $created = (new Category())->query()->create([
+            'name' => $request->get('name'),
+            'slug' => $slug,
+        ])->save();
+
+        if (!$created) {
+            session()->flash('flash-message', 'Category was not created');
+            return redirect()->back();
+        }
+        session()->flash('flash-message', 'Category created successfully');
+        return redirect()->route('admin.categories.index');
     }
 
-    public function store()
+    public function update(Request $request): Response
     {
-        return 'Category Store';
+        $category = (new Category())->query()->find($request->get('id'));
+
+        $validated = (new Validator())->validate($request->only(['name', 'status']), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'status' => ['required', 'string']
+        ]);
+
+        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+
+        $updated = $category->update([
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'status' => $validated['status'],
+        ])->save();
+
+        if (!$updated) {
+            session()->flash('flash-message', 'Category was not updated');
+            return redirect()->back();
+        }
+        session()->flash('flash-message', 'Category updated successfully');
+        return redirect()->route('admin.categories.index');
     }
 
-    public function edit($id)
+    public function destroy(Request $request): Response
     {
-        return 'Category Edit ' . $id;
-    }
+        $category = (new Category())->query()
+            ->find($request->get('id'));
 
-    public function update($id)
-    {
-        return 'Category Update ' . $id;
-    }
+        $deleted = $category
+            ->delete()->save();
 
-    public function destroy($id)
-    {
-        return 'Category Destroy ' . $id;
+        if (!$deleted) {
+            session()->flash('flash-message', 'Category was not deleted');
+            return redirect()->back();
+        }
+        session()->flash('flash-message', 'Category deleted successfully');
+        return redirect()->route('admin.categories.index');
     }
 
 }
