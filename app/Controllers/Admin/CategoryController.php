@@ -2,27 +2,38 @@
 
 namespace App\Controllers\Admin;
 
+use app\Core\Database\Slugger;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
+use App\Models\Category;
+
 class CategoryController
 {
 
     public function index()
     {
-        return view('admin.categories.index');
+        return view('admin.categories.index', [
+            'title' => 'Manage Categories',
+            'categories' => (new Category())->query()->paginate(),
+        ]);
     }
 
-    public function create()
-    {
-        return 'Category Create';
-    }
 
-    public function store()
+    public function store(Request $request): Response
     {
-        return 'Category Store';
-    }
+        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
 
-    public function edit($id)
-    {
-        return 'Category Edit ' . $id;
+        $created = (new Category())->query()->create([
+            'name' => $request->get('name'),
+            'slug' => $slug,
+        ])->save();
+
+        if (!$created) {
+            session()->set('flash-message', 'Category was not created');
+            return redirect()->back();
+        }
+        session()->set('flash-message', 'Category created successfully');
+        return redirect()->route('admin.categories.index');
     }
 
     public function update($id)

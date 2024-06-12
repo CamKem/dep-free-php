@@ -14,7 +14,7 @@
 <div id="category-create-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h2 class="general-heading">Create New Category</h2>
+        <h2 class="general-heading">Create a New Category</h2>
         <div class="modal-form">
             <form id="create-category-form" action="<?= route('admin.categories.store') ?>"
                   method="post">
