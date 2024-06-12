@@ -27,7 +27,18 @@
                        data-validate="true"
                        autocomplete="new-category"
                 >
-                <p class="error-message" id="password-error"></p>
+                <p class="error-message" id="name-error"></p>
+                <label for="status">Status:</label>
+                <select name="status"
+                        id="order-status"
+                        title="status"
+                        data-validate="true"
+                >
+                    <?php foreach ($statuses as $status): ?>
+                        <option value="<?= $status ?>"
+                        ><?= ucwords($status) ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <p class="modal-text">
                     Are you sure you want to create this category?
                 </p>
