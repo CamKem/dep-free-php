@@ -27,7 +27,7 @@ class UserController
         }
 
         return view('admin.users.index', [
-            'title' => 'Users',
+            'title' => 'Manage Users',
             'users' => $users->paginate(8),
         ]);
     }
@@ -37,7 +37,7 @@ class UserController
         return view('admin.users.show', [
             'title' => 'Display User',
             'crumbs' => [
-                'Users' => route('admin.users.index'),
+                'Manage Users' => route('admin.users.index'),
                 'Display User' => route('admin.users.show', ['id' => $request->get('id')]),
             ],
             'user' => (new User())

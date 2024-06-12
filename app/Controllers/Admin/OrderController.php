@@ -25,7 +25,7 @@ class OrderController
         }
 
         return view('admin.orders.index', [
-            'title' => 'Orders',
+            'title' => 'Manage Orders',
             'orders' => $orders->paginate(15),
         ]);
     }
@@ -53,7 +53,7 @@ class OrderController
         return view('admin.orders.show', [
             'title' => 'Display Order',
             'crumbs' => [
-                'Orders' => route('admin.orders.index'),
+                'Manage Orders' => route('admin.orders.index'),
                 'Display Order' => route('admin.orders.show', ['id' => $request->get('id')]),
             ],
             'shipping' => 10,
