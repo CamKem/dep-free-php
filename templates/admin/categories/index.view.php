@@ -5,7 +5,7 @@
     new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
-<?= add('modals.admin-category-create') ?>
+<?= add('modals.admin-category-create', ['statuses' => $statuses]) ?>
 <section>
     <div class="admin-form-actions">
         <form name="admin-category-create">
@@ -13,7 +13,7 @@
         </form>
         <form class="search-form" action="<?= route('admin.categories.index') ?>"
               method="get">
-            <label for="search-bar" class="sr-only">Search categorys</label>
+            <label for="search-bar" class="sr-only">Search categories</label>
             <input type="text" name="search" id="search-bar"
                    value="<?= request()->get('search') ?>"
                    placeholder="Search categories">
@@ -30,7 +30,8 @@
             <tr class="admin-heading-row">
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Created</th>
+                <th>Total Products</th>
+                <th>Status</th>
                 <th>Updated</th>
                 <th style="width: 100px">Actions</th>
             </tr>
@@ -39,7 +40,8 @@
                 <tr class="admin-table-row">
                     <td><?= $category->name; ?></td>
                     <td><?= $category->slug; ?></td>
-                    <td><?= date('d M Y', strtotime($category->created_at)) ?></td>
+                    <td><?= $category->products?->count() ?? 0 ?></td>
+                    <td><?= $category->status ?></td>
                     <td><?= date('d M Y', strtotime($category->updated_at)) ?></td>
                     <td class="form-buttons">
                         <script type="module">
