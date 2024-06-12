@@ -29,6 +29,12 @@ class Database
         $this->connection = null;
     }
 
+    public function query(string $query): static
+    {
+        $this->statement = $this->connection->query($query);
+        return $this;
+    }
+
     public function execute(string $query, array $bindings = []): static
     {
         $this->prepareQueryString($query, $bindings);
