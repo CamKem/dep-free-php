@@ -161,6 +161,11 @@ class QueryBuilder
         return $this;
     }
 
+    public function getRaw(): array
+    {
+        return $this->db->execute($this->toSql(), $this->getBindings())->get();
+    }
+
     public function commonRelated(Relation $relation): array
     {
         $relatedTable = $relation->getRelatedTable();
