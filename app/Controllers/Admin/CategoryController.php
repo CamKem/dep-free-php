@@ -5,19 +5,30 @@ namespace App\Controllers\Admin;
 use app\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
+use App\Core\Template;
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 
 class CategoryController
 {
 
-    public function index()
+    public function index(Request $request): Template
     {
+        $categories = (new Category())
+            ->query()
+            ->with('products')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $categories->where('name', 'like', "%{$request->get('search')}%");
+        }
+
         return view('admin.categories.index', [
             'title' => 'Manage Categories',
-            'categories' => (new Category())->query()->paginate(),
+            'categories' => $categories->paginate(8),
+            'statuses' => CategoryStatus::toValues(),
         ]);
     }
-
 
     public function store(Request $request): Response
     {
@@ -29,21 +40,45 @@ class CategoryController
         ])->save();
 
         if (!$created) {
-            session()->set('flash-message', 'Category was not created');
+            session()->flash('flash-message', 'Category was not created');
             return redirect()->back();
         }
-        session()->set('flash-message', 'Category created successfully');
+        session()->flash('flash-message', 'Category created successfully');
         return redirect()->route('admin.categories.index');
     }
 
-    public function update($id)
+    public function update(Request $request, $id): Response
     {
-        return 'Category Update ' . $id;
+        $category = (new Category())->query()->find($id);
+        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+
+        $updated = $category->update([
+            'name' => $request->get('name'),
+            'slug' => $slug,
+        ])->save();
+
+        if (!$updated) {
+            session()->flash('flash-message', 'Category was not updated');
+            return redirect()->back();
+        }
+        session()->flash('flash-message', 'Category updated successfully');
+        return redirect()->route('admin.categories.index');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request): Response
     {
-        return 'Category Destroy ' . $id;
+        $category = (new Category())->query()
+            ->find($request->get('id'));
+
+        $deleted = $category
+            ->delete()->save();
+
+        if (!$deleted) {
+            session()->flash('flash-message', 'Category was not deleted');
+            return redirect()->back();
+        }
+        session()->flash('flash-message', 'Category deleted successfully');
+        return redirect()->route('admin.categories.index');
     }
 
 }
