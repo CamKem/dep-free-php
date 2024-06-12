@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 
@@ -58,6 +59,7 @@ class OrderController
             'shipping' => 10,
             'tax' => 0.10,
             'order' => $order,
+            'statuses' => OrderStatus::toValues(),
         ]);
     }
 
