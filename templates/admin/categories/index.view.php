@@ -5,7 +5,7 @@
     new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
-<?= add('modals.admin-category-create', ['statuses' => $statuses]) ?>
+<?= add('modals.admin-category-create', compact('statuses')) ?>
 <section>
     <div class="admin-form-actions">
         <form name="admin-category-create">
@@ -46,10 +46,14 @@
                     <td class="form-buttons">
                         <script type="module">
                             import ModalManager from "/scripts/modalManager.js";
-
-                            new ModalManager('category-edit', 'edit');
+                            // TODO: add the ability to change the status of the category
+                            // NOTE: we need to fix this before we can complete the project
+                            new ModalManager('category-edit-<?= $category->id ?>', 'edit-<?= $category->id ?>');
                         </script>
-                        <form name="category-edit">
+                        <?= add('modals.admin-category-edit', compact('category', 'statuses')) ?>
+                        <form name="category-edit-<?= $category->id ?>"
+                              id="category-edit-<?= $category->id ?>"
+                        >
                             <button>Edit</button>
                         </form>
                         <form method="post"

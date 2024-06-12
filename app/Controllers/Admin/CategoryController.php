@@ -6,6 +6,7 @@ use app\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Enums\CategoryStatus;
 use App\Models\Category;
 
@@ -47,14 +48,21 @@ class CategoryController
         return redirect()->route('admin.categories.index');
     }
 
-    public function update(Request $request, $id): Response
+    public function update(Request $request): Response
     {
-        $category = (new Category())->query()->find($id);
+        $category = (new Category())->query()->find($request->get('id'));
+
+        $validated = (new Validator())->validate($request->only(['name', 'status']), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'status' => ['required', 'string']
+        ]);
+
         $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
 
         $updated = $category->update([
-            'name' => $request->get('name'),
+            'name' => $validated['name'],
             'slug' => $slug,
+            'status' => $validated['status'],
         ])->save();
 
         if (!$updated) {
