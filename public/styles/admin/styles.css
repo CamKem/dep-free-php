@@ -310,3 +310,18 @@ body {
     outline: none;
     transition: border-color 0.3s ease;
 }
+
+/* modal form styles */
+.modal-form select {
+    width: 100%;
+    margin: var(--small-margin) 0;
+    padding: var(--small-padding);
+    border: 1px solid var(--light-grey-color);
+    border-radius: var(--small-radius);
+    background-color: var(--white-color);
+    font-size: calc(var(--font-small) * .9);
+    color: var(--mid-blue-color);
+    appearance: none;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
