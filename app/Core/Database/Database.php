@@ -29,17 +29,6 @@ class Database
         $this->connection = null;
     }
 
-    // method to return the prepared statement, with the bound values
-    public function raw(string $query, array $bindings = []): PDOStatement|false
-    {
-        $fullQuery = $query;
-        foreach ($bindings as $key => $value) {
-            $fullQuery = str_replace(":" . $key, $this->connection->quote($value), $fullQuery);
-        }
-        logger("Full Query:", "database", [$fullQuery]);
-        return $this->connection->query($fullQuery);
-    }
-
     public function execute(string $query, array $bindings = []): static
     {
         $this->prepareQueryString($query, $bindings);
