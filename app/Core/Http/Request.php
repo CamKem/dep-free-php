@@ -99,6 +99,20 @@ class Request
         return $uri;
     }
 
+    // has file checks if the file is in the $_FILES array
+    // if it is, it returns true, otherwise it returns false
+    public function hasFile(string $key): bool
+    {
+        return isset($_FILES[$key]);
+    }
+
+    // getFile returns the file from the $_FILES array
+    // if the file is not in the $_FILES array, it returns null
+    public function getFile(string $key): ?array
+    {
+        return $_FILES[$key] ?? null;
+    }
+
     public function all(): array
     {
         return $this->getParameters();
