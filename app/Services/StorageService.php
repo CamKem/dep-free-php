@@ -11,7 +11,7 @@ class StorageService extends ServiceProvider
     public function register(): void
     {
         // Register Storage service
-        $this->app->singleton(Storage::class);
+        $this->app->singleton(Storage::class, 'public');
     }
 
     public function boot(): void
