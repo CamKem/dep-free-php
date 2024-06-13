@@ -75,10 +75,11 @@ class Session
         return $old[$key] ?? $default;
     }
 
-    public function error(string $key, $default = null)
+    public function error(string $key, $default = null): mixed
     {
         $errors = $this->get('errors', []);
-        return $errors[$key] ?? $default;
+        $keyExists = isset($errors[$key]);
+        return $keyExists ? $errors[$key][0] : $default;
     }
 
     protected function prepareForNextRequest(): void
