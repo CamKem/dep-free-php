@@ -66,27 +66,17 @@ export default class FormValidator {
     }
 
     updateErrorElement(id, message) {
-        const errorEl = document.getElementById(id + '-error');
-        if (errorEl) {
-            errorEl.textContent = '⚠ ' + message.charAt(0).toUpperCase() + message.slice(1);
-        } else {
-            this.displayError(document.getElementById(id), message);
-        }
+        const field = this.fields.find(field => field.id === id);
+        const el = field.nextElementSibling === null
+            ? field.parentElement.nextElementSibling
+            : field.nextElementSibling;
+        el.textContent = '⚠ ' + message.charAt(0).toUpperCase() + message.slice(1);
     }
 
     clearErrors() {
         this.errors.forEach(error => {
             this.removeError(document.getElementById(error.id));
         });
-    }
-
-    displayError(field, message) {
-        const el = field.nextElementSibling === null
-            ? field.parentElement.nextElementSibling
-            : field.nextElementSibling;
-        el.id = field.id + '-error';
-        message = '⚠ ' + message.charAt(0).toUpperCase() + message.slice(1);
-        el.textContent = message;
     }
 
     removeError(field) {
@@ -122,11 +112,18 @@ export default class FormValidator {
                 errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
-            if (field.value.length < 3 && field.tagName !== 'SELECT' &&
-                field.type !== 'number' && field.type !== 'checkbox') {
+            if (field.value.length < 3 && (field.tagName !== 'SELECT' ||
+                field.type !== 'number' || field.type !== 'checkbox' || field.type !== 'file')) {
                 this.addInvalidClass(field);
                 errorMessage = `${field.title} must be at least 3 characters long`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
+            }
+            if (field.type === 'file') {
+                if (!field.files.length) {
+                    this.addInvalidClass(field);
+                    errorMessage = 'Please select a file';
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
             }
             if (field.type === 'email') {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -231,7 +228,7 @@ export default class FormValidator {
         });
 
         if (this.errors.length) {
-            event.preventDefault();
+           event.preventDefault();
         }
         if (!this.errors.length) {
             this.clearErrors();
