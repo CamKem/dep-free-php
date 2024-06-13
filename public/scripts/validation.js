@@ -122,7 +122,8 @@ export default class FormValidator {
                 errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
-            if (field.value.length < 3 && field.tagName !== 'SELECT') {
+            if (field.value.length < 3 && field.tagName !== 'SELECT' &&
+                field.type !== 'number' && field.type !== 'checkbox') {
                 this.addInvalidClass(field);
                 errorMessage = `${field.title} must be at least 3 characters long`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
@@ -151,7 +152,8 @@ export default class FormValidator {
                 }
             }
             if (field.type === 'number') {
-                const numberRegex = /^\d+$/;
+                // number regex must be a number, allow up to 2 decimal places
+                const numberRegex = /^\d+(\.\d{1,2})?$/;
                 if (!numberRegex.test(field.value)) {
                     this.addInvalidClass(field);
                     errorMessage = 'Please enter a valid number'
