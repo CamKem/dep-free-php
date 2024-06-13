@@ -123,7 +123,7 @@
                                        placeholder="First Name"
                                        data-validate=true
                                 >
-                                <p class="error-message" id="first-name-error"></p>
+                                <p class="error-message" id="first_name-error"></p>
                             </div>
                             <div class="flex-center align-start">
                                 <label for="cvv">Last Name:</label>
@@ -134,7 +134,7 @@
                                        placeholder="Last Name"
                                        data-validate=true
                                 >
-                                <p class="error-message" id="last-name-error"></p>
+                                <p class="error-message" id="last_name-error"></p>
                             </div>
                         </div>
 
@@ -202,7 +202,7 @@
                                title="Cardholder"
                                placeholder="Cardholder Name"
                                data-validate=true>
-                        <p class="error-message" id="card-name-error"></p>
+                        <p class="error-message" id="card_name-error"></p>
 
                         <label style="display: inline-flex"
                                class="center"
@@ -211,12 +211,7 @@
                             Card Number:
                             <span class="warning-text">Demo Purposes Only</span>
                         </label>
-                        <input type="hidden"
-                               name="card_number"
-                               title="Card Number"
-                               id="card_number"
-                        >
-                        <div class="card-number" id="card_number">
+                        <div class="card-number">
                             <input
                                     type="text"
                                     class="card-segment"
@@ -227,7 +222,6 @@
                                     pattern="\d{4}"
                                     autocomplete="cc-number"
                                     placeholder="####"
-                                    data-validate=true
                             >
                             <input
                                     type="text"
@@ -238,7 +232,6 @@
                                     inputmode="numeric"
                                     pattern="\d{4}"
                                     placeholder="####"
-                                    data-validate=true
                             >
                             <input
                                     type="text"
@@ -249,7 +242,6 @@
                                     inputmode="numeric"
                                     pattern="\d{4}"
                                     placeholder="####"
-                                    data-validate=true
                             >
                             <input type="text"
                                    class="card-segment"
@@ -259,10 +251,15 @@
                                    inputmode="numeric"
                                    pattern="\d{4}"
                                    placeholder="####"
-                                   data-validate=true
                             >
                         </div>
-                        <p class="error-message" id="card-number-error"></p>
+                        <input type="hidden"
+                               name="card_number"
+                               title="Card Number"
+                               id="card_number"
+                               data-validate=true
+                        >
+                        <p class="error-message" id="card_number-error"></p>
 
                         <div class="form-bottom">
                             <div class="flex-center align-start">
@@ -278,7 +275,7 @@
                                        placeholder="MM/YY"
                                        data-validate=true
                                 >
-                                <p class="error-message" id="expiry-date-error"></p>
+                                <p class="error-message" id="expiry_date-error"></p>
                             </div>
                             <div class="flex-center align-start">
                                 <label for="ccv">CCV:
@@ -309,7 +306,7 @@
                                    data-validate=true
                             >
                         </label>
-                        <p class="error-message" id="contact-number-error"></p>
+                        <p class="error-message" id="contact_number-error"></p>
 
                         <div class="form-bottom">
                             <button type="button" class="btn prev">Previous
