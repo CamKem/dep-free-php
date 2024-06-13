@@ -17,11 +17,11 @@ class CategoryController
     {
         $categories = (new Category())
             ->query()
-            ->with('products')
+            ->withCount('products')
             ->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
-            $categories->where('name', 'like', "%{$request->get('search')}%");
+            $categories->where('categories.name', 'like', "%{$request->get('search')}%");
         }
 
         return view('admin.categories.index', [
@@ -57,11 +57,15 @@ class CategoryController
             'status' => ['required', 'string']
         ]);
 
-        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+        $categoryValues = $category->get();
+
+        if ($categoryValues->name !== $validated['name']) {
+            $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+        }
 
         $updated = $category->update([
             'name' => $validated['name'],
-            'slug' => $slug,
+            'slug' => $slug ?? $categoryValues->slug,
             'status' => $validated['status'],
         ])->save();
 
