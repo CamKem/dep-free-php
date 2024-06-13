@@ -61,6 +61,12 @@ class Request
         return $this->bodyParameters;
     }
 
+    public function except(array $keys): array
+    {
+        $parameters = $this->getParameters();
+        return array_diff_key($parameters, array_flip($keys));
+    }
+
     // only method returns only the values of the keys passed in the array, if they exist
     // if the don't exist it should return an empty key
     // to return an empty key you can use the null coalescing operator
