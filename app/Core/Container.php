@@ -14,9 +14,9 @@ class Container
         $this->bindings[$key] = compact('resolver', 'singleton');
     }
 
-    public function singleton(string $class): void
+    public function singleton(string $class, $args = null): void
     {
-        $this->bind($class, static fn() => new $class, true);
+        $this->bind($class, static fn() => new $class($args), true);
     }
 
     /**
