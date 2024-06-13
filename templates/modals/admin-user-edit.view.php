@@ -58,7 +58,6 @@
                 <label for="roles">Roles</label>
                 <select name="roles[]" id="roles" multiple
                         title="Roles"
-                        data-validate="true"
                         autocomplete="new-roles"
                         style="height: <?= 48 * $roles->count() ?>px"
                 >
