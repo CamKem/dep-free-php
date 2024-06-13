@@ -19,7 +19,7 @@
                    placeholder="Your email address"
                    data-validate=true
             >
-            <p class="error-message">
+            <p class="error-message" id="email-error">
                 <?= error('email') ?>
             </p>
 
@@ -33,7 +33,7 @@
                    placeholder="Enter your password"
                    data-validate=true
             >
-            <p class="error-message">
+            <p class="error-message" id="password-error">
                 <?= error('password') ?>
             </p>
 

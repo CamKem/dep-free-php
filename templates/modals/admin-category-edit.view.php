@@ -37,7 +37,7 @@
                 <select name="status"
                         id="order-status"
                         title="status"
-                        data-validate="true"
+                        data-validate=false
                 >
                     <?php foreach ($statuses as $status): ?>
                         <option value="<?= $status ?>"
@@ -45,12 +45,11 @@
                         ><?= ucwords($status) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <p class="error-message" id="status-error"></p>
                 <p class="modal-text">
-                    Are you sure you want to create this category?
+                    Are you sure you want to edit this category?
                 </p>
                 <button type="submit" class="confirm-button">
-                    Create Category
+                    Edit Category
                 </button>
             </form>
         </div>

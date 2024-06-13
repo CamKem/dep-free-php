@@ -21,7 +21,7 @@
                    data-validate=true
                    value="<?= old('password') ?>"
             >
-            <p class="error-message">
+            <p class="error-message" id="password-error">
                 <?= error('password') ?>
             </p>
             <button type="submit" class="button-padding">Reset Password</button>

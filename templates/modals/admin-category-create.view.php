@@ -29,14 +29,14 @@
                        data-validate="true"
                        autocomplete="new-category"
                 >
-                <p class="error-message">
+                <p class="error-message" id="name-error">
                     <?= error('name') ?>
                 </p>
                 <label for="status">Status:</label>
                 <select name="status"
                         id="category-status"
                         title="status"
-                        data-validate="true"
+                        data-validate=false
                 >
                     <?php foreach ($statuses as $status): ?>
                         <option value="<?= $status ?>"

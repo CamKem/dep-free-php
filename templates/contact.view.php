@@ -37,7 +37,7 @@
                        placeholder="Your first name"
                        data-validate=true
                 >
-                <p class="error-message"></p>
+                <p class="error-message" id="first_name-error"></p>
 
                 <label for="last_name"><span>Last name</span></label>
                 <input type="text"
@@ -47,7 +47,7 @@
                        placeholder="Your last name"
                        data-validate=true
                 >
-                <p class="error-message"></p>
+                <p class="error-message" id="last_name-error"></p>
 
                 <label for="contact"><span>Contact number</span></label>
                 <input type="tel"
@@ -57,7 +57,7 @@
                        placeholder="Your contact number"
                        data-validate=true
                 >
-                <p class="error-message"></p>
+                <p class="error-message" id="contact-error"></p>
 
                 <label for="email"><span>Email address</span></label>
                 <input type="email"
@@ -67,7 +67,7 @@
                        placeholder="Your email address"
                        data-validate=true
                 >
-                <p class="error-message"></p>
+                <p class="error-message" id="email-error"></p>
 
                 <textarea id="message"
                           aria-label="Message"

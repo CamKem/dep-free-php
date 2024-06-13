@@ -3,7 +3,6 @@
     import FormValidator from "/scripts/validation.js";
 
     document.addEventListener('openModal', (event) => {
-        console.log(event.detail);
         if (event.detail.action === 'edit') {
             // if the event target is this specific modal
             let modal = new Modal('user-edit', event.detail.form);

@@ -123,7 +123,7 @@
                                        placeholder="First Name"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="first-name-error"></p>
                             </div>
                             <div class="flex-center align-start">
                                 <label for="cvv">Last Name:</label>
@@ -134,7 +134,7 @@
                                        placeholder="Last Name"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="last-name-error"></p>
                             </div>
                         </div>
 
@@ -148,7 +148,7 @@
                                    data-validate=true
                             >
                         </label>
-                        <p class="error-message"></p>
+                        <p class="error-message" id="address-error"></p>
 
                         <label for="city">City:
                             <input type="text"
@@ -159,7 +159,7 @@
                                    data-validate=true
                             >
                         </label>
-                        <p class="error-message"></p>
+                        <p class="error-message" id="city-error"></p>
 
                         <div class="form-bottom">
                             <div class="flex-center align-start">
@@ -171,7 +171,7 @@
                                        placeholder="State"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="state-error"></p>
                             </div>
                             <div class="flex-center align-start">
                                 <label for="postcode">Post Code:</label>
@@ -182,7 +182,7 @@
                                        placeholder="Post Code"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="postcode-error"></p>
                             </div>
                         </div>
 
@@ -202,7 +202,7 @@
                                title="Cardholder"
                                placeholder="Cardholder Name"
                                data-validate=true>
-                        <p class="error-message"></p>
+                        <p class="error-message" id="card-name-error"></p>
 
                         <label style="display: inline-flex"
                                class="center"
@@ -262,7 +262,7 @@
                                    data-validate=true
                             >
                         </div>
-                        <p class="error-message"></p>
+                        <p class="error-message" id="card-number-error"></p>
 
                         <div class="form-bottom">
                             <div class="flex-center align-start">
@@ -278,7 +278,7 @@
                                        placeholder="MM/YY"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="expiry-date-error"></p>
                             </div>
                             <div class="flex-center align-start">
                                 <label for="ccv">CCV:
@@ -293,7 +293,7 @@
                                        placeholder="CCV"
                                        data-validate=true
                                 >
-                                <p class="error-message"></p>
+                                <p class="error-message" id="ccv-error"></p>
                             </div>
                         </div>
 
@@ -309,7 +309,7 @@
                                    data-validate=true
                             >
                         </label>
-                        <p class="error-message"></p>
+                        <p class="error-message" id="contact-number-error"></p>
 
                         <div class="form-bottom">
                             <button type="button" class="btn prev">Previous
