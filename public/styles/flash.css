@@ -9,7 +9,7 @@
     border: var(--thin-border) solid var(--blue-color);
     padding: var(--default-padding) calc(var(--small-margin) * 5);
     text-align: center;
-    z-index: 1000;
+    z-index: 10000;
 }
 
 @keyframes slideIn {
