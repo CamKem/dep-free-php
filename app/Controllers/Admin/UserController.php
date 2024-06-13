@@ -84,16 +84,16 @@ class UserController
             ]
         );
 
-        if (!$validated) {
+        if ($validated->hasErrors()) {
             session()->flash('flash-message', 'Error: Please check the form for errors.');
             return response()->back()
-                ->withErrors($validated)
+                ->withErrors($validated->getErrors())
                 ->withInput($request->all());
         }
 
         $user->query()->update([
-            'username' => $validated['username'],
-            'email' => $validated['email'],
+            'username' => $validated->username,
+            'email' => $validated->email,
         ])->save();
 
         // if request has password hash it and then update the user
@@ -111,7 +111,7 @@ class UserController
 
         // make an array with the roles using the role id as the key
         $roles = [];
-        foreach ($validated['roles'] as $role) {
+        foreach ($validated->roles as $role) {
             $roles[$role] = ['role_id' => $role];
         }
 
@@ -124,8 +124,56 @@ class UserController
 
     public function store(Request $request): Response
     {
-        $registered = (new RegisterNewUser())->handle($request);
-        if (!$registered) {
+        $validated = (new Validator())->validate(
+            $request->only(['username', 'email', 'password']), [
+            'username' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
+
+        if ($validated->hasErrors()) {
+            return redirect(route('admin.users.index'))
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
+
+        $errors = [];
+
+        $existingUser = (new User())
+            ->query()
+            ->where('email', $validated->email)
+            ->orWhere('username', $validated->username)
+            ->exists();
+
+        if (!$existingUser) {
+            $user = (new User())
+                ->query()
+                ->where('email', $validated->email)
+                ->orWhere('username', $validated->username)
+                ->first();
+            if ($user->email === $validated->email) {
+                $errors['email'] = 'Email already exists';
+            }
+
+            if ($user->username === $validated->username) {
+                $errors['username'] = 'Username already exists';
+            }
+
+            session()->flash('flash-message', 'Error: The user already exists.');
+            return redirect(route('admin.users.index'))
+                ->withInput($validated->validatedData())
+                ->withErrors($errors);
+        }
+
+        $user = (new User())
+            ->query()
+            ->create([
+                'username' => $validated->username,
+                'email' => $validated->email,
+                'password' => password_hash($validated->password, PASSWORD_DEFAULT),
+            ])->save();
+
+        if (!$user) {
             session()->flash('flash-message', 'There was an error registering the user. Please try again.');
             return redirect()->back()
                 ->withInput($request->all());
