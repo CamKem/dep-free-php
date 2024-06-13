@@ -63,8 +63,10 @@ class QueryBuilder
             } else {
                 $this->select[] = $columns;
             }
+            // If the SELECT clause has not been modified, set the new columns
         } else if (is_array($columns)) {
             $this->select = $columns;
+            // else set the columns as an array
         } else {
             $this->select = [$columns];
         }
@@ -255,6 +257,7 @@ class QueryBuilder
                     $relatedColumn = $relation->getRelatedKey();
                     $relationName = $relation->getRelationName();
 
+                    $this->select("{$this->table}.*");
                     if ($relation instanceof HasMany || $relation instanceof BelongsTo) {
                         $this->select("COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count");
                         $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
