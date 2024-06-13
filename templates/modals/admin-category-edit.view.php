@@ -6,9 +6,11 @@
         if (event.detail.action === 'edit-<?= $category->id ?>') {
             let modal = new Modal('category-edit-<?= $category->id ?>', event.detail.form);
             modal.openModal();
-            new FormValidator('edit-category-<?= $category->id ?>-form')
         }
     });
+
+
+    window.onload = () => new FormValidator('edit-category-<?= $category->id ?>-form');
 </script>
 
 <div id="category-edit-<?= $category->id ?>-modal" class="modal">
@@ -16,7 +18,7 @@
         <span class="close-button">&times;</span>
         <h2 class="general-heading">Create a New Category</h2>
         <div class="modal-form">
-            <form id="edit-category-form"
+            <form id="edit-category-<?= $category->id ?>-form"
                   action="<?= route('admin.categories.update', ['id' => $category->id]) ?>"
                   method="post">
                 <input type="hidden" name="_method" value="put">
