@@ -112,11 +112,12 @@ export default class FormValidator {
                 errorMessage = `${field.title} is required`;
                 return this.updateAndDisplayErrors(field.id, errorMessage);
             }
-            if (field.value.length < 3 && (field.tagName !== 'SELECT' ||
-                field.type !== 'number' || field.type !== 'checkbox' || field.type !== 'file')) {
-                this.addInvalidClass(field);
-                errorMessage = `${field.title} must be at least 3 characters long`;
-                return this.updateAndDisplayErrors(field.id, errorMessage);
+            if (field.tagName !== 'SELECT' || field.type !== 'number' || field.type !== 'checkbox' || field.type !== 'file') {
+                if (field.value.length < 3) {
+                    this.addInvalidClass(field);
+                    errorMessage = `${field.title} must be at least 3 characters long`;
+                    return this.updateAndDisplayErrors(field.id, errorMessage);
+                }
             }
             if (field.type === 'file') {
                 if (!field.files.length) {
