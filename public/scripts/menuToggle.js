@@ -62,7 +62,6 @@ export class MenuToggle {
     }
 
     closeOnOutsideClick(event) {
-        console.log(event.target);
         if (this.menuOpen && event.target === this.menu) {
             this.toggleMenu();
         }
