@@ -33,10 +33,23 @@ class CategoryController
 
     public function store(Request $request): Response
     {
+        $validated = (new Validator())->validate($request->only(['name', 'status']), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'status' => ['required', 'string'],
+        ]);
+
+        if ($validated->hasErrors()) {
+            session()->flash('open-create-modal', true);
+            session()->flash('flash-message', 'Category was not created');
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
+
         $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
 
         $created = (new Category())->query()->create([
-            'name' => $request->get('name'),
+            'name' => $validated->name,
             'slug' => $slug,
         ])->save();
 
@@ -57,16 +70,21 @@ class CategoryController
             'status' => ['required', 'string']
         ]);
 
+        if ($validated->hasErrors()) {
+            session()->flash('flash-message', 'Category was not updated');
+            return redirect()->back()->withErrors($validated->getErrors());
+        }
+
         $categoryValues = $category->get();
 
-        if ($categoryValues->name !== $validated['name']) {
+        if ($categoryValues->name !== $validated->name) {
             $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
         }
 
         $updated = $category->update([
-            'name' => $validated['name'],
+            'name' => $validated->name,
             'slug' => $slug ?? $categoryValues->slug,
-            'status' => $validated['status'],
+            'status' => $validated->status,
         ])->save();
 
         if (!$updated) {

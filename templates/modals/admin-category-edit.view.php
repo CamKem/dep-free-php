@@ -9,14 +9,13 @@
         }
     });
 
-
-    window.onload = () => new FormValidator('edit-category-<?= $category->id ?>-form');
+    new FormValidator('edit-category-<?= $category->id ?>-form');
 </script>
 
 <div id="category-edit-<?= $category->id ?>-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h2 class="general-heading">Create a New Category</h2>
+        <h2 class="general-heading">Edit Category</h2>
         <div class="modal-form">
             <form id="edit-category-<?= $category->id ?>-form"
                   action="<?= route('admin.categories.update', ['id' => $category->id]) ?>"
@@ -33,6 +32,7 @@
                        autocomplete="edit-category"
                 >
                 <p class="error-message" id="name-error"></p>
+
                 <label for="status">Status:</label>
                 <select name="status"
                         id="order-status"
@@ -45,6 +45,7 @@
                         ><?= ucwords($status) ?></option>
                     <?php endforeach; ?>
                 </select>
+                <p class="error-message" id="status-error"></p>
                 <p class="modal-text">
                     Are you sure you want to create this category?
                 </p>

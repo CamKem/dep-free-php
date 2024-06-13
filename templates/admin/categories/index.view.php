@@ -2,7 +2,6 @@
     import ModalManager from "/scripts/modalManager.js";
 
     new ModalManager('admin-category-create', 'category-create');
-    new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-category-create', compact('statuses')) ?>
@@ -11,7 +10,8 @@
         <form name="admin-category-create">
             <button>Create category</button>
         </form>
-        <form class="search-form" action="<?= route('admin.categories.index') ?>"
+        <form class="search-form"
+              action="<?= route('admin.categories.index') ?>"
               method="get">
             <label for="search-bar" class="sr-only">Search categories</label>
             <input type="text" name="search" id="search-bar"
