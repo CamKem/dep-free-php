@@ -7,8 +7,9 @@ use App\Core\Exceptions\ValidationException;
 class Validator
 {
     protected array $errors = [];
+    protected array $data = [];
 
-    public function validate(array $data, array $rules): array
+    public function validate(array $data, array $rules): self
     {
         foreach ($rules as $field => $fieldRules) {
             if (!is_array($fieldRules)) {
@@ -20,17 +21,53 @@ class Validator
                 $ruleName = $ruleParts[0];
                 $ruleParams = isset($ruleParts[1]) ? explode(',', $ruleParts[1]) : [];
 
+                if (!method_exists($this, $ruleName)) {
+                    throw new ValidationException('Validation rule ' . $ruleName . ' does not exist.');
+                }
+
                 $this->{$ruleName}($data, $field, ...$ruleParams);
             }
         }
 
-        if (!empty($this->errors)) {
-            // TODO: work out a way to return the errors instead of throwing an exception
-            return $this->errors;
-            //throw new ValidationException($this->errors);
-        }
+        $this->data = $data;
 
-        return $data;
+        return $this;
+    }
+
+    // use the magic method of accessing the value of data
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
+
+    protected function exists(array $data, string $field, string $table)
+    {
+        // upper case the model name and check if it exists
+        $model = 'App\\Models\\' . ucfirst($table);
+        $exists = (new $model)->query()->where($field, $data[$field])->exists();
+        if (!$exists) {
+            $this->errors[$field][] = 'The ' . $field . ' field does not exist in the ' . $table . ' table.';
+        }
+    }
+
+    protected function unique(array $data, string $field, string $table)
+    {
+        // upper case the model name and check if it exists
+        $model = 'App\\Models\\' . ucfirst($table);
+        $exists = (new $model)->where($field, $data[$field])->query()->exists();
+        if ($exists) {
+            $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
+        }
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    public function hasErrors(): bool
+    {
+        return !empty($this->errors);
     }
 
     protected function array(array $data, string $field)
@@ -61,23 +98,40 @@ class Validator
         }
     }
 
-    protected function min(array $data, string $field, int $min)
+    protected function min(array $data, string $field, int $min): void
     {
         if (strlen($data[$field]) < $min) {
             $this->errors[$field][] = 'The ' . $field . ' field must be at least ' . $min . ' characters.';
         }
     }
 
-    protected function max(array $data, string $field, int $max)
+    protected function max(array $data, string $field, int $max): void
     {
         if (strlen($data[$field]) > $max) {
             $this->errors[$field][] = 'The ' . $field . ' field may not be greater than ' . $max . ' characters.';
         }
     }
 
+    public function number(array $data, string $field): void
+    {
+        if (!is_numeric($data[$field])) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a number.';
+        }
+    }
+
+    protected function integer(array $data, string $field): void
+    {
+        // check the the value is an integer, if it's a string, check it's a valid integer if it was casted to an integer
+        if (!is_numeric($data[$field]) || (string)(int)$data[$field] !== $data[$field]) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be an integer.';
+        }
+    }
+
     protected function boolean(array &$data, string $field): void
     {
-        $data[$field] = $this->normalizeBoolean($data[$field]);
+        if (!$this->normalizeBoolean($data[$field])) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a boolean.';
+        }
     }
 
     public function normalizeBoolean($value): bool
@@ -93,36 +147,30 @@ class Validator
         return false;
     }
 
-    // TODO: fix the validation rules errors below here:
-
-    public static function url(string $value): bool
+    public function validatedData(): array
     {
-        return filter_var($value, FILTER_VALIDATE_URL);
+        return $this->data;
     }
 
-    public static function number(string $value): bool
+    protected function url(array $data, string $field): void
     {
-        return is_numeric($value);
+        if (filter_var($data[$field], FILTER_VALIDATE_URL) === false) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a valid URL.';
+        }
     }
 
-    public static function date(string $value): bool
+    protected function date(array $data, string $field): void
     {
-        return strtotime($value);
+        if (strtotime($data[$field]) === false) {
+            $this->errors[$field][] = 'The ' . $field . ' field must be a valid date.';
+        }
     }
 
-    public static function match(string $value, string $match): bool
+    protected function match(array $data, string $field, string $fieldToMatch): void
     {
-        return $value === $match;
-    }
-
-    public static function file(string $value): bool
-    {
-        return is_uploaded_file($value);
-    }
-
-    public static function image(string $value): bool
-    {
-        return getimagesize($value);
+        if ($data[$field] !== $data[$fieldToMatch]) {
+            $this->errors[$field][] = 'The ' . $field . ' field must match the ' . $fieldToMatch . ' field.';
+        }
     }
 
 }
