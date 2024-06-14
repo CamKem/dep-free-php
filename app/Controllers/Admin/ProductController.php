@@ -124,6 +124,11 @@ class ProductController
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
         }
+        // get the product
+        $product = (new Product())->query()
+            ->find($request->get('id'))
+            ->first();
+
     }
 
     public function destroy(Request $request): Response
