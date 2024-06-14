@@ -6,17 +6,18 @@
         if (event.detail.action === 'edit-<?= $category->id ?>') {
             let modal = new Modal('category-edit-<?= $category->id ?>', event.detail.form);
             modal.openModal();
-            new FormValidator('edit-category-<?= $category->id ?>-form')
         }
     });
+
+    new FormValidator('edit-category-<?= $category->id ?>-form');
 </script>
 
 <div id="category-edit-<?= $category->id ?>-modal" class="modal">
     <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h2 class="general-heading">Create a New Category</h2>
+        <h2 class="general-heading">Edit Category</h2>
         <div class="modal-form">
-            <form id="edit-category-form"
+            <form id="edit-category-<?= $category->id ?>-form"
                   action="<?= route('admin.categories.update', ['id' => $category->id]) ?>"
                   method="post">
                 <input type="hidden" name="_method" value="put">
@@ -31,11 +32,12 @@
                        autocomplete="edit-category"
                 >
                 <p class="error-message" id="name-error"></p>
+
                 <label for="status">Status:</label>
                 <select name="status"
                         id="order-status"
                         title="status"
-                        data-validate="true"
+                        data-validate=false
                 >
                     <?php foreach ($statuses as $status): ?>
                         <option value="<?= $status ?>"
@@ -44,10 +46,10 @@
                     <?php endforeach; ?>
                 </select>
                 <p class="modal-text">
-                    Are you sure you want to create this category?
+                    Are you sure you want to edit this category?
                 </p>
                 <button type="submit" class="confirm-button">
-                    Create Category
+                    Edit Category
                 </button>
             </form>
         </div>

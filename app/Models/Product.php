@@ -15,4 +15,15 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    // add a reverse relationship to the orders table
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Order::class,
+            OrderProduct::class,
+            'product_id',
+            'order_id',
+        );
+    }
+
 }

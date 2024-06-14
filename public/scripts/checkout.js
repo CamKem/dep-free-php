@@ -146,6 +146,7 @@ export class CardHandler {
                         input.value = segments[i - 1] || '';
                     }
                 }
+                // If the card number field is full and the user types a digit
                 if (event.target.value.length >= 4 && index < this.inputs.length - 1) {
                     this.inputs[index + 1].focus();
                     this.inputs[index + 1].select();

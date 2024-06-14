@@ -24,21 +24,25 @@ class SessionController extends Controller
         (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 
         $validated = (new Validator())->validate(
-            array_merge(
-                $request->only(['email', 'password']),
-                ['remember' => $request->get('remember', false)]
-            ), [
-            'email' => ['required', 'email'],
+            $request->only(['email', 'password']), [
+            'email' => ['required', 'email', 'exists:user'],
             'password' => ['required'],
-            'remember' => ['boolean'],
         ]);
 
-        $login = auth()->attempt($validated);
+        if ($validated->hasErrors()) {
+            return redirect(route('login.index'))
+                ->withInput($request->except(['password']))
+                ->withErrors($validated->getErrors());
+        }
+
+        $login = auth()->attempt($validated->validatedData());
 
         if (!$login) {
             return redirect(route('login.index'))
-                ->withInput($validated)
-                ->withErrors(['email' => 'The provided credentials do not match our records.']);
+                ->withInput($request->except(['password']))
+                ->withErrors([
+                    'email' => ['Your credentials are do not match.']
+                ]);
         }
 
         session()->flash('flash-message', 'You have been logged in.');

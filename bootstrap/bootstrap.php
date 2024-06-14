@@ -13,6 +13,7 @@ use App\Services\EnvService;
 use App\Services\MiddlewareService;
 use App\Services\RouterService;
 use App\Services\SessionService;
+use App\Services\StorageService;
 
 // Create the application & container.
 $app = new App();
@@ -24,6 +25,7 @@ $app->registerProvider(new DatabaseService($app));
 $app->registerProvider(new SessionService($app));
 $app->registerProvider(new AuthService($app));
 $app->registerProvider(new CategoryService($app));
+$app->registerProvider(new StorageService($app));
 $app->registerProvider(new RouterService($app));
 
 // Bind the Request & Response to the container

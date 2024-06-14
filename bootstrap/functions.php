@@ -5,6 +5,7 @@ use App\Core\Authentication\Auth;
 use App\Core\Collecting\Collection;
 use App\Core\Config;
 use App\Core\Env;
+use App\Core\FileSystem\Storage;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
@@ -188,4 +189,9 @@ function cookie($key): ?string
 function now(): string
 {
     return date('Y-m-d H:i:s');
+}
+
+function storage(): Storage
+{
+    return app(Storage::class);
 }

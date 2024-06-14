@@ -61,6 +61,12 @@ class Request
         return $this->bodyParameters;
     }
 
+    public function except(array $keys): array
+    {
+        $parameters = $this->getParameters();
+        return array_diff_key($parameters, array_flip($keys));
+    }
+
     // only method returns only the values of the keys passed in the array, if they exist
     // if the don't exist it should return an empty key
     // to return an empty key you can use the null coalescing operator
@@ -93,6 +99,20 @@ class Request
         return $uri;
     }
 
+    // has file checks if the file is in the $_FILES array
+    // if it is, it returns true, otherwise it returns false
+    public function hasFile(string $key): bool
+    {
+        return isset($_FILES[$key]);
+    }
+
+    // getFile returns the file from the $_FILES array
+    // if the file is not in the $_FILES array, it returns null
+    public function getFile(string $key): ?array
+    {
+        return $_FILES[$key] ?? null;
+    }
+
     public function all(): array
     {
         return $this->getParameters();
@@ -101,6 +121,13 @@ class Request
     public function url(): string
     {
         return $this->url;
+    }
+
+    // merge method to add in values to the body parameters
+    // this method should merge the values passed in the array with the body parameters
+    public function merge(array $values): void
+    {
+        $this->bodyParameters = array_merge($this->bodyParameters, $values);
     }
 
     public function route(): Route

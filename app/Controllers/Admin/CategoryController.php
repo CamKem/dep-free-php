@@ -17,11 +17,11 @@ class CategoryController
     {
         $categories = (new Category())
             ->query()
-            ->with('products')
+            ->withCount('products')
             ->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
-            $categories->where('name', 'like', "%{$request->get('search')}%");
+            $categories->where('categories.name', 'like', "%{$request->get('search')}%");
         }
 
         return view('admin.categories.index', [
@@ -33,10 +33,24 @@ class CategoryController
 
     public function store(Request $request): Response
     {
+        $validated = (new Validator())->validate($request->only(['name', 'status']), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'status' => ['required', 'string'],
+        ]);
+
+        if ($validated->hasErrors()) {
+            session()->flash('open-create-modal', true);
+            session()->flash('flash-message', 'Category was not created');
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
+
         $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
 
         $created = (new Category())->query()->create([
-            'name' => $request->get('name'),
+            'name' => $validated->get('name'),
+            'status' => $validated->get('status'),
             'slug' => $slug,
         ])->save();
 
@@ -57,12 +71,21 @@ class CategoryController
             'status' => ['required', 'string']
         ]);
 
-        $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+        if ($validated->hasErrors()) {
+            session()->flash('flash-message', 'Category was not updated');
+            return redirect()->back()->withErrors($validated->getErrors());
+        }
+
+        $categoryValues = $category->get();
+
+        if ($categoryValues->name !== $validated->get('name')) {
+            $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
+        }
 
         $updated = $category->update([
-            'name' => $validated['name'],
-            'slug' => $slug,
-            'status' => $validated['status'],
+            'name' => $validated->get('name'),
+            'slug' => $slug ?? $categoryValues->slug,
+            'status' => $validated->get('status'),
         ])->save();
 
         if (!$updated) {

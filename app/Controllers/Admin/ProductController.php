@@ -2,58 +2,197 @@
 
 namespace App\Controllers\Admin;
 
+use App\Actions\HandleCsrfTokens;
+use app\Core\Database\Slugger;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
 use App\Core\Template;
+use App\Core\Validator;
+use App\Models\Category;
+use App\Models\Product;
 
 class ProductController
 {
 
-    public function index(): Template
+    public function index(Request $request): Template
     {
+        $products = (new Product())->query()
+            ->with('category')
+            ->withCount('orders')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $products->where('name', 'like', "%{$request->get('search')}%")
+                ->orWhere('description', 'like', "%{$request->get('search')}%");
+        }
+
         return view('admin.products.index', [
-            'title' => 'products',
+            'title' => 'Manage Products',
+            'products' => $products->paginate(5),
+            'categories' => (new Category())->query()->get(),
         ]);
     }
 
-    public function show(): Template
+    public function imageUpload(Request $request): Response
     {
-        return view('admin.products.show', [
-            'title' => 'User',
+        $file = null;
+        if ($request->hasFile('image')) {
+            $file = storage()->put(
+                'images/products/',
+                $request->getFile('image')
+            );
+        }
+        if (!$file) {
+            return response()->json([
+                'filePath' => null,
+                'message' => 'Image upload failed'
+            ]);
+        }
+        return response()->json([
+            'filePath' => $file,
+            'message' => 'Image uploaded successfully'
         ]);
     }
 
-    public function create(): Template
+    public function store(Request $request): Response
     {
-        return view('admin.products.create', [
-            'title' => 'Create User',
+        // create a boolean value for the feature checkboxes
+        $request->merge([
+            'featured' => $request->has('featured') ? 1 : 0,
         ]);
+
+        $validated = (new Validator())->validate($request->all(), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'price' => ['required', 'number'],
+            'sale_price' => ['number'],
+            'category_id' => ['required', 'integer'],
+            'description' => ['required', 'string'],
+            'image' => ['required', 'string'],
+            'featured' => ['boolean'],
+        ]);
+
+        if ($validated->hasErrors()) {
+            session()->flash('open-create-modal', true);
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
+
+        // create a slug for the product
+        $slug = Slugger::uniqueSlug($validated->name, 'product', 'slug');
+
+        $product = (new Product())->query()->create([
+            'name' => $validated->get('name'),
+            'slug' => $slug,
+            'price' => $validated->get('price'),
+            'sale_price' => $validated->get('sale_price'),
+            'category_id' => $validated->get('category_id'),
+            'description' => $validated->get('description'),
+            'image' => $validated->get('image'),
+            'featured' => $validated->get('featured'),
+        ])->save();
+
+        if (!$product) {
+            session()->flash('open-create-modal', true);
+            session()->flash('flash-message', 'Product creation failed');
+            return redirect()->back()
+                ->withInput($request->all());
+        }
+
+        session()->flash('flash-message', 'Product created successfully');
+        return redirect()->route('admin.products.index');
     }
 
-    public function store(): Template
+    public function update(Request $request): Response
     {
-        return view('admin.products.store', [
-            'title' => 'Store User',
+
+        // validate the csrf token
+        (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
+
+        // validate the request
+        $validated = (new Validator())->validate($request->all(), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'price' => ['required', 'number'],
+            'category_id' => ['required', 'integer'],
+            'sale_price' => ['number'],
+            'description' => ['required', 'string'],
+            'image' => ['required', 'string'],
+            'featured' => ['boolean'],
         ]);
+
+        // check if the request has errors
+        if ($validated->hasErrors()) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
+
+        // get the product
+        $product = (new Product())->query()
+            ->find($request->get('id'))
+            ->first();
+
+        // check that the image is not the same as the current image
+        if ($product->image !== $validated->image) {
+            // delete the current image
+            $removed = storage()->delete("images/products/{$product->image}");
+
+            // check if the image was not removed
+            if (!$removed) {
+                session()->flash('flash-message', 'Product image deletion failed');
+                return redirect()->route('admin.products.index');
+            }
+        }
+
+        // update the product
+        $updated = $product->query()->update([
+            'name' => $validated->get('name'),
+            'price' => $validated->get('price'),
+            'category_id' => $validated->get('category_id'),
+            'description' => $validated->get('description'),
+            'sale_price' => $validated->get('sale_price'),
+            'image' => $validated->get('image'),
+            'featured' => $validated->get('featured'),
+        ])->save();
+
+        // check if the product was not updated
+        if (!$updated) {
+            session()->flash('flash-message', 'Product update failed');
+            return redirect()->route('admin.products.index');
+        }
+
+        session()->flash('flash-message', 'Product updated successfully');
+        return redirect()->route('admin.products.index');
     }
 
-    public function edit(): Template
+    public function destroy(Request $request): Response
     {
-        return view('admin.products.edit', [
-            'title' => 'Edit User',
-        ]);
-    }
+        $product = (new Product())->query()
+            ->find($request->get('id'))
+            ->first();
 
-    public function update(): Template
-    {
-        return view('admin.products.update', [
-            'title' => 'Update User',
-        ]);
-    }
+        if (!$product) {
+            session()->flash('flash-message', 'Product not found');
+            return redirect()->route('admin.products.index');
+        }
 
-    public function destroy(): Template
-    {
-        return view('admin.products.destroy', [
-            'title' => 'Destroy User',
-        ]);
+        // first delete the image from the storage
+        $removed = storage()->delete("images/products/{$product->image}");
+
+        if (!$removed) {
+            session()->flash('flash-message', 'Product image deletion failed');
+            return redirect()->route('admin.products.index');
+        }
+
+        $deleted = $product->query()->delete()->save();
+
+        if (!$deleted) {
+            session()->flash('flash-message', 'Product deletion failed');
+            return redirect()->route('admin.products.index');
+        }
+
+        session()->flash('flash-message', 'Product deleted successfully');
+        return redirect()->route('admin.products.index');
     }
 
 }

@@ -9,7 +9,7 @@
 </script>
 
 <div id="<?= $action ?>-modal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content screen-center">
         <span class="close-button">&times;</span>
         <h2 class="general-heading">Confirm <?= ucfirst($action) ?></h2>
         <p class="modal-text">Are you sure you want to <?= $action ?> this item?</p>

@@ -2,7 +2,6 @@
     import ModalManager from "/scripts/modalManager.js";
 
     new ModalManager('admin-category-create', 'category-create');
-    new ModalManager('delete-form', 'delete');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-category-create', compact('statuses')) ?>
@@ -11,7 +10,8 @@
         <form name="admin-category-create">
             <button>Create category</button>
         </form>
-        <form class="search-form" action="<?= route('admin.categories.index') ?>"
+        <form class="search-form"
+              action="<?= route('admin.categories.index') ?>"
               method="get">
             <label for="search-bar" class="sr-only">Search categories</label>
             <input type="text" name="search" id="search-bar"
@@ -40,14 +40,13 @@
                 <tr class="admin-table-row">
                     <td><?= $category->name; ?></td>
                     <td><?= $category->slug; ?></td>
-                    <td><?= $category->products?->count() ?? 0 ?></td>
+                    <td><?= $category->products_count ?></td>
                     <td><?= $category->status ?></td>
                     <td><?= date('d M Y', strtotime($category->updated_at)) ?></td>
                     <td class="form-buttons">
                         <script type="module">
                             import ModalManager from "/scripts/modalManager.js";
-                            // TODO: add the ability to change the status of the category
-                            // NOTE: we need to fix this before we can complete the project
+
                             new ModalManager('category-edit-<?= $category->id ?>', 'edit-<?= $category->id ?>');
                         </script>
                         <?= add('modals.admin-category-edit', compact('category', 'statuses')) ?>

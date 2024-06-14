@@ -41,14 +41,21 @@ class ContactController extends Controller
             'mailing_list' => ['boolean'],
         ]);
 
+        if ($validated->hasErrors()) {
+            session()->flash('flash-message', 'Please correct the form errors.');
+            return response()->back()
+                ->withInput($validated->validatedData())
+                ->withErrors($validated->getErrors());
+        }
+
         // store the contact
         $contact = (new Contact())->query()->create([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'contact' => $validated['contact'],
-            'email' => $validated['email'],
-            'message' => $validated['message'],
-            'mailing_list' => $validated['mailing_list'],
+            'first_name' => $validated->get('first_name'),
+            'last_name' => $validated->get('last_name'),
+            'contact' => $validated->get('contact'),
+            'email' => $validated->get('email'),
+            'message' => $validated->get('message'),
+            'mailing_list' => $validated->get('mailing_list'),
         ]);
         $contact->save();
 

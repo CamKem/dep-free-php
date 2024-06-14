@@ -35,29 +35,29 @@ class PasswordResetController extends Controller
         // check the email exists in the database
         $exists = (new User())
             ->query()
-            ->where('email', $validated['email'])
+            ->where('email', $validated->get('email'))
             ->exists();
 
         if (!$exists) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated)
+                ->withInput($validated->validatedData())
                 ->withErrors(['email' => 'The provided email does not exist in our records.']);
         }
 
         // get the user's username
         $username = (new User())
             ->query()
-            ->where('email', $validated['email'])
+            ->where('email', $validated->get('email'))
             ->first()
             ->username;
 
         // send the password reset email
-        $sent = (new PasswordResetService())->createPasswordReset($validated['email'], $username);
+        $sent = (new PasswordResetService())->createPasswordReset($validated->get('email'), $username);
 
         // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated)
+                ->withInput($validated->validatedData())
                 ->withErrors(['email' => 'Failed to send the password reset email.']);
         }
 
@@ -100,7 +100,7 @@ class PasswordResetController extends Controller
         ]);
 
         // reset the user's password
-        $reset = (new PasswordResetService())->resetPassword($request->get('token'), $validated['password']);
+        $reset = (new PasswordResetService())->resetPassword($request->get('token'), $validated->get('password'));
 
         if (!$reset) {
             return redirect(route('password.reset.show'))

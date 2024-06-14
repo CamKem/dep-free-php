@@ -26,6 +26,7 @@ class QueryBuilder
     protected string $verb = 'SELECT';
     protected array $updateValues = [];
     protected array $with = [];
+    protected array $withCount = [];
     protected bool $withRelatedColumns = true;
     protected ?Relation $relation = null;
 
@@ -55,7 +56,6 @@ class QueryBuilder
 
     public function select(string|array $columns): static
     {
-
         // If the SELECT clause has already been modified, append the new columns
         if ($this->select !== ['*']) {
             if (is_array($columns)) {
@@ -63,8 +63,10 @@ class QueryBuilder
             } else {
                 $this->select[] = $columns;
             }
+            // If the SELECT clause has not been modified, set the new columns
         } else if (is_array($columns)) {
             $this->select = $columns;
+            // else set the columns as an array
         } else {
             $this->select = [$columns];
         }
@@ -95,7 +97,6 @@ class QueryBuilder
         return $this;
     }
 
-    // offset is used to skip a number of rows before starting to return rows
     public function offset(int $offset): static
     {
         $this->offset[] = $offset;
@@ -105,7 +106,8 @@ class QueryBuilder
     public function whereIn(string $column, array $values): static
     {
         if (empty($values)) {
-            $this->conditions[] = [$column, 'IN', NULL, "{$column}_in_0"]; // No results should match when values are empty
+            // No results should be returned if $values are empty
+            $this->conditions[] = [$column, 'IN', NULL, "{$column}_in_0"];
             return $this;
         }
 
@@ -159,6 +161,16 @@ class QueryBuilder
             throw new RuntimeException("Method {$relation} does not exist on the model");
         }
         $this->with[] = $relation;
+        return $this;
+    }
+
+    public function withCount(string $relation): static
+    {
+        if (!method_exists(new $this->model(), $relation)) {
+            throw new RuntimeException("Method {$relation} does not exist on the model");
+        }
+
+        $this->withCount[] = $relation;
         return $this;
     }
 
@@ -235,6 +247,34 @@ class QueryBuilder
             }
         }
 
+        if (!empty($this->withCount)) {
+            $modelInstance = new $this->model();
+            foreach ($this->withCount as $relation) {
+                if (method_exists($modelInstance, $relation)) {
+                    $relation = $modelInstance->{$relation}();
+                    $relatedTable = $relation->getRelatedTable();
+                    $foreignColumn = $relation->getForeignKey();
+                    $relatedColumn = $relation->getRelatedKey();
+                    $relationName = $relation->getRelationName();
+
+                    $this->select("{$this->table}.*");
+                    if ($relation instanceof HasMany || $relation instanceof BelongsTo) {
+                        $this->select("COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count");
+                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
+                    } elseif ($relation instanceof HasManyThrough) {
+                        $pivotTable = $relation->getPivotTable();
+                        $this->select[] = "COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count";
+                        $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
+                        $this->join($relatedTable, "{$relatedTable}.id", '=', "{$pivotTable}.{$relatedColumn}", 'LEFT');
+                    } else {
+                        $this->select[] = "COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count";
+                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
+                    }
+                    $this->groupBy("{$this->table}.id");
+                }
+            }
+        }
+
         if ($this->verb === 'DELETE') {
             $this->query = "DELETE FROM {$this->table}";
         } elseif ($this->verb === 'INSERT') {
@@ -242,8 +282,7 @@ class QueryBuilder
             $this->query = "INSERT INTO {$this->table} (" . implode(", ", $columns) . ") VALUES (:" . implode(", :", $columns) . ")";
             // early return because we don't need to do anything else
             return $this->query;
-        }
-        elseif ($this->verb === 'UPDATE') {
+        } elseif ($this->verb === 'UPDATE') {
             // get the columns from the updateValues
             $columns = array_map(fn($condition) => $condition[0], $this->updateValues);
             $setClause = implode(", ", array_map(fn($column) => "{$column} = :{$column}", $columns));
@@ -320,15 +359,15 @@ class QueryBuilder
             }
         }
 
+        // handle a group by clause
+        if (!empty($this->groupBy) && !str_contains($this->query, 'GROUP BY')) {
+            $this->query .= " GROUP BY " . implode(", ", $this->groupBy);
+        }
+
         // handle order by clause
         if (!empty($this->orderBy) && !str_contains($this->query, 'ORDER BY')) {
             $this->query .= " ORDER BY ";
             $this->query .= "{$this->orderBy[0]} {$this->orderBy[1]}";
-        }
-
-        // handle a group by clause
-        if (!empty($this->groupBy) && !str_contains($this->query, 'GROUP BY')) {
-            $this->query .= " GROUP BY " . implode(", ", $this->groupBy);
         }
 
         // handle limit clause

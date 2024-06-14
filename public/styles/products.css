@@ -13,13 +13,14 @@
     padding: var(--small-padding);
     border: var(--thin-border) solid var(--light-grey-color);
     border-radius: var(--small-radius);
-    max-width: 155px;
+    justify-content: center;
+    width: 155px;
     height: 250px;
 }
 
-@media screen and (min-width: 885px) {
+@media screen and (min-width: 920px) {
     .product-link {
-        max-width: 180px;
+        width: 180px;
     }
 }
 
