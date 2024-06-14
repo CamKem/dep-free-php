@@ -27,12 +27,19 @@
 }
 
 .modal-content {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: var(--very-light-grey-color);
-    margin: 15% auto;
     padding: var(--large-padding);
     border: var(--thin-border) solid var(--mid-grey-color);
     width: 100%;
     max-width: 350px;
+}
+
+.modal-screen-center {
+    margin: 15% auto;
 }
 
 .modal-text {
