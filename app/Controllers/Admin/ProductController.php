@@ -118,6 +118,12 @@ class ProductController
             'image' => ['required', 'string'],
             'featured' => ['boolean'],
         ]);
+        // check if the request has errors
+        if ($validated->hasErrors()) {
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
     }
 
     public function destroy(Request $request): Response
