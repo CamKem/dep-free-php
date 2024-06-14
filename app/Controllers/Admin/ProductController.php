@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Admin;
 
+use App\Actions\HandleCsrfTokens;
 use app\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -105,6 +106,8 @@ class ProductController
     {
         return view('admin.products.update', [
             'title' => 'Update User',
+        // validate the csrf token
+        (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
         ]);
     }
 
