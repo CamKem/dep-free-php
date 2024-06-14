@@ -100,26 +100,23 @@ Route::get('/admin/products')
     ->controller([ProductController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.index');
-Route::get('/admin/products/{id}')
-    ->controller([ProductController::class, 'show'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.products.show');
-Route::get('/admin/products/create')
-    ->controller([ProductController::class, 'create'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.products.create');
+
 Route::post('/admin/products')
     ->controller([ProductController::class, 'store'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.store');
-Route::get('/admin/products/{id}/edit')
-    ->controller([ProductController::class, 'edit'])
+
+// image upload route
+Route::post('/admin/products/image')
+    ->controller([ProductController::class, 'imageUpload'])
     ->middleware(['auth', 'admin'])
-    ->name('admin.products.edit');
+    ->name('admin.products.image');
+
 Route::put('/admin/products/{id}')
     ->controller([ProductController::class, 'update'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.update');
+
 Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
