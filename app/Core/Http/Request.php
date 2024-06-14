@@ -123,6 +123,13 @@ class Request
         return $this->url;
     }
 
+    // merge method to add in values to the body parameters
+    // this method should merge the values passed in the array with the body parameters
+    public function merge(array $values): void
+    {
+        $this->bodyParameters = array_merge($this->bodyParameters, $values);
+    }
+
     public function route(): Route
     {
         return app(Router::class)->getRoutes()->match($this);
