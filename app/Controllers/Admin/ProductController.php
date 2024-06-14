@@ -64,6 +64,7 @@ class ProductController
         $validated = (new Validator())->validate($request->all(), [
             'name' => ['required', 'string', 'min:3', 'max:255'],
             'price' => ['required', 'number'],
+            'sale_price' => ['number'],
             'category_id' => ['required', 'integer'],
             'description' => ['required', 'string'],
             'image' => ['required', 'string'],
@@ -85,6 +86,7 @@ class ProductController
             'name' => $validated->name,
             'slug' => $slug,
             'price' => $validated->price,
+            'sale_price' => $validated->sale_price ?? null,
             'category_id' => $validated->category_id,
             'description' => $validated->description,
             'image' => $validated->image,
@@ -104,8 +106,7 @@ class ProductController
 
     public function update(Request $request): Response
     {
-        return view('admin.products.update', [
-            'title' => 'Update User',
+
         // validate the csrf token
         (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
 
@@ -114,6 +115,7 @@ class ProductController
             'name' => ['required', 'string', 'min:3', 'max:255'],
             'price' => ['required', 'number'],
             'category_id' => ['required', 'integer'],
+            'sale_price' => ['number'],
             'description' => ['required', 'string'],
             'image' => ['required', 'string'],
             'featured' => ['boolean'],
@@ -149,6 +151,7 @@ class ProductController
             'price' => $validated->price,
             'category_id' => $validated->category_id,
             'description' => $validated->description,
+            'sale_price' => $validated->sale_price ?? '',
             'image' => $validated->image,
             'featured' => $validated->featured,
         ])->save();
