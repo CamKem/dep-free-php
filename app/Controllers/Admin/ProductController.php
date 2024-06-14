@@ -152,6 +152,12 @@ class ProductController
             'image' => $validated->image,
             'featured' => $validated->featured,
         ])->save();
+
+        // check if the product was not updated
+        if (!$updated) {
+            session()->flash('flash-message', 'Product update failed');
+            return redirect()->route('admin.products.index');
+        }
     }
 
     public function destroy(Request $request): Response
