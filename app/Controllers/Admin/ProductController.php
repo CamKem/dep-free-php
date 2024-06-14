@@ -158,6 +158,9 @@ class ProductController
             session()->flash('flash-message', 'Product update failed');
             return redirect()->route('admin.products.index');
         }
+
+        session()->flash('flash-message', 'Product updated successfully');
+        return redirect()->route('admin.products.index');
     }
 
     public function destroy(Request $request): Response
