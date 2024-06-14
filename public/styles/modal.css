@@ -38,7 +38,11 @@
     max-width: 350px;
 }
 
-.modal-screen-center {
+.modal-content.wide{
+    max-width: 600px;
+}
+
+.modal-content.screen-center {
     margin: 15% auto;
 }
 
