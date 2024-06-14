@@ -102,12 +102,21 @@ class ProductController
         return redirect()->route('admin.products.index');
     }
 
-    public function update(): Template
+    public function update(Request $request): Response
     {
         return view('admin.products.update', [
             'title' => 'Update User',
         // validate the csrf token
         (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
+
+        // validate the request
+        $validated = (new Validator())->validate($request->all(), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'price' => ['required', 'number'],
+            'category_id' => ['required', 'integer'],
+            'description' => ['required', 'string'],
+            'image' => ['required', 'string'],
+            'featured' => ['boolean'],
         ]);
     }
 
