@@ -22,12 +22,30 @@ class ProductController
         }
 
         return view('admin.products.index', [
-            'title' => 'products',
             'title' => 'Manage Products',
             'products' => $products->paginate(5),
             'categories' => (new Category())->query()->get(),
         ]);
     }
+
+    public function imageUpload(Request $request): Response
+    {
+        $file = null;
+        if ($request->hasFile('image')) {
+            $file = storage()->put(
+                'images/products/',
+                $request->getFile('image')
+            );
+        }
+        if (!$file) {
+            return response()->json([
+                'filePath' => null,
+                'message' => 'Image upload failed'
+            ]);
+        }
+        return response()->json([
+            'filePath' => $file,
+            'message' => 'Image uploaded successfully'
         ]);
     }
 
