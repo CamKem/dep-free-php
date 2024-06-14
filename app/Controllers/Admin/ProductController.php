@@ -2,7 +2,11 @@
 
 namespace App\Controllers\Admin;
 
+use app\Core\Database\Slugger;
+use App\Core\Http\Request;
+use App\Core\Http\Response;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -49,32 +53,52 @@ class ProductController
         ]);
     }
 
-    public function show(): Template
+    public function store(Request $request): Response
     {
-        return view('admin.products.show', [
-            'title' => 'User',
+        // create a boolean value for the feature checkboxes
+        $request->merge([
+            'featured' => $request->has('featured') ? 1 : 0,
         ]);
-    }
 
-    public function create(): Template
-    {
-        return view('admin.products.create', [
-            'title' => 'Create User',
+        $validated = (new Validator())->validate($request->all(), [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'price' => ['required', 'number'],
+            'category_id' => ['required', 'integer'],
+            'description' => ['required', 'string'],
+            'image' => ['required', 'string'],
+            'featured' => ['boolean'],
         ]);
-    }
 
-    public function store(): Template
-    {
-        return view('admin.products.store', [
-            'title' => 'Store User',
-        ]);
-    }
+        if ($validated->hasErrors()) {
+            session()->flash('open-create-modal', true);
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors($validated->getErrors());
+        }
 
-    public function edit(): Template
-    {
-        return view('admin.products.edit', [
-            'title' => 'Edit User',
-        ]);
+        // create a slug for the product
+        $slug = Slugger::uniqueSlug($validated->name, 'product', 'slug');
+
+        // TODO: wrap all the validated magic calls into a get() method
+        $product = (new Product())->query()->create([
+            'name' => $validated->name,
+            'slug' => $slug,
+            'price' => $validated->price,
+            'category_id' => $validated->category_id,
+            'description' => $validated->description,
+            'image' => $validated->image,
+            'featured' => $validated->featured,
+        ])->save();
+
+        if (!$product) {
+            session()->flash('open-create-modal', true);
+            session()->flash('flash-message', 'Product creation failed');
+            return redirect()->back()
+                ->withInput($request->all());
+        }
+
+        session()->flash('flash-message', 'Product created successfully');
+        return redirect()->route('admin.products.index');
     }
 
     public function update(): Template
