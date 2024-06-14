@@ -10,18 +10,16 @@ use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
 
-#// DONt save credit card number... put dummy data.
-#// ADMIN and password username and password
 #// DATABASE name sportswh.sql
+#// allow login with username (for admin only) and email (for users)
 
-// Fix the menu toggle on safari, it's not working local & production
-
-#// Upload photo files for new products.
-// Admin must be able to view all products
-// Admin must be able to create, update, delete products
-
+// NOTE: Fix the menu toggle on safari, it's not working local & production
 // Admin must be able to view all roles
 // create, update, delete
+
+// NOTE: when it's finished, all routes need to be tested for each different edge case
+
+// Setting - add roles, update password, change profile
 
 // Dashboard
 Route::get('/admin')
