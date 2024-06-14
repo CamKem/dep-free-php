@@ -65,6 +65,10 @@ class Storage
 
     public function delete(string $path): bool
     {
+        // we need to handle the case where the file doesn't exist
+        if ($this->exists($path) === false) {
+            return false;
+        }
         return unlink($this->path . $path);
     }
 
