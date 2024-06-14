@@ -302,7 +302,6 @@ class Model implements Arrayable, JsonSerializable
 
     private function searchModelsById(array $models, $id): ?int
     {
-        // NOTE: tested working
         foreach ($models as $key => $model) {
             if ($model->id === $id) {
                 return $key;
@@ -313,7 +312,6 @@ class Model implements Arrayable, JsonSerializable
 
     private function searchLookupReturnModel(array &$currentLookup, string $name): ?self
     {
-        // NOTE: tested working
         foreach ($currentLookup as $relationName => $relation) {
             if ($relationName === $name) {
                 // return the last model in the array
@@ -325,7 +323,6 @@ class Model implements Arrayable, JsonSerializable
 
     private function checkRelationNameSetOnModel(self $model, string $relation): bool
     {
-        // NOTE: tested working
         return isset($model->relations[$relation]);
     }
 

@@ -87,8 +87,7 @@ class App extends Container
 
     protected function unBootProvider(ServiceProvider $provider): void
     {
-        // TODO: set up to remove the resolved providers from the container
-        //  also remove them from the bootedProviders array
+
         if (method_exists($provider, 'unBoot')) {
             $provider->unBoot();
             // remove the provider from the bootedProviders array
@@ -123,6 +122,11 @@ class App extends Container
                 // TODO: set up so that DI is handled for all classes and methods
                 //  not just in aliases but all bindings and resolutions
                 //  from the container, for now, we will just return a new instance of the class
+                //  autowiring is the feature we need to implement
+                //  https://www.php.net/manual/en/reflectionclass.getconstructor.php
+                //  https:///stitcher.io/blog/constructor-injection
+                //  https://www.php.net/manual/en/reflectionparameter.gettype.php
+                //  https:///stitcher.io/blog/tagged-singletons
                 return new $class;
             }
 
