@@ -1,6 +1,7 @@
 @import url('../variables.css');
 @import url('../general.css');
 @import url('../forms.css');
+@import url('../products.css');
 @import url('../footer-bottom.css');
 @import url('../order.css');
 @import url('../cart.css');
@@ -248,6 +249,7 @@ body {
 #roles {
     width: 100%; /* Set width to 100% */
     border: 1px solid var(--light-grey-color); /* Add a border */
+    padding: 0;
     border-radius: 5px; /* Rounded corners */
     background-color: var(--white-color);
     font-size: var(--font-small);
