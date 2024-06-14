@@ -143,6 +143,15 @@ class ProductController
             }
         }
 
+        // update the product
+        $updated = $product->query()->update([
+            'name' => $validated->name,
+            'price' => $validated->price,
+            'category_id' => $validated->category_id,
+            'description' => $validated->description,
+            'image' => $validated->image,
+            'featured' => $validated->featured,
+        ])->save();
     }
 
     public function destroy(Request $request): Response
