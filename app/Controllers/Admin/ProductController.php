@@ -129,6 +129,10 @@ class ProductController
             ->find($request->get('id'))
             ->first();
 
+        if ($product->image !== $validated->image) {
+            // delete the current image
+            $removed = storage()->delete("images/products/{$product->image}");
+
     }
 
     public function destroy(Request $request): Response
