@@ -83,14 +83,14 @@ class ProductController
 
         // TODO: wrap all the validated magic calls into a get() method
         $product = (new Product())->query()->create([
-            'name' => $validated->name,
+            'name' => $validated->get('name'),
             'slug' => $slug,
-            'price' => $validated->price,
-            'sale_price' => $validated->sale_price ?? null,
-            'category_id' => $validated->category_id,
-            'description' => $validated->description,
-            'image' => $validated->image,
-            'featured' => $validated->featured,
+            'price' => $validated->get('price'),
+            'sale_price' => $validated->get('sale_price'),
+            'category_id' => $validated->get('category_id'),
+            'description' => $validated->get('description'),
+            'image' => $validated->get('image'),
+            'featured' => $validated->get('featured'),
         ])->save();
 
         if (!$product) {
@@ -147,13 +147,13 @@ class ProductController
 
         // update the product
         $updated = $product->query()->update([
-            'name' => $validated->name,
-            'price' => $validated->price,
-            'category_id' => $validated->category_id,
-            'description' => $validated->description,
-            'sale_price' => $validated->sale_price ?? '',
-            'image' => $validated->image,
-            'featured' => $validated->featured,
+            'name' => $validated->get('name'),
+            'price' => $validated->get('price'),
+            'category_id' => $validated->get('category_id'),
+            'description' => $validated->get('description'),
+            'sale_price' => $validated->get('sale_price'),
+            'image' => $validated->get('image'),
+            'featured' => $validated->get('featured'),
         ])->save();
 
         // check if the product was not updated

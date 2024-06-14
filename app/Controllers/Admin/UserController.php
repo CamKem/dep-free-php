@@ -92,8 +92,8 @@ class UserController
         }
 
         $user->query()->update([
-            'username' => $validated->username,
-            'email' => $validated->email,
+            'username' => $validated->get('username'),
+            'email' => $validated->get('email'),
         ])->save();
 
         // if request has password hash it and then update the user
@@ -111,7 +111,7 @@ class UserController
 
         // make an array with the roles using the role id as the key
         $roles = [];
-        foreach ($validated->roles as $role) {
+        foreach ($validated->get('roles') as $role) {
             $roles[$role] = ['role_id' => $role];
         }
 
@@ -141,21 +141,21 @@ class UserController
 
         $existingUser = (new User())
             ->query()
-            ->where('email', $validated->email)
-            ->orWhere('username', $validated->username)
+            ->where('email', $validated->get('email'))
+            ->orWhere('username', $validated->get('username'))
             ->exists();
 
         if (!$existingUser) {
             $user = (new User())
                 ->query()
-                ->where('email', $validated->email)
-                ->orWhere('username', $validated->username)
+                ->where('email', $validated->get('email'))
+                ->orWhere('username', $validated->get('username'))
                 ->first();
-            if ($user->email === $validated->email) {
+            if ($user->email === $validated->get('email')) {
                 $errors['email'] = 'Email already exists';
             }
 
-            if ($user->username === $validated->username) {
+            if ($user->username === $validated->get('username')) {
                 $errors['username'] = 'Username already exists';
             }
 
@@ -168,9 +168,9 @@ class UserController
         $user = (new User())
             ->query()
             ->create([
-                'username' => $validated->username,
-                'email' => $validated->email,
-                'password' => password_hash($validated->password, PASSWORD_DEFAULT),
+                'username' => $validated->get('username'),
+                'email' => $validated->get('email'),
+                'password' => password_hash($validated->get('password'), PASSWORD_DEFAULT),
             ])->save();
 
         if (!$user) {

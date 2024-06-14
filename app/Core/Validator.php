@@ -40,7 +40,13 @@ class Validator
         return $this->data[$name];
     }
 
-    protected function exists(array $data, string $field, string $table)
+    // get method to extract data from the data array, without calling a property directly
+    public function get(string $name): mixed
+    {
+        return $this->data[$name] ?? null;
+    }
+
+    protected function exists(array $data, string $field, string $table): void
     {
         // upper case the model name and check if it exists
         $model = 'App\\Models\\' . ucfirst($table);

@@ -17,7 +17,7 @@ class RegisterNewUser
 
     public function handle(Request $request): bool
     {
-        $this->validate($request);
+        $this->validated = $this->validate($request);
 
         $created = $this->createUser();
         if (!$created) {
@@ -55,15 +55,15 @@ class RegisterNewUser
 
         $existingUser = (new User())
             ->query()
-            ->where('email', $validated->email)
-            ->orWhere('username', $validated->username)
+            ->where('email', $validated->get('email'))
+            ->orWhere('username', $validated->get('username'))
             ->first();
 
         if ($existingUser) {
-            if ($existingUser->email === $validated->email) {
+            if ($existingUser->email === $validated->get('email')) {
                 $errors['email'] = 'Email already exists';
             }
-            if ($existingUser->username === $validated->username) {
+            if ($existingUser->username === $validated->get('username')) {
                 $errors['username'] = 'Username already exists';
             }
 
@@ -72,7 +72,7 @@ class RegisterNewUser
                 ->withErrors($errors);
         }
 
-        return $this->validated = collect($validated->validatedData());
+        return collect($validated->validatedData());
     }
 
     private function createUser(): bool|Response

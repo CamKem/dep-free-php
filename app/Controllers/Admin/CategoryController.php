@@ -49,7 +49,8 @@ class CategoryController
         $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
 
         $created = (new Category())->query()->create([
-            'name' => $validated->name,
+            'name' => $validated->get('name'),
+            'status' => $validated->get('status'),
             'slug' => $slug,
         ])->save();
 
@@ -77,14 +78,14 @@ class CategoryController
 
         $categoryValues = $category->get();
 
-        if ($categoryValues->name !== $validated->name) {
+        if ($categoryValues->name !== $validated->get('name')) {
             $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
         }
 
         $updated = $category->update([
-            'name' => $validated->name,
+            'name' => $validated->get('name'),
             'slug' => $slug ?? $categoryValues->slug,
-            'status' => $validated->status,
+            'status' => $validated->get('status'),
         ])->save();
 
         if (!$updated) {

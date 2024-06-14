@@ -86,21 +86,21 @@ class OrderController extends Controller
         }
 
         // concatenate the address
-        $address = "{$validated->address}, {$validated->city}, {$validated->state}, {$validated->postcode}";
+        $address = "{$validated->get('address')}, {$validated->get('city')}, {$validated->get('state')}, {$validated->get('postcode')}";
 
         $new = (new Order())
             ->query()
             ->create([
                 'status' => 'pending',
                 'user_id' => auth()->user()->id,
-                'first_name' => $validated->first_name,
-                'last_name' => $validated->last_name,
+                'first_name' => $validated->get('first_name'),
+                'last_name' => $validated->get('last_name'),
                 'address' => $address,
-                'contact_number' => $validated->contact_number,
-                'card_name' => $validated->card_name,
-                'card_number' => $validated->card_number,
-                'expiry_date' => $validated->expiry_date,
-                'ccv' => $validated->ccv,
+                'contact_number' => $validated->get('contact_number'),
+                'card_name' => $validated->get('card_name'),
+                'card_number' => $validated->get('card_number'),
+                'expiry_date' => $validated->get('expiry_date'),
+                'ccv' => $validated->get('ccv'),
                 'purchase_date' => now(),
                 'total' => $total,
             ])->save();
