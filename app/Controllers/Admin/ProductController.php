@@ -81,7 +81,6 @@ class ProductController
         // create a slug for the product
         $slug = Slugger::uniqueSlug($validated->name, 'product', 'slug');
 
-        // TODO: wrap all the validated magic calls into a get() method
         $product = (new Product())->query()->create([
             'name' => $validated->get('name'),
             'slug' => $slug,
