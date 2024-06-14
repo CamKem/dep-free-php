@@ -14,7 +14,8 @@ class Slugger
     {
         $slug = static::slugify($string);
         $count = 1;
-        while (static::slugExists(new $model, $column, $slug)) {
+        $modelNamespace = 'App\Models\\' . ucfirst($model);
+        while (static::slugExists(new $modelNamespace, $column, $slug)) {
             $slug = static::slugify($string) . '-' . $count++;
         }
         return $slug;
@@ -22,7 +23,7 @@ class Slugger
 
     private static function slugExists(Model $model, string $column, string $slug): bool
     {
-        $query = (new QueryBuilder($model))
+        $query = $model->query()
             ->select('count(*) as count')
             ->where($column, '=', $slug)
             ->getRaw();
