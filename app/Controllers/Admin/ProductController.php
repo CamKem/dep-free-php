@@ -108,11 +108,34 @@ class ProductController
         ]);
     }
 
-    public function destroy(): Template
+    public function destroy(Request $request): Response
     {
-        return view('admin.products.destroy', [
-            'title' => 'Destroy User',
-        ]);
+        $product = (new Product())->query()
+            ->find($request->get('id'))
+            ->first();
+
+        if (!$product) {
+            session()->flash('flash-message', 'Product not found');
+            return redirect()->route('admin.products.index');
+        }
+
+        // first delete the image from the storage
+        $removed = storage()->delete("images/products/{$product->image}");
+
+        if (!$removed) {
+            session()->flash('flash-message', 'Product image deletion failed');
+            return redirect()->route('admin.products.index');
+        }
+
+        $deleted = $product->query()->delete()->save();
+
+        if (!$deleted) {
+            session()->flash('flash-message', 'Product deletion failed');
+            return redirect()->route('admin.products.index');
+        }
+
+        session()->flash('flash-message', 'Product deleted successfully');
+        return redirect()->route('admin.products.index');
     }
 
 }
