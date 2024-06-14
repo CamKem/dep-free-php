@@ -118,20 +118,30 @@ class ProductController
             'image' => ['required', 'string'],
             'featured' => ['boolean'],
         ]);
+
         // check if the request has errors
         if ($validated->hasErrors()) {
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
         }
+
         // get the product
         $product = (new Product())->query()
             ->find($request->get('id'))
             ->first();
 
+        // check that the image is not the same as the current image
         if ($product->image !== $validated->image) {
             // delete the current image
             $removed = storage()->delete("images/products/{$product->image}");
+
+            // check if the image was not removed
+            if (!$removed) {
+                session()->flash('flash-message', 'Product image deletion failed');
+                return redirect()->route('admin.products.index');
+            }
+        }
 
     }
 
