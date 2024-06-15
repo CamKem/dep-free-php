@@ -97,7 +97,7 @@ class RoleController
         $role = (new Role())
             ->query()
             ->withCount('users')
-            ->where('roles.id', $request->get('id'))
+            ->where('id', $request->get('id'))
             ->first();
 
         if ($role && $role->users_count > 0) {
