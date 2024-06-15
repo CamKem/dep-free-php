@@ -82,7 +82,7 @@ class ProductController
         }
 
         // create a slug for the product
-        $slug = Slugger::uniqueSlug($validated->get('name'), 'product', 'slug');
+        $slug = Slugger::uniqueSlug($validated->get('name'), Product::class, 'slug');
 
         $product = (new Product())->query()->create([
             'name' => $validated->get('name'),
@@ -178,7 +178,7 @@ class ProductController
         $slug = $product->slug;
         // if the name has changed, get a new slug
         if ($product->name !== $validated->get('name')) {
-            $slug = Slugger::uniqueSlug($validated->get('name'), 'product', 'slug');
+            $slug = Slugger::uniqueSlug($validated->get('name'), Product::class, 'slug');
         }
 
         dump($validated->get('featured'), false);
