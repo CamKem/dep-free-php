@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Admin;
 
-use App\Actions\RegisterNewUser;
+use app\Core\Database\QueryBuilder;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
@@ -18,12 +18,18 @@ class UserController
     {
         $users = (new User())
             ->query()
-            ->select(['id', 'username', 'email', 'created_at'])
             ->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
             $users->where('username', 'like', "%{$request->get('search')}%");
             $users->orWhere('email', 'like', "%{$request->get('search')}%");
+        }
+
+        if ($request->has('role')) {
+            $users->whereHas('roles', function (QueryBuilder $query) use ($request) {
+                // TODO: change the query builder so it will infer to the role_user table here
+                return $query->where('role_user.role_id', $request->get('role'));
+                });
         }
 
         return view('admin.users.index', [
