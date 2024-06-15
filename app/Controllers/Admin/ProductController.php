@@ -26,6 +26,10 @@ class ProductController
                 ->orWhere('description', 'like', "%{$request->get('search')}%");
         }
 
+        if ($request->has('category')) {
+            $products->where('category_id', $request->get('category'));
+        }
+
         return view('admin.products.index', [
             'title' => 'Manage Products',
             'products' => $products->paginate(5),
