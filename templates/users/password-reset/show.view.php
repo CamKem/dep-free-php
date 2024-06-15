@@ -1,5 +1,6 @@
 <script type="module">
     import FormValidator from '/scripts/validation.js';
+
     window.onload = () => new FormValidator('password-reset-form');
 </script>
 <section>
@@ -20,7 +21,7 @@
                    placeholder="Enter your email address"
                    data-validate=true
             >
-            <p class="error-message">
+            <p class="error-message" id="email-error">
                 <?= error('email') ?>
             </p>
             <button type="submit" class="button-padding">Send Password Reset
