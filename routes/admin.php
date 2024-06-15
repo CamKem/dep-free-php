@@ -8,8 +8,6 @@ use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
 
-
-
 // Roles
 Route::get('/admin/roles')
     ->controller([RoleController::class, 'index'])
