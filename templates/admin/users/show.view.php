@@ -3,7 +3,18 @@
 
     new ModalManager('remove-role-form', 'remove');
     new ModalManager('admin-user-delete', 'delete');
-    new ModalManager('admin-user-edit', 'edit');
+    new ModalManager('admin-user-edit', 'user-edit');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (<?= session()->has('open-user-edit-modal') ? 'true' : 'false'  ?> === true) {
+            console.log('open modal');
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: { action: 'user-edit' }
+            }));
+        }
+    });
+
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.confirmation', ['action' => 'remove']) ?>
