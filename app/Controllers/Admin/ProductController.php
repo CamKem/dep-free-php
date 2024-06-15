@@ -187,10 +187,20 @@ class ProductController
             'slug' => $slug,
             'category_id' => $validated->get('category_id'),
             'description' => $validated->get('description'),
-            'price' => number_format($validated->get('price'), 2),
+            'price' => number_format(
+                $validated->get('price'),
+                2,
+                '.',
+                '',
+            ),
             'sale_price' => $validated->get('sale_price') === ''
                 ? null
-                : number_format($validated->get('sale_price'), 2),
+                : number_format($validated->get(
+                    'sale_price'),
+                    2,
+                    '.',
+                '',
+                ),
             'image' => $validated->get('image'),
             'featured' => $validated->get('featured', 0),
         ])->save();
