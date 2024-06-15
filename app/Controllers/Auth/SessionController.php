@@ -25,7 +25,7 @@ class SessionController extends Controller
 
         $validated = (new Validator())->validate(
             $request->only(['email', 'password']), [
-            'email' => ['required', 'email', 'exists:user'],
+            'email' => ['required', 'email', 'exists:users'],
             'password' => ['required'],
         ]);
 
