@@ -44,7 +44,7 @@ class ContactController extends Controller
         if ($validated->hasErrors()) {
             session()->flash('flash-message', 'Please correct the form errors.');
             return response()->back()
-                ->withInput($validated->validatedData())
+                ->withInput($validated->data())
                 ->withErrors($validated->getErrors());
         }
 

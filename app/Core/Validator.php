@@ -35,9 +35,9 @@ class Validator
     }
 
     // get method to extract data from the data array, without calling a property directly
-    public function get(string $name): mixed
+    public function get(string $name, $default = null): mixed
     {
-        return $this->data[$name] ?? null;
+        return $this->data[$name] ?? $default;
     }
 
     /**
@@ -171,7 +171,7 @@ class Validator
         return false;
     }
 
-    public function validatedData(): array
+    public function data(): array
     {
         return $this->data;
     }

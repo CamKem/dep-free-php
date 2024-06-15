@@ -35,7 +35,7 @@ class SessionController extends Controller
                 ->withErrors($validated->getErrors());
         }
 
-        $login = auth()->attempt($validated->validatedData());
+        $login = auth()->attempt($validated->data());
 
         if (!$login) {
             return redirect(route('login.index'))

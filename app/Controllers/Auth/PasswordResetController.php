@@ -34,7 +34,7 @@ class PasswordResetController extends Controller
 
         if ($validated->hasErrors()) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated->validatedData())
+                ->withInput($validated->data())
                 ->withErrors($validated->getErrors());
         }
 
@@ -51,7 +51,7 @@ class PasswordResetController extends Controller
         // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated->validatedData())
+                ->withInput($validated->data())
                 ->withErrors(['email' => 'Failed to send the password reset email.']);
         }
 

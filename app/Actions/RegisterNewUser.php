@@ -68,11 +68,11 @@ class RegisterNewUser
             }
 
             return redirect(route('register.index'))
-                ->withInput($validated->validatedData())
+                ->withInput($validated->data())
                 ->withErrors($errors);
         }
 
-        return collect($validated->validatedData());
+        return collect($validated->data());
     }
 
     private function createUser(): bool|Response
