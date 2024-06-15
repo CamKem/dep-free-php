@@ -8,11 +8,7 @@ use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
 
-#// DATABASE name sportswh.sql
-#// allow login with username (for admin only) and email (for users)
 
-// NOTE: Fix the menu toggle on safari, it's not working local & production
-// NOTE: when it's finished, all routes need to be tested for each different edge case
 
 // Roles
 Route::get('/admin/roles')
@@ -104,8 +100,6 @@ Route::delete('/admin/categories/{id}')
     ->controller([CategoryController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.categories.destroy');
-
-########## NOTE: up to here::
 
 // Products
 Route::get('/admin/products')
