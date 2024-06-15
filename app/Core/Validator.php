@@ -52,11 +52,11 @@ class Validator
      */
     public function extractSingularModelNameFromTable(string $table): string
     {
-        if (substr($table, -1) === 's') {
+        if (str_ends_with($table, 's')) {
             $table = substr($table, 0, -1);
-        } elseif (substr($table, -3) === 'ies') {
+        } elseif (str_ends_with($table, 'ies')) {
             $table = substr($table, 0, -3) . 'y';
-        } elseif (substr($table, -2) === 'es') {
+        } elseif (str_ends_with($table, 'es')) {
             $table = substr($table, 0, -2);
         }
         return $table;
@@ -73,12 +73,13 @@ class Validator
         }
     }
 
-    protected function unique(array $data, string $field, string $table)
+    protected function unique(array $data, string $field, string $table): void
     {
         // extract model name from the table, make it singular and lower case
         $table = $this->extractSingularModelNameFromTable($table);
-        // upper case the model name and check if it exists
+        // upper case the model name
         $model = 'App\\Models\\' . ucfirst($table);
+
         $exists = (new $model)->query()->where($field, $data[$field])->exists();
         if ($exists) {
             $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
