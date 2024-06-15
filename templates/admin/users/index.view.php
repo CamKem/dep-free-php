@@ -3,6 +3,16 @@
 
     new ModalManager('admin-users-create', 'user-create');
     new ModalManager('delete-form', 'delete');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (<?= session()->has('open-user-create-modal') ? 'true' : 'false'  ?> === true) {
+            console.log('open modal');
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: { action: 'user-create' }
+            }));
+        }
+    });
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-user-create') ?>
