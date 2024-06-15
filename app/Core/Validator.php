@@ -140,7 +140,7 @@ class Validator
 
     public function number(array $data, string $field): void
     {
-        if (!is_numeric($data[$field])) {
+        if (!is_numeric($data[$field]) && $data[$field] !== null && $data[$field] !== '') {
             $this->errors[$field][] = 'The ' . $field . ' field must be a number.';
         }
     }
