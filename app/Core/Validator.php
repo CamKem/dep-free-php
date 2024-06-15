@@ -95,7 +95,7 @@ class Validator
         return !empty($this->errors);
     }
 
-    protected function array(array $data, string $field)
+    protected function array(array $data, string $field): void
     {
         if (!is_array($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be an array.';
