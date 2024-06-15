@@ -166,10 +166,13 @@ class QueryBuilder
         $this->with($relation);
 
         // call the callback function, pass the query builder instance
+        $query = $callback($relationInst->query(where: false));
+
+
         // then merge the conditions from the callback with the current conditions
         $this->conditions = array_merge(
             $this->conditions,
-            $callback($relationInst->query(where: false)),
+            $query->conditions,
         );
 
         return $this;
