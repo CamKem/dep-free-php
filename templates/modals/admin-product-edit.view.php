@@ -11,7 +11,7 @@
             const imageInput = imagePlaceholder.querySelector('input[type="file"]');
 
             imagePlaceholder.addEventListener('click', () => {
-                if (imagePlaceholder.dataset.image === '<?= $product->id ?>') {
+                if (imagePlaceholder.dataset.image === '<?= $product->image ?>') {
                     imageInput.click();
                 }
             });
@@ -105,13 +105,13 @@
                              alt="<?= $product->name ?>"
                              id="image-preview"
                              class="image-preview"
-                             data-image="<?= $product->id ?>"
+                             data-image="<?= $product->image ?>"
                         >
                         <input type="file" id="image" title="Image" name="image"
                                accept="image/*" data-validate="true" hidden
                         >
                     </div>
-                    <p class="error-message">
+                    <p class="error-message" id="image-error">
                         <?= error('image') ?>
                     </p>
 

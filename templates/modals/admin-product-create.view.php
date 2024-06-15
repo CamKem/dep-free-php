@@ -68,11 +68,23 @@
                     const input = document.createElement('input');
                     input.type = 'hidden';
                     input.name = 'image';
+                    // get the image name from the dataset
                     input.value = image.dataset.image;
+                    //
                     form.appendChild(input);
                     form.submit();
                 }
             });
+
+            if (<?= old('image', false) ? 'true' : 'false' ?> === true) {
+                const form = document.getElementById('create-product-form');
+                // create a new element in the form to hold the image
+                if (form) {
+                    // find the file input and set the dataset value to the old image
+                    const image = form.querySelector('.image-preview');
+                    image.dataset.image = '<?= old('image') ?>';
+                }
+            }
         }
     });
 
@@ -96,16 +108,23 @@
 
                 <div class="column-1">
                     <div class="placeholder" id="image-placeholder">
-                        <svg id="image-placeholder-icon" viewBox="0 0 24 24"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-7H7v-2h4V7h2v4h4v2h-4v4h-2v-4z"/>
-                        </svg>
-                        <div id="image-placeholder-text">
-                            Click to Upload<br>
-                            Product Image
-                        </div>
+                        <?php if (old('image') !== ''): ?>
+                            <img src="/images/products/<?= old('image') ?>"
+                                 alt="<?= old('name') ?>"
+                                 class="image-preview">
+                        <?php else: ?>
+                            <svg id="image-placeholder-icon" viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-7H7v-2h4V7h2v4h4v2h-4v4h-2v-4z"/>
+                            </svg>
+                            <div id="image-placeholder-text">
+                                Click to Upload<br>
+                                Product Image
+                            </div>
+                        <?php endif; ?>
                         <input type="file" id="image" title="Image" name="image"
-                               accept="image/*" data-validate="true" hidden>
+                               accept="image/*"
+                               hidden>
                     </div>
                     <p class="error-message" id="image-error">
                         <?= error('image') ?>
@@ -189,7 +208,9 @@
                         <input type="checkbox"
                                name="featured"
                                id="featured"
-                               value="1">
+                               value="1"
+                               <?= old('featured') ? 'checked' : '' ?>
+                        >
                     </div>
                 </div>
 
