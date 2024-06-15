@@ -86,7 +86,12 @@
                     </td>
                     <td><?= $product->featured ? 'Yes' : 'No' ?></td>
                     <td><?= $product->category->name ?></td>
-                    <td><?= $product->orders_count ?></td>
+                    <td><a class="general-link"
+                           href="<?= route('admin.orders.index', ['product' => $product->id]) ?>"
+                        >
+                            <?= $product->orders_count ?>
+                        </a>
+                    </td>
                     <td><?= date('d M Y', strtotime($product->updated_at)) ?></td>
                     <td>
                         <div class="form-buttons">
