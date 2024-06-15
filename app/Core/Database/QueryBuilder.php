@@ -504,7 +504,8 @@ class QueryBuilder
 
     public function withCheck(mixed $condition): void
     {
-        if (!empty($this->with)) {
+        // make sure there is no period needle already in the column
+        if (!empty($this->with) && !str_contains($condition[0], '.')) {
             $this->query .= "{$this->table}.";
         }
         $this->query .= "{$condition[0]} {$condition[1]} :{$this->replacePeriod($condition[0])}";
