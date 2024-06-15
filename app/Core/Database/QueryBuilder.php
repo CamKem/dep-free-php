@@ -433,6 +433,7 @@ class QueryBuilder
         // Check if the column name is already prefixed with the table name
         // NOTE: this was HasManyThrough only, I checked to Relation
         //  ensure that this is adding the prefix to where conditions when there is a relation
+        //  be mindful that the withCheck method is also adding the prefix, so we need to add it in 1 place.
         if ($this->relation instanceof Relation && !str_contains($column, '.') && !str_starts_with($column, "{$this->table}.")) {
             $column = "{$this->relation->getRelatedTable()}.{$column}";
         }
