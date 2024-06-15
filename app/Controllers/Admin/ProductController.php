@@ -181,8 +181,6 @@ class ProductController
             $slug = Slugger::uniqueSlug($validated->get('name'), Product::class, 'slug');
         }
 
-        dump($validated->get('featured'), false);
-
         // update the product
         $updated = $product->query()->update([
             'name' => $validated->get('name'),
