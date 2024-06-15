@@ -32,6 +32,7 @@ class RegistrationController extends Controller
             ->query()
             ->where('email', $request->get('email'))
             ->first();
+
         auth()->login($user);
 
         session()->flash('flash-message', 'You have successfully registered!');

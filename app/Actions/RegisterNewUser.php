@@ -40,42 +40,22 @@ class RegisterNewUser
     {
         $validated = (new Validator())->validate(
             $request->only(['username', 'email', 'password']), [
-            'username' => ['required'],
-            'email' => ['required', 'email'],
+            'username' => ['required', 'min:3', 'max:20', 'unique:users,username'],
+            'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required']
         ]);
 
         if ($validated->hasErrors()) {
-            return redirect(route('register.index'))
+            return redirect()
+                ->route('register.index')
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
-        }
-
-        $errors = [];
-
-        $existingUser = (new User())
-            ->query()
-            ->where('email', $validated->get('email'))
-            ->orWhere('username', $validated->get('username'))
-            ->first();
-
-        if ($existingUser) {
-            if ($existingUser->email === $validated->get('email')) {
-                $errors['email'] = 'Email already exists';
-            }
-            if ($existingUser->username === $validated->get('username')) {
-                $errors['username'] = 'Username already exists';
-            }
-
-            return redirect(route('register.index'))
-                ->withInput($validated->data())
-                ->withErrors($errors);
         }
 
         return collect($validated->data());
     }
 
-    private function createUser(): bool|Response
+    private function createUser(): bool
     {
         $user = (new User())
             ->query()
@@ -100,7 +80,7 @@ class RegisterNewUser
             ->first();
 
         if ($user) {
-            // fine the role with name of 'user' and attach it to the user
+            // find the role with the name of 'user' and attach it to the user
             $role = (new Role())
                 ->query()
                 ->select('id')
