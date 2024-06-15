@@ -33,6 +33,7 @@ export default class Modal {
     }
 
     handleEnter() {
+        if (!this.form) return;
         this.form.addEventListener('keydown', (event) => {
             event.preventDefault();
             if (event.key === 'Enter') {
