@@ -34,12 +34,6 @@ class Validator
         return $this;
     }
 
-    // use the magic method of accessing the value of data
-    public function __get($name)
-    {
-        return $this->data[$name];
-    }
-
     // get method to extract data from the data array, without calling a property directly
     public function get(string $name): mixed
     {
@@ -64,25 +58,29 @@ class Validator
 
     protected function exists(array $data, string $field, string $table): void
     {
-        $table = $this->extractSingularModelNameFromTable($table);
-        // upper case the model name and check if it exists
-        $model = 'App\\Models\\' . ucfirst($table);
-        $exists = (new $model)->query()->where($field, $data[$field])->exists();
-        if (!$exists) {
-            $this->errors[$field][] = 'The ' . $field . ' field does not exist in the ' . $table . ' table.';
+        if (!empty($data[$field])) {
+            $table = $this->extractSingularModelNameFromTable($table);
+            // upper case the model name and check if it exists
+            $model = 'App\\Models\\' . ucfirst($table);
+            $exists = (new $model)->query()->where($field, $data[$field])->exists();
+            if (!$exists) {
+                $this->errors[$field][] = 'The ' . $field . ' field does not exist in the ' . $table . ' table.';
+            }
         }
     }
 
     protected function unique(array $data, string $field, string $table): void
     {
-        // extract model name from the table, make it singular and lower case
-        $table = $this->extractSingularModelNameFromTable($table);
-        // upper case the model name
-        $model = 'App\\Models\\' . ucfirst($table);
+        if (!empty($data[$field])) {
+            // extract model name from the table, make it singular and lower case
+            $table = $this->extractSingularModelNameFromTable($table);
+            // upper case the model name
+            $model = 'App\\Models\\' . ucfirst($table);
 
-        $exists = (new $model)->query()->where($field, $data[$field])->exists();
-        if ($exists) {
-            $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
+            $exists = (new $model)->query()->where($field, $data[$field])->exists();
+            if ($exists) {
+                $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
+            }
         }
     }
 
@@ -98,49 +96,49 @@ class Validator
 
     protected function array(array $data, string $field): void
     {
-        if (!is_array($data[$field])) {
+        if (!empty($data[$field]) && !is_array($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be an array.';
         }
     }
 
-    protected function required(array $data, string $field)
+    protected function required(array $data, string $field): void
     {
         if (empty($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field is required.';
         }
     }
 
-    protected function email(array $data, string $field)
+    protected function email(array $data, string $field): void
     {
-        if (!filter_var($data[$field], FILTER_VALIDATE_EMAIL)) {
+        if (!empty($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_EMAIL)) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a valid email address.';
         }
     }
 
     public function string(array $data, string $field): void
     {
-        if (!trim($data[$field])) {
+        if (!empty($data[$field]) && !trim($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a string.';
         }
     }
 
     protected function min(array $data, string $field, int $min): void
     {
-        if (strlen($data[$field]) < $min) {
+        if (!empty($data[$field]) && strlen($data[$field]) < $min) {
             $this->errors[$field][] = 'The ' . $field . ' field must be at least ' . $min . ' characters.';
         }
     }
 
     protected function max(array $data, string $field, int $max): void
     {
-        if (strlen($data[$field]) > $max) {
+        if (!empty($data[$field]) && strlen($data[$field]) > $max) {
             $this->errors[$field][] = 'The ' . $field . ' field may not be greater than ' . $max . ' characters.';
         }
     }
 
     public function number(array $data, string $field): void
     {
-        if (!is_numeric($data[$field]) && $data[$field] !== null && $data[$field] !== '') {
+        if (!empty($data[$field]) && !is_numeric($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a number.';
         }
     }
@@ -148,14 +146,14 @@ class Validator
     protected function integer(array $data, string $field): void
     {
         // check the the value is an integer, if it's a string, check it's a valid integer if it was casted to an integer
-        if (!is_numeric($data[$field]) || (string)(int)$data[$field] !== $data[$field]) {
+        if (!empty($data[$field]) && (!is_numeric($data[$field]) || (string)(int)$data[$field] !== $data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be an integer.';
         }
     }
 
     protected function boolean(array &$data, string $field): void
     {
-        if (!$this->normalizeBoolean($data[$field])) {
+        if (!empty($data[$field]) && !$this->normalizeBoolean($data[$field])) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a boolean.';
         }
     }
@@ -180,21 +178,21 @@ class Validator
 
     protected function url(array $data, string $field): void
     {
-        if (filter_var($data[$field], FILTER_VALIDATE_URL) === false) {
+        if (!empty($data[$field]) && filter_var($data[$field], FILTER_VALIDATE_URL) === false) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a valid URL.';
         }
     }
 
     protected function date(array $data, string $field): void
     {
-        if (strtotime($data[$field]) === false) {
+        if (!empty($data[$field]) && strtotime($data[$field]) === false) {
             $this->errors[$field][] = 'The ' . $field . ' field must be a valid date.';
         }
     }
 
     protected function match(array $data, string $field, string $fieldToMatch): void
     {
-        if ($data[$field] !== $data[$fieldToMatch]) {
+        if (!empty($data[$field]) && $data[$field] !== $data[$fieldToMatch]) {
             $this->errors[$field][] = 'The ' . $field . ' field must match the ' . $fieldToMatch . ' field.';
         }
     }
