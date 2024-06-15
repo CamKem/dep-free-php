@@ -16,7 +16,8 @@ class User extends Model
             Role::class,
             RoleUser::class,
             'user_id',
-            'role_id'
+            'role_id',
+            true
         );
     }
 
