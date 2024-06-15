@@ -223,11 +223,17 @@ class ProductController
     public function destroy(Request $request): Response
     {
         $product = (new Product())->query()
+            ->withCount('orders')
             ->find($request->get('id'))
             ->first();
 
         if (!$product) {
             session()->flash('flash-message', 'Product not found');
+            return redirect()->route('admin.products.index');
+        }
+
+        if ($product->orders_count > 0) {
+            session()->flash('flash-message', 'Products with orders cannot be deleted');
             return redirect()->route('admin.products.index');
         }
 
