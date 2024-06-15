@@ -56,7 +56,7 @@ class HasManyThrough extends Relation
     }
 
     #[Override]
-    public function query(): QueryBuilder
+    public function query($where = true): QueryBuilder
     {
         $query = $this->related->query()
             ->setRelation($this)
@@ -69,8 +69,11 @@ class HasManyThrough extends Relation
         }
 
         $query->join("{$this->pivot->getTable()} AS pivot", "pivot.{$this->getRelatedKey()}", "=", "id")
-            ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}")
-            ->where("origin.id", "=", $this->getParentId());
+            ->join("{$this->getParentTable()} AS origin", "origin.id", "=", "pivot.{$this->getForeignKey()}");
+
+        if ($where) {
+            $query->where("origin.id", "=", $this->getParentId());
+        }
 
         return $query;
     }
