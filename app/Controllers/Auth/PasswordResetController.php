@@ -52,7 +52,7 @@ class PasswordResetController extends Controller
         if (!$sent) {
             return redirect(route('password.reset.show'))
                 ->withInput($validated->data())
-                ->withErrors(['email' => 'Failed to send the password reset email.']);
+                ->withErrors(['email' => ['Failed to send the password reset email.']]);
         }
 
         // flash a success message
@@ -73,7 +73,7 @@ class PasswordResetController extends Controller
         // if the token does not exist, redirect back
         if (!$exists) {
             return redirect(route('password.reset.show'))
-                ->withErrors(['email' => 'The provided token is invalid.']);
+                ->withErrors(['email' => ['The provided token is invalid.']]);
         }
 
         // if the token exists, show the password reset form
@@ -98,7 +98,7 @@ class PasswordResetController extends Controller
 
         if (!$reset) {
             return redirect(route('password.reset.show'))
-                ->withErrors(['email' => 'Failed to reset the password.']);
+                ->withErrors(['email' => ['Failed to reset the password.']]);
         }
 
         // flash a success message
