@@ -1,6 +1,7 @@
 <script type="module">
     import ModalManager from "/scripts/modalManager.js";
 
+    new ModalManager('delete-form', 'delete');
     new ModalManager('admin-category-create', 'category-create');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
@@ -30,7 +31,7 @@
             <tr class="admin-heading-row">
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Total Products</th>
+                <th>Products</th>
                 <th>Status</th>
                 <th>Updated</th>
                 <th style="width: 100px">Actions</th>
@@ -40,7 +41,13 @@
                 <tr class="admin-table-row">
                     <td><?= $category->name; ?></td>
                     <td><?= $category->slug; ?></td>
-                    <td><?= $category->products_count ?></td>
+                    <td>
+                        <a class="general-link"
+                           href="<?= route('admin.products.index', ['category' => $category->id]) ?>"
+                        >
+                            <?= $category->products_count ?>
+                        </a>
+                    </td>
                     <td><?= $category->status ?></td>
                     <td><?= date('d M Y', strtotime($category->updated_at)) ?></td>
                     <td class="form-buttons">
