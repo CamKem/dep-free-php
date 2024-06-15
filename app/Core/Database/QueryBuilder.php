@@ -149,6 +149,32 @@ class QueryBuilder
         return $this;
     }
 
+    // whereHas method, checks relationship existence
+    // TODO: we can make this better so we don't have to use the pivot table as a prefix in the
+    //  sub query, like in the UsersController index method.
+    public function whereHas(string $relation, callable $callback): static
+    {
+        // check the relation exists on the model
+        if (!method_exists(new $this->model(), $relation)) {
+            throw new RuntimeException("Method {$relation} does not exist on the model");
+        }
+
+        // call the relation to get the object
+        $relationInst = $this->model->{$relation}();
+
+        // with the relation set, we can now get the related model
+        $this->with($relation);
+
+        // call the callback function, pass the query builder instance
+        // then merge the conditions from the callback with the current conditions
+        $this->conditions = array_merge(
+            $this->conditions,
+            $callback($relationInst->query(where: false)),
+        );
+
+        return $this;
+    }
+
     // find method
     public function find(int $id): static
     {
