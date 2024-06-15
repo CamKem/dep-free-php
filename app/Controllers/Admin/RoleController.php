@@ -2,37 +2,40 @@
 
 namespace App\Controllers\Admin;
 
+use App\Core\Http\Request;
+use App\Core\Http\Response;
+use App\Core\Template;
+use App\Models\Role;
+
 class RoleController
 {
 
-    public function index()
+    public function index(): Template
     {
-        return 'Role Index';
+        return view('admin.roles.index', [
+            'title' => 'Manage Roles',
+            'roles' => (new Role())->query()
+                ->withCount('users')
+                ->get()
+        ]);
     }
 
-    public function create()
+    public function store(Request $request): Response
     {
-        return 'Role Create';
+        dd($request->all());
+        return response()->json(['message' => 'Role Store']);
     }
 
-    public function store()
+    public function update(Request $request): Response
     {
-        return 'Role Store';
+        dd($request->all());
+        return response()->json(['message' => 'Role Update']);
     }
 
-    public function edit($id)
+    public function destroy(Request $request): Response
     {
-        return 'Role Edit ' . $id;
-    }
-
-    public function update($id)
-    {
-        return 'Role Update ' . $id;
-    }
-
-    public function destroy($id)
-    {
-        return 'Role Destroy ' . $id;
+        dd($request->all());
+        return response()->json(['message' => 'Role Destroy']);
     }
 
 }
