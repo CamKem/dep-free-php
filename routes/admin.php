@@ -15,7 +15,7 @@ use App\Core\Routing\RouteProxy as Route;
 // NOTE: when it's finished, all routes need to be tested for each different edge case
 
 // Roles
-Route::get('/admin/settings/roles')
+Route::get('/admin/roles')
     ->controller([RoleController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.roles.index');
@@ -25,12 +25,12 @@ Route::post('/admin/roles')
     ->middleware(['auth', 'admin'])
     ->name('admin.roles.store');
 
-Route::put('/admin/settings/roles/{id}')
+Route::put('/admin/roles/{id}')
     ->controller([RoleController::class, 'update'])
     ->middleware(['auth', 'admin'])
     ->name('admin.roles.update');
 
-Route::delete('/admin/settings/roles/{id}')
+Route::delete('/admin/roles/{id}')
     ->controller([RoleController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.roles.destroy');
