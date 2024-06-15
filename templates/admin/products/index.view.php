@@ -13,8 +13,6 @@
         }
         if (<?= session()->has('open-product-edit-modal') ? 'true' : 'false'  ?> === true) {
             const id = "<?= session()->get('open-product-edit-modal') ?>";
-            console.log(id);
-
             // use the id to target the correct modal to open
             document.dispatchEvent(new CustomEvent('openModal', {
                 bubbles: true,
