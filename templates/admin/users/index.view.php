@@ -6,7 +6,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         if (<?= session()->has('open-user-create-modal') ? 'true' : 'false'  ?> === true) {
-            console.log('open modal');
             document.dispatchEvent(new CustomEvent('openModal', {
                 bubbles: true,
                 detail: { action: 'user-create' }

@@ -7,7 +7,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         if (<?= session()->has('open-user-edit-modal') ? 'true' : 'false'  ?> === true) {
-            console.log('open modal');
             document.dispatchEvent(new CustomEvent('openModal', {
                 bubbles: true,
                 detail: { action: 'user-edit' }
