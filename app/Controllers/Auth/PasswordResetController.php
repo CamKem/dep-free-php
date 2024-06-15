@@ -29,19 +29,13 @@ class PasswordResetController extends Controller
 
         // validate the email
         $validated = (new Validator())->validate($request->only(['email']), [
-            'email' => ['required', 'email']
+            'email' => ['required', 'email', 'exists:users,email']
         ]);
 
-        // check the email exists in the database
-        $exists = (new User())
-            ->query()
-            ->where('email', $validated->get('email'))
-            ->exists();
-
-        if (!$exists) {
+        if ($validated->hasErrors()) {
             return redirect(route('password.reset.show'))
                 ->withInput($validated->validatedData())
-                ->withErrors(['email' => 'The provided email does not exist in our records.']);
+                ->withErrors($validated->getErrors());
         }
 
         // get the user's username
