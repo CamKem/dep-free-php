@@ -85,7 +85,8 @@
                     <td>
                         <div class="form-buttons">
                             <script type="module">
-                                import ModalManager from "/scripts/modalManager.js";
+                                import ModalManager
+                                    from "/scripts/modalManager.js";
 
                                 new ModalManager('product-edit-<?= $product->id ?>', 'product-edit-<?= $product->id ?>');
                             </script>
