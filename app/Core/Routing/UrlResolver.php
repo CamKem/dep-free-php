@@ -25,8 +25,14 @@ class UrlResolver
                 if (!isset($params[$key])) {
                     throw new InvalidArgumentException("Missing parameter: {$key}");
                 }
+                // if the parameter is not expected, we should add it to the query string
                 $uri = str_replace('{' . $key . '}', $params[$key], $uri);
             }
+            // else if there is more params than expected, we should add the rest to the query string
+        } else if (count($params) > count($route->getParameters())) {
+            $params = array_diff_key($params, $route->getParameters());
+            $query = http_build_query($params);
+            $uri .= '?' . $query;
         }
         return $uri;
     }
