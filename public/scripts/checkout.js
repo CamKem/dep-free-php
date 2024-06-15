@@ -1,3 +1,37 @@
+import FormValidator from './validation.js';
+export function bootCart() {
+    const circles = document.querySelectorAll('.progress .circle');
+    const bars = document.querySelectorAll('.progress .bar');
+    const sections = Array.from(document.querySelectorAll('.checkout-form-container fieldset'));
+    const nextButtons = Array.from(document.querySelectorAll('.next'));
+    const prevButtons = Array.from(document.querySelectorAll('.prev'));
+    const validator = new FormValidator('checkout-form', false);
+    new Progress(circles, bars, prevButtons, nextButtons, sections, validator)
+    const cardNumberInputs = Array.from(document.querySelectorAll('.card-segment'));
+    const expiryDateInput = document.getElementById('expiry_date');
+    new CardHandler(cardNumberInputs, expiryDateInput);
+
+    function generateDetails(inputs) {
+        return inputs.reduce((acc, input) => {
+            if (!input.id.includes('card-number-')) {
+                acc += `<p class="confirmation-detail"><span class="title">${input.title}:</span><span title="value">${input.value}</span></p>`;
+            }
+            return acc;
+        }, '');
+    }
+
+    window.addEventListener('summary', () => {
+        const shippingInfo = document.getElementById('shipping-info');
+        const paymentInfo = document.getElementById('payment-info');
+
+        const shippingInputs = Array.from(document.querySelectorAll('#step-1 input'));
+        const paymentInputs = Array.from(document.querySelectorAll('#step-2 input'));
+
+        shippingInfo.innerHTML = generateDetails(shippingInputs);
+        paymentInfo.innerHTML = generateDetails(paymentInputs);
+    });
+}
+
 export class Progress {
     constructor(circles, bars, prevButtons, nextButtons, sections, validator) {
         this.circles = circles;
