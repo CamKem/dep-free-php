@@ -4,19 +4,25 @@
     new ModalManager('admin-product-create', 'product-create');
     new ModalManager('delete-form', 'delete');
 
-    if (<?= session()->has('open-create-modal') ? 'true' : 'false' ?>) {
-        console.log('open modal');
-        window.onload = () => {
-            // TODO: attempt to get this working.
-            const createModalTrigger = document.getElementById('admin-product-create');
-            console.log(createModalTrigger);
-            createModalTrigger.click();
-        };
-        const createModalTrigger = document.getElementById('admin-product-create');
-        console.log(createModalTrigger);
-        createModalTrigger.click();
-        document.querySelector('form[name="admin-product-create"]').dispatchEvent(new Event('submit'));
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        if (<?= session()->has('open-product-create-modal') ? 'true' : 'false'  ?> === true) {
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: 'product-create'}
+            }));
+        }
+        if (<?= session()->has('open-product-edit-modal') ? 'true' : 'false'  ?> === true) {
+            const id = "<?= session()->get('open-product-edit-modal') ?>";
+            console.log(id);
+
+            // use the id to target the correct modal to open
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: `product-edit-${id}`}
+            }));
+        }
+    });
+
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-product-create', ['categories' => $categories]) ?>
