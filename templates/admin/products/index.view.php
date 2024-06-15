@@ -68,14 +68,16 @@
                             <?= ucwords($product->name) ?>
                         </a>
                     </td>
-                    <td><div class="flex-center align-start"><?php
-                        if ($product->sale_price) {
-                            echo "<span class='original-price-group'><del>\${$product->price}</del></span>".PHP_EOL;
-                            echo "<span class='price-sale'>\${$product->sale_price}</span>".PHP_EOL;
-                        } else {
-                            echo "<span class='price'>\${$product->price}</span>".PHP_EOL;
-                        }
-                        ?></div></td>
+                    <td>
+                        <div class="flex-center align-start"><?php
+                            if ($product->sale_price) {
+                                echo "<span class='original-price-group'><del>\${$product->price}</del></span>" . PHP_EOL;
+                                echo "<span class='price-sale'>\${$product->sale_price}</span>" . PHP_EOL;
+                            } else {
+                                echo "<span class='price'>\${$product->price}</span>" . PHP_EOL;
+                            }
+                            ?></div>
+                    </td>
                     <td><?= $product->featured ? 'Yes' : 'No' ?></td>
                     <td><?= $product->category->name ?></td>
                     <td><?= $product->orders_count ?></td>
