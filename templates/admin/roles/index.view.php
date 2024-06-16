@@ -1,71 +1,70 @@
 <script type="module">
     import ModalManager from "/scripts/modalManager.js";
 
-    new ModalManager('delete-form', 'delete');
-    new ModalManager('admin-category-create', 'category-create');
+    new ModalManager('admin-role-create', 'role-create');
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
-<?= add('modals.admin-category-create', compact('statuses')) ?>
+<?= add('modals.admin-role-create') ?>
 <section>
     <div class="admin-form-actions">
-        <form name="admin-category-create">
-            <button>Create category</button>
+        <form name="admin-role-create">
+            <button>Create role</button>
         </form>
         <form class="search-form"
-              action="<?= route('admin.categories.index') ?>"
+              action="<?= route('admin.roles.index') ?>"
               method="get">
-            <label for="search-bar" class="sr-only">Search categories</label>
+            <label for="search-bar" class="sr-only">Search roles</label>
             <input type="text" name="search" id="search-bar"
                    value="<?= request()->get('search') ?>"
-                   placeholder="Search categories">
+                   placeholder="Search roles">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>
     </div>
-    <?php if ($categories->isEmpty()): ?>
-        <p class="text-section">No categories have been found.</p>
+    <?php if ($roles->isEmpty()): ?>
+        <p class="text-section">No roles have been found.</p>
     <?php else: ?>
         <table class="admin-table">
             <thead class="admin-table-heading">
             <tr class="admin-heading-row">
                 <th>Name</th>
-                <th>Slug</th>
-                <th>Products</th>
-                <th>Status</th>
+                <th>Description</th>
+                <th>Users</th>
+                <th>Created</th>
                 <th>Updated</th>
                 <th style="width: 100px">Actions</th>
             </tr>
             </thead>
-            <?php foreach ($categories as $category): ?>
+            <?php foreach ($roles as $role): ?>
                 <tr class="admin-table-row">
-                    <td><?= $category->name; ?></td>
-                    <td><?= $category->slug; ?></td>
+                    <td><?= $role->name; ?></td>
+                    <td><?= $role->description; ?></td>
                     <td>
                         <a class="general-link"
-                           href="<?= route('admin.products.index', ['category' => $category->id]) ?>"
+                           href="<?= route('admin.users.index', ['role' => $role->id]) ?>"
                         >
-                            <?= $category->products_count ?>
+                        <?= $role->users_count ?>
                         </a>
                     </td>
-                    <td><?= $category->status ?></td>
-                    <td><?= date('d M Y', strtotime($category->updated_at)) ?></td>
+                    <td><?= date('d M Y', strtotime($role->created_at)) ?></td>
+                    <td><?= date('d M Y', strtotime($role->updated_at)) ?></td>
                     <td class="form-buttons">
                         <script type="module">
                             import ModalManager from "/scripts/modalManager.js";
 
-                            new ModalManager('category-edit-<?= $category->id ?>', 'edit-<?= $category->id ?>');
+                            new ModalManager('role-edit-<?= $role->id ?>', 'edit-<?= $role->id ?>');
                         </script>
-                        <?= add('modals.admin-category-edit', compact('category', 'statuses')) ?>
-                        <form name="category-edit-<?= $category->id ?>"
-                              id="category-edit-<?= $category->id ?>"
+                        <?= add('modals.admin-role-edit', compact('role')) ?>
+                        <form name="role-edit-<?= $role->id ?>"
+                              id="role-edit-<?= $role->id ?>"
                         >
                             <button>Edit</button>
                         </form>
                         <form method="post"
-                              id="delete-form-<?= $category->id ?>"
+                              id="delete-form-<?= $role->id ?>"
                               name="delete-form"
-                              action="<?= route('admin.categories.destroy', ['id' => $category->id]) ?>">
+                              action="<?= route('admin.roles.destroy', ['id' => $role->id]) ?>">
                             <input type="hidden" name="_method"
                                    value="DELETE">
                             <button type="submit" class="delete-button">
@@ -76,11 +75,11 @@
                 </tr>
                 </a>
             <?php endforeach; ?>
-            <?php if ($categories->links() && count($categories->links()) > 1): ?>
+            <?php if ($roles->links() && count($roles->links()) > 1): ?>
                 <tfoot>
                 <tr>
                     <td colspan="6">
-                        <?= add('layouts.partials.pagination', ['items' => $categories]) ?>
+                        <?= add('layouts.partials.pagination', ['items' => $roles]) ?>
                     </td>
                 </tr>
                 </tfoot>

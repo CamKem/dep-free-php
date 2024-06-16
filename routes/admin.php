@@ -4,22 +4,30 @@ use App\Controllers\Admin\CategoryController;
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\OrderController;
 use App\Controllers\Admin\ProductController;
-use App\Controllers\Admin\ProfileController;
 use App\Controllers\Admin\RoleController;
-use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\UserController;
 use App\Core\Routing\RouteProxy as Route;
 
-#// DATABASE name sportswh.sql
-#// allow login with username (for admin only) and email (for users)
+// Roles
+Route::get('/admin/roles')
+    ->controller([RoleController::class, 'index'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.roles.index');
 
-// NOTE: Fix the menu toggle on safari, it's not working local & production
-// Admin must be able to view all roles
-// create, update, delete
+Route::post('/admin/roles')
+    ->controller([RoleController::class, 'store'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.roles.store');
 
-// NOTE: when it's finished, all routes need to be tested for each different edge case
+Route::put('/admin/roles/{id}')
+    ->controller([RoleController::class, 'update'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.roles.update');
 
-// Setting - add roles, update password, change profile
+Route::delete('/admin/roles/{id}')
+    ->controller([RoleController::class, 'destroy'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.roles.destroy');
 
 // Dashboard
 Route::get('/admin')
@@ -91,8 +99,6 @@ Route::delete('/admin/categories/{id}')
     ->middleware(['auth', 'admin'])
     ->name('admin.categories.destroy');
 
-########## NOTE: up to here::
-
 // Products
 Route::get('/admin/products')
     ->controller([ProductController::class, 'index'])
@@ -119,57 +125,3 @@ Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.destroy');
-
-// Setting - add roles, update password, change profile
-Route::get('/admin/settings')
-    ->controller(SettingsController::class)
-    ->middleware(['auth', 'admin'])
-    ->name('admin.settings.index');
-
-// Role Settings
-//The table will show all the details needed for the roles so we don't need a show route
-Route::get('/admin/settings/roles')
-    ->controller([RoleController::class, 'index'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.index');
-
-Route::get('/admin/settings/roles/create')
-    ->controller([RoleController::class, 'create'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.create');
-
-Route::post('/admin/settings/roles')
-    ->controller([RoleController::class, 'store'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.store');
-
-Route::get('/admin/settings/roles/{id}/edit')
-    ->controller([RoleController::class, 'edit'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.edit');
-
-Route::put('/admin/settings/roles/{id}')
-    ->controller([RoleController::class, 'update'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.update');
-
-Route::delete('/admin/settings/roles/{id}')
-    ->controller([RoleController::class, 'destroy'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.roles.destroy');
-
-// Profile Settings
-Route::get('/admin/settings/profile')
-    ->controller([ProfileController::class, 'show'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.profile.show');
-
-Route::get('/admin/settings/profile/edit')
-    ->controller([ProfileController::class, 'edit'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.profile.edit');
-
-Route::put('/admin/settings/profile')
-    ->controller([ProfileController::class, 'update'])
-    ->middleware(['auth', 'admin'])
-    ->name('admin.profile.update');

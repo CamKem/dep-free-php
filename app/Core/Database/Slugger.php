@@ -14,8 +14,7 @@ class Slugger
     {
         $slug = static::slugify($string);
         $count = 1;
-        $modelNamespace = 'App\Models\\' . ucfirst($model);
-        while (static::slugExists(new $modelNamespace, $column, $slug)) {
+        while (static::slugExists(new $model, $column, $slug)) {
             $slug = static::slugify($string) . '-' . $count++;
         }
         return $slug;

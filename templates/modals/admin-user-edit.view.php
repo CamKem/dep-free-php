@@ -3,7 +3,7 @@
     import FormValidator from "/scripts/validation.js";
 
     document.addEventListener('openModal', (event) => {
-        if (event.detail.action === 'edit') {
+        if (event.detail.action === 'user-edit') {
             // if the event target is this specific modal
             let modal = new Modal('user-edit', event.detail.form);
             modal.openModal();
@@ -39,16 +39,17 @@
                        title="Email"
                        name="email"
                        id="email"
-                       value="<?= old('email',$user->email) ?? '' ?>"
+                       value="<?= old('email', $user->email) ?? '' ?>"
                        data-validate="true"
                        autocomplete="new-email"
                 >
-                <p class="error-message" id="email-error"></p>
+                <p class="error-message" id="email-error">
+                    <?= error('email') ?>
+                </p>
                 <label for="password">Password</label>
                 <input type="password"
                        title="Password"
                        name="password"
-                       value="<?= old('password') ?>"
                        id="password"
                        autocomplete="new-password"
                 >

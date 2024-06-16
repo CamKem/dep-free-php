@@ -1,10 +1,21 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
+/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
+
+DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories`
 (
-    `id`         int         NOT NULL AUTO_INCREMENT,
-    `slug`       varchar(50) NOT NULL,
-    `name`       varchar(50) NOT NULL,
-    `updated_at` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `created_at` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`         int          NOT NULL AUTO_INCREMENT,
+    `slug`       varchar(50)  NOT NULL,
+    `name`       varchar(50)  NOT NULL,
+    `status`     varchar(255) NOT NULL DEFAULT 'inactive',
+    `updated_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `created_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `category_slug_unique` (`slug`) USING BTREE,
     KEY `id` (`id`)
@@ -12,6 +23,7 @@ CREATE TABLE `categories`
   AUTO_INCREMENT = 8
   DEFAULT CHARSET = latin1;
 
+DROP TABLE IF EXISTS `contacts`;
 CREATE TABLE `contacts`
 (
     `id`                 int          NOT NULL AUTO_INCREMENT,
@@ -26,10 +38,11 @@ CREATE TABLE `contacts`
     `updated_at`         timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 2
+  AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products`
 (
     `id`          int            NOT NULL AUTO_INCREMENT,
@@ -39,7 +52,7 @@ CREATE TABLE `products`
     `price`       decimal(10, 2) NOT NULL,
     `sale_price`  decimal(10, 2)                                              DEFAULT NULL,
     `description` varchar(2000)                                               DEFAULT NULL,
-    `featured`    tinyint(1)     NOT NULL,
+    `featured`    tinyint(1)     NOT NULL                                     DEFAULT '0',
     `category_id` int            NOT NULL,
     `created_at`  timestamp      NOT NULL                                     DEFAULT CURRENT_TIMESTAMP,
     `updated_at`  timestamp      NOT NULL                                     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -52,21 +65,25 @@ CREATE TABLE `products`
   AUTO_INCREMENT = 10
   DEFAULT CHARSET = latin1;
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users`
 (
-    `id`             int                                                           NOT NULL AUTO_INCREMENT,
-    `username`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL,
-    `email`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL,
-    `password`       varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-    `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL,
-    `created_at`     timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`     timestamp                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    `id`             int          NOT NULL AUTO_INCREMENT,
+    `username`       varchar(50)  NOT NULL,
+    `email`          varchar(50)  NOT NULL,
+    `password`       varchar(100) NOT NULL,
+    `remember_token` varchar(100) DEFAULT NULL,
+    `created_at`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `UNIQUE_EMAIL` (`email`) USING BTREE,
+    UNIQUE KEY `UNIQUE_USERNAME` (`username`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 70
+  AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `password_resets`;
 CREATE TABLE `password_resets`
 (
     `id`         int          NOT NULL AUTO_INCREMENT,
@@ -76,10 +93,10 @@ CREATE TABLE `password_resets`
     `updated_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 131
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders`
 (
     `id`             int                                                          NOT NULL AUTO_INCREMENT,
@@ -94,16 +111,18 @@ CREATE TABLE `orders`
     `card_name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     `ccv`            varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL,
     `purchase_date`  datetime                                                     NOT NULL,
+    `total`          float                                                        NOT NULL,
     `created_at`     timestamp                                                    NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`     timestamp                                                    NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     KEY `user_id` (`user_id`),
     CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 55
+  AUTO_INCREMENT = 1
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `order_product`;
 CREATE TABLE `order_product`
 (
     `product_id` int            NOT NULL,
@@ -118,6 +137,7 @@ CREATE TABLE `order_product`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles`
 (
     `id`          int         NOT NULL AUTO_INCREMENT,
@@ -132,6 +152,7 @@ CREATE TABLE `roles`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS `role_user`;
 CREATE TABLE `role_user`
 (
     `user_id`     int       NOT NULL,
@@ -145,20 +166,20 @@ CREATE TABLE `role_user`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;
 
-INSERT INTO `categories` (`id`, `slug`, `name`, `updated_at`, `created_at`)
-VALUES (1, 'shoes', 'Shoes', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (2, 'helmets', 'Helmets', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (3, 'pants', 'Pants', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (4, 'tops', 'Tops', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (5, 'balls', 'Balls', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (6, 'equipment', 'Equipment', '2024-05-16 22:27:20', '2024-05-16 22:27:20'),
-       (7, 'training-gear', 'Training Gear', '2024-05-16 22:27:20', '2024-05-16 22:27:20');
+INSERT INTO `categories` (`id`, `slug`, `name`, `status`, `updated_at`, `created_at`)
+VALUES (1, 'shoes', 'Shoes', 'active', '2024-05-16 22:27:20', '2024-06-13 13:08:15'),
+       (2, 'helmets', 'Helmets', 'active', '2024-05-16 22:27:20', '2024-06-13 13:04:50'),
+       (3, 'pants', 'Pants', 'active', '2024-05-16 22:27:20', '2024-06-12 19:37:44'),
+       (4, 'tops', 'Tops', 'active', '2024-05-16 22:27:20', '2024-06-12 19:37:44'),
+       (5, 'balls', 'Balls', 'active', '2024-05-16 22:27:20', '2024-06-12 19:37:44'),
+       (6, 'equipment', 'Equipment', 'active', '2024-05-16 22:27:20', '2024-06-12 19:37:44'),
+       (7, 'training-gear', 'Training Gear', 'active', '2024-05-16 22:27:20', '2024-06-12 19:37:44');
 
 INSERT INTO `products` (`id`, `name`, `slug`, `image`, `price`, `sale_price`, `description`, `featured`, `category_id`,
                         `created_at`, `updated_at`)
 VALUES (1, 'Adidas Euro16 Top Soccer Ball', 'adidas-euro16-top-soccer-ball', 'soccerBall.jpg', 46.00, 35.95,
         'adidas Performance Euro 16 Official Match Soccer Ball, Size 5, White/Bright Blue/Solar', 1, 5,
-        '2024-05-16 22:31:32', '2024-05-16 22:31:32'),
+        '2024-05-16 22:31:32', '2024-06-15 18:52:53'),
        (2, 'Pro-tec Classic Skate Helmet', 'pro-tec-classic-skate-helmet', 'skateHelmet.jpg', 70.00, 39.95,
         'Get the classic Pro-Tec look with proven protection. Shop a wide range of skate, bmx & water helmets online at Pro-Tec Australia.',
         1, 2, '2024-05-16 22:31:32', '2024-05-16 22:31:32'),
@@ -185,6 +206,22 @@ VALUES (1, 'Adidas Euro16 Top Soccer Ball', 'adidas-euro16-top-soccer-ball', 'so
         'Kick it old school this winter when you step out in the adidas Women\'s Tricot 3-Stripes Flare Pants. Ideal for post-gym wear, the stretchy tricot fabric allows you to move with ease as you recover from your big session. ',
         0, 3, '2024-05-16 22:31:32', '2024-05-16 22:31:32');
 
+INSERT INTO `role_user` (`user_id`, `role_id`, `assigned_at`)
+VALUES (1, 1, '2024-06-15 14:35:28'),
+       (1, 2, '2024-06-15 14:35:45');
+
 INSERT INTO `roles` (`id`, `name`, `description`, `created_at`, `updated_at`)
 VALUES (1, 'user', 'Default user role', '2024-05-16 22:25:17', '2024-05-16 22:25:17'),
-       (2, 'admin', 'Admin role with full privileges', '2024-05-16 22:25:17', '2024-05-16 22:25:17');
+       (2, 'admin', 'Admin role with full privlidges', '2024-05-16 22:25:17', '2024-05-16 22:25:17');
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `remember_token`, `created_at`, `updated_at`)
+VALUES (1, 'admin', 'admin@user.com', '$2y$10$R36fWMCOzeGINr9yQXnLKe/8GnGaeko0y8eRCHcr8zlqkoTghUTb2', NULL,
+        '2024-06-15 14:35:28', '2024-06-15 21:39:40');
+
+/*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;

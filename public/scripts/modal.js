@@ -1,7 +1,7 @@
 export default class Modal {
-    constructor(action, form) {
+    constructor(action, form = null) {
         this.action = action;
-        this.form = form
+        this.form = form ? form : action;
         let elementId = action + "-modal";
         this.modal = document.getElementById(elementId);
 
@@ -33,20 +33,23 @@ export default class Modal {
     }
 
     handleEnter() {
-        this.form.addEventListener('keydown', (event) => {
-            event.preventDefault();
-            if (event.key === 'Enter') {
-                this.confirmAction();
-            }
-        })
+        if (typeof this.form !== 'string') {
+            this.form.addEventListener('keydown', (event) => {
+                event.preventDefault();
+                if (event.key === 'Enter') {
+                    this.confirmAction();
+                }
+            })
+        }
     }
 
     confirmAction() {
-        let confirm = new CustomEvent('confirmed', {
-            bubbles: false,
-            detail: {action: this.action},
-        });
-        this.form.dispatchEvent(confirm);
+        if (typeof this.form !== 'string') {
+            this.form.dispatchEvent(new CustomEvent('confirmed', {
+                bubbles: true,
+                detail: {action: this.action},
+            }));
+        }
         return this.closeModal();
     }
 

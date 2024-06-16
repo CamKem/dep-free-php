@@ -248,12 +248,14 @@ class Model implements Arrayable, JsonSerializable
                 //method_exists($model, $parts[1]) ? $parts[1] :
                 //$this->convertToSingular($parts[1]);
                 if (method_exists($relatedModel, $nestedRelation)) {
-                    dd('method exists');
+                    // NOTE: this part of the code has not been tested
+                    //  need to ensure it's functional & required
                     $nestedModels = $relatedModel->relations[$nestedRelation];
                     $nestedModel = end($nestedModels);
                     $nestedModel->{$parts[2]} = $value;
                 } elseif (method_exists($relatedModel, $parts[1])) {
-                    dd('method exists part 1');
+                    // NOTE: this part of the code has not been tested
+                    //  need to ensure it's functional & required
                     $nestedModels = $relatedModel->relations[$parts[1]];
                     $nestedModel = end($nestedModels);
                     $nestedModel->{$parts[2]} = $value;

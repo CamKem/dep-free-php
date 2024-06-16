@@ -4,18 +4,21 @@
     new ModalManager('admin-product-create', 'product-create');
     new ModalManager('delete-form', 'delete');
 
-    if (<?= session()->has('open-create-modal') ? 'true' : 'false' ?>) {
-        console.log('open modal');
-        window.onload = () => {
-            // TODO: attempt to get this working.
-            const createModalTrigger = document.getElementById('admin-product-create');
-            console.log(createModalTrigger);
-            createModalTrigger.click();
-        };
-        const createModalTrigger = document.getElementById('admin-product-create');
-        console.log(createModalTrigger);
-        createModalTrigger.click();
-        document.querySelector('form[name="admin-product-create"]').dispatchEvent(new Event('submit'));
+    window.onload = () => {
+        if (<?= session()->has('open-create-modal') ? 'true' : 'false'  ?> === true) {
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: 'product-create'}
+            }));
+        }
+        if (<?= session()->has('open-edit-modal') ? 'true' : 'false'  ?> === true) {
+            const id = "<?= session()->get('open-edit-modal') ?>";
+            // use the id to target the correct modal to open
+            document.dispatchEvent(new CustomEvent('openModal', {
+                bubbles: true,
+                detail: {action: `product-edit-${id}`}
+            }));
+        }
     }
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
@@ -68,29 +71,38 @@
                             <?= ucwords($product->name) ?>
                         </a>
                     </td>
-                    <td><div class="flex-center align-start"><?php
-                        if ($product->sale_price) {
-                            echo "<span class='original-price-group'><del>\${$product->price}</del></span>".PHP_EOL;
-                            echo "<span class='price-sale'>\${$product->sale_price}</span>".PHP_EOL;
-                        } else {
-                            echo "<span class='price'>\${$product->price}</span>".PHP_EOL;
-                        }
-                        ?></div></td>
+                    <td>
+                        <div class="flex-center align-start">
+                            <?php
+                            if ($product->sale_price) {
+                                echo "<span class='original-price-group'><del>\${$product->price}</del></span>" . PHP_EOL;
+                                echo "<span class='price-sale'>\${$product->sale_price}</span>" . PHP_EOL;
+                            } else {
+                                echo "<span class='price'>\${$product->price}</span>" . PHP_EOL;
+                            }
+                            ?>
+                        </div>
+                    </td>
                     <td><?= $product->featured ? 'Yes' : 'No' ?></td>
                     <td><?= $product->category->name ?></td>
-                    <td><?= $product->orders_count ?></td>
+                    <td><a class="general-link"
+                           href="<?= route('admin.orders.index', ['product' => $product->id]) ?>"
+                        >
+                            <?= $product->orders_count ?>
+                        </a>
+                    </td>
                     <td><?= date('d M Y', strtotime($product->updated_at)) ?></td>
                     <td>
                         <div class="form-buttons">
                             <script type="module">
-                                import ModalManager from "/scripts/modalManager.js";
+                                import ModalManager
+                                    from "/scripts/modalManager.js";
 
                                 new ModalManager('product-edit-<?= $product->id ?>', 'product-edit-<?= $product->id ?>');
                             </script>
                             <?= add('modals.admin-product-edit', compact('product', 'categories')) ?>
-                            <form name="product-edit-<?= $product->id ?>"
-                                  id="product-edit-<?= $product->id ?>"
-                            >
+                            <form name="product-edit-<?= $product->id ?>">
+<!--                                  id="edit---><?php //= $product->id ?><!--"-->
                                 <button>Edit</button>
                             </form>
                             <form method="post"

@@ -149,6 +149,35 @@ class QueryBuilder
         return $this;
     }
 
+    // whereHas method, checks relationship existence
+    // TODO: we can make this better so we don't have to use the pivot table as a prefix in the
+    //  sub query, like in the UsersController index method.
+    public function whereHas(string $relation, callable $callback): static
+    {
+        // check the relation exists on the model
+        if (!method_exists(new $this->model(), $relation)) {
+            throw new RuntimeException("Method {$relation} does not exist on the model");
+        }
+
+        // call the relation to get the object
+        $relationInst = $this->model->{$relation}();
+
+        // with the relation set, we can now get the related model
+        $this->with($relation);
+
+        // call the callback function, pass the query builder instance
+        $query = $callback($relationInst->query(where: false));
+
+
+        // then merge the conditions from the callback with the current conditions
+        $this->conditions = array_merge(
+            $this->conditions,
+            $query->conditions,
+        );
+
+        return $this;
+    }
+
     // find method
     public function find(int $id): static
     {
@@ -403,6 +432,8 @@ class QueryBuilder
     {
         // Check if the column name is already prefixed with the table name
         // NOTE: this was HasManyThrough only, I checked to Relation
+        //  ensure that this is adding the prefix to where conditions when there is a relation
+        //  be mindful that the withCheck method is also adding the prefix, so we need to add it in 1 place.
         if ($this->relation instanceof Relation && !str_contains($column, '.') && !str_starts_with($column, "{$this->table}.")) {
             $column = "{$this->relation->getRelatedTable()}.{$column}";
         }
@@ -478,7 +509,8 @@ class QueryBuilder
 
     public function withCheck(mixed $condition): void
     {
-        if (!empty($this->with)) {
+        // make sure there is no period needle already in the column
+        if ((!empty($this->with) || !empty($this->withCount)) && !str_contains($condition[0], '.')) {
             $this->query .= "{$this->table}.";
         }
         $this->query .= "{$condition[0]} {$condition[1]} :{$this->replacePeriod($condition[0])}";

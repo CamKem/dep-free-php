@@ -1,85 +1,11 @@
 <script type="module">
-    import Modal from '/scripts/modal.js';
-    import FormValidator from "/scripts/validation.js";
+    import ProductModal from '/scripts/productModal.js';
 
-    document.addEventListener('openModal', (event) => {
-        if (event.detail.action === 'product-edit-<?= $product->id ?>') {
-            let modal = new Modal('product-edit-<?= $product->id ?>', event.detail.form);
-            modal.openModal();
-
-            const imagePlaceholder = document.querySelector(`#image-placeholder[data-image="<?= $product->id ?>"]`);
-            const imageInput = imagePlaceholder.querySelector('input[type="file"]');
-
-            imagePlaceholder.addEventListener('click', () => {
-                if (imagePlaceholder.dataset.image === '<?= $product->id ?>') {
-                    imageInput.click();
-                }
-            });
-
-            imageInput.addEventListener('change', () => {
-                const file = imageInput.files[0];
-                if (file) {
-                    const formData = new FormData();
-                    formData.append('image', file);
-
-                    fetch('/admin/products/image', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.filePath) {
-                                const flashEvent = new CustomEvent('flashToggle', {
-                                    bubbles: true,
-                                    detail: {message: data.message}
-                                });
-                                document.dispatchEvent(flashEvent);
-                                return;
-                            }
-
-                            // get the current image tag element & replace it with the new image
-                            const imagePreview = document.querySelector(`#image-preview[data-image="<?= $product->id ?>"]`);
-
-                            if (imagePreview) {
-                                imagePreview.src = '/' + data.filePath;
-                                const imageName = data.filePath.split('/').pop();
-                                imagePreview.alt = imageName;
-                                imagePreview.dataset.image = imageName;
-
-                                const flashEvent = new CustomEvent('flashToggle', {
-                                    bubbles: true,
-                                    detail: {message: data.message}
-                                });
-
-                                document.dispatchEvent(flashEvent);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-            });
-
-            const form = document.getElementById('edit-product-form-<?= $product->id ?>');
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-                // get the image element that is a child of the form
-                const image = form.querySelector('.image-preview');
-                if (image) {
-                    // append a new hidden input element to the form
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'image';
-                    input.value = image.dataset.image;
-                    form.appendChild(input);
-                    form.submit();
-                }
-            });
-
-        }
+    window.addEventListener('DOMContentLoaded', () => {
+        const action = 'product-edit-<?= $product->id ?>';
+        const placeholderSelector = `#image-placeholder[data-image="<?= $product->id ?>"]`;
+        new ProductModal(action, placeholderSelector);
     });
-
-    window.onload = () => new FormValidator('create-product-form');
 </script>
 
 <div id="product-edit-<?= $product->id ?>-modal" class="modal">
@@ -88,7 +14,7 @@
         <h2 class="general-heading">Edit Product</h2>
         <div class="modal-form">
 
-            <form id="edit-product-form-<?= $product->id ?>"
+            <form id="product-edit-<?= $product->id ?>"
                   action="<?= route('admin.products.update', ['id' => $product->id]) ?>"
                   method="post"
                   class="product-form"
@@ -105,13 +31,13 @@
                              alt="<?= $product->name ?>"
                              id="image-preview"
                              class="image-preview"
-                             data-image="<?= $product->id ?>"
+                             data-image="<?= $product->image ?>"
                         >
                         <input type="file" id="image" title="Image" name="image"
                                accept="image/*" data-validate="true" hidden
                         >
                     </div>
-                    <p class="error-message">
+                    <p class="error-message" id="image-error">
                         <?= error('image') ?>
                     </p>
 
@@ -203,7 +129,7 @@
                     <p class="modal-text">
                         Are you sure you want to edit this product?
                     </p>
-                    <button type="submit" class="confirm-button">
+                    <button type="submit" class="confirm-button" id="confirm-product-edit">
                         Edit Product
                     </button>
                 </div>

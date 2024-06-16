@@ -35,7 +35,7 @@ class ModalHandler {
         this.form.addEventListener('submit', (event) => {
             if (event.target === this.form) {
                 event.preventDefault();
-                this.createEvent('openModal', this.action, this.form);
+                this.createEvent('openModal', this.action);
             }
         });
     }
@@ -48,12 +48,11 @@ class ModalHandler {
         });
     }
 
-    createEvent(name, action, form) {
-        let event = new CustomEvent(name, {
+    createEvent(name, action) {
+        this.form.dispatchEvent(new CustomEvent(name, {
             bubbles: true,
-            detail: {action: action, form: form}
-        });
-        this.form.dispatchEvent(event);
+            detail: {action: action, form: this.form}
+        }));
     }
 
 }

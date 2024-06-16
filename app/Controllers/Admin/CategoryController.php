@@ -99,9 +99,18 @@ class CategoryController
     public function destroy(Request $request): Response
     {
         $category = (new Category())->query()
-            ->find($request->get('id'));
+            ->withCount('products')
+            ->find($request->get('id'))
+            ->first();
+
+        // ensure that the category does not have any products
+        if ($category && $category->products_count > 0) {
+            session()->flash('flash-message', 'Category has products and cannot be deleted');
+            return redirect()->back();
+        }
 
         $deleted = $category
+            ->query()
             ->delete()->save();
 
         if (!$deleted) {

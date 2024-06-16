@@ -25,7 +25,7 @@ class SessionController extends Controller
 
         $validated = (new Validator())->validate(
             $request->only(['email', 'password']), [
-            'email' => ['required', 'email', 'exists:user'],
+            'email' => ['required', 'email', 'exists:users'],
             'password' => ['required'],
         ]);
 
@@ -35,7 +35,7 @@ class SessionController extends Controller
                 ->withErrors($validated->getErrors());
         }
 
-        $login = auth()->attempt($validated->validatedData());
+        $login = auth()->attempt($validated->data());
 
         if (!$login) {
             return redirect(route('login.index'))

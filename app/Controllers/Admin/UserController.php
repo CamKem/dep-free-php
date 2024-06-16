@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Admin;
 
-use App\Actions\RegisterNewUser;
+use app\Core\Database\QueryBuilder;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
@@ -18,12 +18,18 @@ class UserController
     {
         $users = (new User())
             ->query()
-            ->select(['id', 'username', 'email', 'created_at'])
             ->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
             $users->where('username', 'like', "%{$request->get('search')}%");
             $users->orWhere('email', 'like', "%{$request->get('search')}%");
+        }
+
+        if ($request->has('role')) {
+            $users->whereHas('roles', function (QueryBuilder $query) use ($request) {
+                // TODO: change the query builder so it will infer to the role_user table here
+                return $query->where('role_user.role_id', $request->get('role'));
+                });
         }
 
         return view('admin.users.index', [
@@ -64,6 +70,7 @@ class UserController
             ->first();
 
         if (!$user) {
+            session()->flash('open-user-edit-modal', true);
             session()->flash('flash-message', 'Error: User not found.');
             return response()->back();
         }
@@ -74,17 +81,30 @@ class UserController
             return response()->redirect(route('admin.users.show', ['id' => $request->get('id')]));
         }
 
+        $rules = [
+            'username' => ['required', 'string', 'max:255',],
+            'email' => ['required', 'email', 'max:255'],
+            'roles' => ['array'],
+        ];
+
+        // only validate data for unique username if the username has changed
+        if ($request->get('username') !== $user->username) {
+            $rules['username'][] = 'unique:users,username';
+        }
+
+        // only validate data for unique email if the email has changed
+        if ($request->get('email') !== $user->email) {
+            $rules['email'][] = 'unique:users,email';
+        }
+
         // validate and update the users details
         $validated = (new Validator())->validate(
             $request->only(['username', 'email', 'roles']),
-            [
-                'username' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255'],
-                'roles' => ['array'],
-            ]
+            $rules
         );
 
         if ($validated->hasErrors()) {
+            session()->flash('open-user-edit-modal', true);
             session()->flash('flash-message', 'Error: Please check the form for errors.');
             return response()->back()
                 ->withErrors($validated->getErrors())
@@ -126,43 +146,17 @@ class UserController
     {
         $validated = (new Validator())->validate(
             $request->only(['username', 'email', 'password']), [
-            'username' => ['required'],
-            'email' => ['required', 'email'],
+            'username' => ['required', 'string', 'max:100', 'unique:users,username'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required']
         ]);
 
         if ($validated->hasErrors()) {
+            session()->flash('open-user-create-modal', true);
+            session()->flash('flash-message', 'Error: Please check the form for errors.');
             return redirect(route('admin.users.index'))
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
-        }
-
-        $errors = [];
-
-        $existingUser = (new User())
-            ->query()
-            ->where('email', $validated->get('email'))
-            ->orWhere('username', $validated->get('username'))
-            ->exists();
-
-        if (!$existingUser) {
-            $user = (new User())
-                ->query()
-                ->where('email', $validated->get('email'))
-                ->orWhere('username', $validated->get('username'))
-                ->first();
-            if ($user->email === $validated->get('email')) {
-                $errors['email'] = 'Email already exists';
-            }
-
-            if ($user->username === $validated->get('username')) {
-                $errors['username'] = 'Username already exists';
-            }
-
-            session()->flash('flash-message', 'Error: The user already exists.');
-            return redirect(route('admin.users.index'))
-                ->withInput($validated->validatedData())
-                ->withErrors($errors);
         }
 
         $user = (new User())
@@ -174,6 +168,7 @@ class UserController
             ])->save();
 
         if (!$user) {
+            session()->flash('open-user-create-modal', true);
             session()->flash('flash-message', 'There was an error registering the user. Please try again.');
             return redirect()->back()
                 ->withInput($request->all());
@@ -184,10 +179,7 @@ class UserController
             ->where('email', $request->get('email'))
             ->first();
 
-        if (!$user) {
-            session()->flash('flash-message', 'Error: Something went wrong.');
-            return response()->back();
-        }
+        $user->roles()->attach([['role_id' => 1]]);
 
         session()->flash('flash-message', 'You have successfully registered!');
         return redirect(route('admin.users.index'));

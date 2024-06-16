@@ -6,8 +6,8 @@ use App\Actions\HandleCsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
-use App\Core\Validator;
 use App\Core\Template;
+use App\Core\Validator;
 use App\Models\Contact;
 
 class ContactController extends Controller
@@ -25,26 +25,22 @@ class ContactController extends Controller
         // validate the csrf token
         (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
 
-        // handle the checkbox
-        $requestBody = $request->getBody();
-        if (!isset($requestBody['mailing_list'])) {
-            $requestBody['mailing_list'] = false;
-        }
-
         // validate the request
-        $validated = (new Validator)->validate($requestBody, [
-            'first_name' => ['required', 'string', 'min:3', 'max:255'],
-            'last_name' => ['required', 'string', 'min:3', 'max:255'],
-            'contact' => ['required', 'string', 'min:10', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'message' => ['required', 'string', 'min:10', 'max:255'],
-            'mailing_list' => ['boolean'],
-        ]);
+        $validated = (new Validator)->validate(
+            $request->only(['first_name', 'last_name', 'contact', 'email', 'message', 'mailing_list']),
+            [
+                'first_name' => ['required', 'string', 'min:3', 'max:255'],
+                'last_name' => ['required', 'string', 'min:3', 'max:255'],
+                'contact' => ['required', 'string', 'min:10', 'max:255'],
+                'email' => ['required', 'email', 'max:255'],
+                'message' => ['required', 'string', 'min:10', 'max:255'],
+                'mailing_list' => ['boolean'],
+            ]);
 
         if ($validated->hasErrors()) {
             session()->flash('flash-message', 'Please correct the form errors.');
             return response()->back()
-                ->withInput($validated->validatedData())
+                ->withInput($validated->data())
                 ->withErrors($validated->getErrors());
         }
 
@@ -55,7 +51,7 @@ class ContactController extends Controller
             'contact' => $validated->get('contact'),
             'email' => $validated->get('email'),
             'message' => $validated->get('message'),
-            'mailing_list' => $validated->get('mailing_list'),
+            'mailing_list' => $validated->get('mailing_list', false),
         ]);
         $contact->save();
 

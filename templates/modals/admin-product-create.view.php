@@ -1,82 +1,11 @@
 <script type="module">
-    import Modal from '/scripts/modal.js';
-    import FormValidator from "/scripts/validation.js";
+    import ProductModal from '/scripts/productModal.js';
 
-    document.addEventListener('openModal', (event) => {
-        if (event.detail.action === 'product-create') {
-            let modal = new Modal('product-create', event.detail.form);
-            modal.openModal();
-
-            const imagePlaceholder = document.getElementById('image-placeholder');
-            const imageInput = document.querySelector('input[type="file"]');
-
-            imagePlaceholder.addEventListener('click', () => {
-                imageInput.click();
-            });
-
-            imageInput.addEventListener('change', () => {
-                const file = imageInput.files[0];
-                if (file) {
-
-                    const formData = new FormData();
-                    formData.append('image', file);
-
-                    fetch('/admin/products/image', {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (!data.filePath) {
-                                const flashEvent = new CustomEvent('flashToggle', {
-                                    bubbles: true,
-                                    detail: {message: data.message}
-                                });
-                                document.dispatchEvent(flashEvent);
-                                return;
-                            }
-
-                            const imagePreview = document.createElement('img');
-                            imagePreview.src = '/' + data.filePath;
-                            const imageName = data.filePath.split('/').pop();
-                            imagePreview.alt = imageName;
-                            imagePreview.dataset.image = imageName;
-                            imagePreview.classList.add('image-preview');
-
-                            imagePlaceholder.innerHTML = '';
-                            imagePlaceholder.appendChild(imagePreview);
-
-                            const flashEvent = new CustomEvent('flashToggle', {
-                                bubbles: true,
-                                detail: {message: data.message}
-                            });
-                            document.dispatchEvent(flashEvent);
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-            });
-            // TODO extract this logic & the logic in the edit modal to a common class or function
-            const form = document.getElementById('create-product-form');
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-                // get the image element that is a child of the form
-                const image = form.querySelector('.image-preview');
-                // append a new hidden input element to the form
-                if (image) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'image';
-                    input.value = image.dataset.image;
-                    form.appendChild(input);
-                    form.submit();
-                }
-            });
-        }
+    window.addEventListener('DOMContentLoaded', () => {
+        const action = 'product-create'
+        const placeholderSelector = `#image-placeholder[data-image="empty"]`;
+        new ProductModal(action, placeholderSelector);
     });
-
-    window.onload = () => new FormValidator('create-product-form');
 </script>
 
 
@@ -86,7 +15,7 @@
         <h2 class="general-heading">Create Product</h2>
         <div class="modal-form">
 
-            <form id="create-product-form"
+            <form id="product-create"
                   action="<?= route('admin.products.store') ?>"
                   method="post"
                   class="product-form"
@@ -95,17 +24,18 @@
                        value="<?= csrf_token() ?>">
 
                 <div class="column-1">
-                    <div class="placeholder" id="image-placeholder">
-                        <svg id="image-placeholder-icon" viewBox="0 0 24 24"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-7H7v-2h4V7h2v4h4v2h-4v4h-2v-4z"/>
-                        </svg>
-                        <div id="image-placeholder-text">
-                            Click to Upload<br>
-                            Product Image
-                        </div>
+                    <div class="placeholder"
+                         id="image-placeholder"
+                         data-image="empty"
+                    >
+                        <img src="/images/products/<?= old('image', 'default.svg') ?>"
+                             alt="<?= old('name') ?>"
+                             class="image-preview"
+                             data-image="<?= old('image', 'default.svg') ?>"
+                        >
                         <input type="file" id="image" title="Image" name="image"
-                               accept="image/*" data-validate="true" hidden>
+                               accept="image/*"
+                               hidden>
                     </div>
                     <p class="error-message" id="image-error">
                         <?= error('image') ?>
@@ -189,7 +119,9 @@
                         <input type="checkbox"
                                name="featured"
                                id="featured"
-                               value="1">
+                               value="1"
+                            <?= old('featured') ? 'checked' : '' ?>
+                        >
                     </div>
                 </div>
 
@@ -197,7 +129,7 @@
                     <p class="modal-text">
                         Are you sure you want to create this product?
                     </p>
-                    <button type="submit" class="confirm-button">
+                    <button type="submit" class="confirm-button" id="confirm-product-create">
                         Create Product
                     </button>
                 </div>

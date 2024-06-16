@@ -34,40 +34,52 @@
                        name="first_name"
                        id="first_name"
                        title="First name"
+                       value="<?= old('first_name') ?>"
                        placeholder="Your first name"
                        data-validate=true
                 >
-                <p class="error-message" id="first_name-error"></p>
+                <p class="error-message" id="first_name-error">
+                    <?= error('first_name') ?>
+                </p>
 
                 <label for="last_name"><span>Last name</span></label>
                 <input type="text"
                        id="last_name"
                        name="last_name"
                        title="Last name"
+                       value="<?= old('last_name') ?>"
                        placeholder="Your last name"
                        data-validate=true
                 >
-                <p class="error-message" id="last_name-error"></p>
+                <p class="error-message" id="last_name-error">
+                    <?= error('last_name') ?>
+                </p>
 
                 <label for="contact"><span>Contact number</span></label>
                 <input type="tel"
                        id="contact"
                        name="contact"
+                       value="<?= old('contact') ?>"
                        title="Contact number"
                        placeholder="Your contact number"
                        data-validate=true
                 >
-                <p class="error-message" id="contact-error"></p>
+                <p class="error-message" id="contact-error">
+                    <?= error('contact') ?>
+                </p>
 
                 <label for="email"><span>Email address</span></label>
                 <input type="email"
                        id="email"
                        name="email"
+                       value="<?= old('email') ?>"
                        title="Email address"
                        placeholder="Your email address"
                        data-validate=true
                 >
-                <p class="error-message" id="email-error"></p>
+                <p class="error-message" id="email-error">
+                    <?= error('email') ?>
+                </p>
 
                 <textarea id="message"
                           aria-label="Message"
@@ -76,7 +88,13 @@
                           rows="5"
                           placeholder="Please write a message here..."
                           data-validate=false
-                ></textarea>
+                ><?= old('message') ?></textarea>
+
+                <p class="error-message" id="message-error">
+                    <?= error('message') ?>
+                </p>
+
+                <?= dump(session()->get('errors')) ?>
 
                 <div class="form-bottom">
                     <button id="submit" type="submit">Send</button>
@@ -86,6 +104,7 @@
                                aria-label="Join mailing list"
                                id="mailing_list"
                                name="mailing_list"
+                               value="1"
                                data-validate=false
                         >
                     </label>

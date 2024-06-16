@@ -44,17 +44,17 @@ class OrderController extends Controller
     {
 
         $validated = (new Validator())->validate($request->all(), [
-            'first_name' => ['required'],
-            'last_name' => ['required'],
-            'address' => ['required'],
-            'city' => ['required'],
-            'state' => ['required'],
-            'postcode' => ['required'],
-            'contact_number' => 'required',
-            'card_name' => 'required',
-            'card_number' => 'required',
-            'expiry_date' => 'required',
-            'ccv' => 'required',
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'state' => ['required', 'string'],
+            'postcode' => ['required', 'number', 'min:4', 'max:4'],
+            'contact_number' => ['required', 'number'],
+            'card_name' => ['required', 'string'],
+            'card_number' => ['required', 'number', 'min:16', 'max:16'],
+            'expiry_date' => ['required'],
+            'ccv' => ['required', 'number', 'min:3', 'max:3'],
         ]);
 
         if ($validated->hasErrors()) {
@@ -105,7 +105,7 @@ class OrderController extends Controller
                 'total' => $total,
             ])->save();
 
-        if ($new === false) {
+        if (!$new) {
             session()->flash('flash-message', 'Error: Order not created');
             return redirect()->back();
         }
@@ -142,14 +142,13 @@ class OrderController extends Controller
 
     public function destroy(Request $request): Response
     {
-
         // find the order & delete it,
         //products will be deleted to because of cascade
         $removed = (new Order())->query()->find($request->get('order'))
             ->delete()->save();
 
         // check order was deleted
-        if ($removed === false) {
+        if (!$removed) {
             session()->flash('flash-message', 'Error: Order not deleted');
             return redirect()->back();
         }

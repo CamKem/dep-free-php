@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Admin;
 
+use app\Core\Database\QueryBuilder;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
@@ -22,6 +23,12 @@ class OrderController
 
         if ($request->has('search')) {
             $orders->where('status', 'like', "%{$request->get('search')}%");
+        }
+
+        if ($request->has('product')) {
+            $orders->whereHas('products', function (QueryBuilder $query) use ($request) {
+                return $query->where('order_product.product_id', $request->get('product'));
+            });
         }
 
         return view('admin.orders.index', [

@@ -29,19 +29,13 @@ class PasswordResetController extends Controller
 
         // validate the email
         $validated = (new Validator())->validate($request->only(['email']), [
-            'email' => ['required', 'email']
+            'email' => ['required', 'email', 'exists:users,email']
         ]);
 
-        // check the email exists in the database
-        $exists = (new User())
-            ->query()
-            ->where('email', $validated->get('email'))
-            ->exists();
-
-        if (!$exists) {
+        if ($validated->hasErrors()) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated->validatedData())
-                ->withErrors(['email' => 'The provided email does not exist in our records.']);
+                ->withInput($validated->data())
+                ->withErrors($validated->getErrors());
         }
 
         // get the user's username
@@ -57,8 +51,8 @@ class PasswordResetController extends Controller
         // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
             return redirect(route('password.reset.show'))
-                ->withInput($validated->validatedData())
-                ->withErrors(['email' => 'Failed to send the password reset email.']);
+                ->withInput($validated->data())
+                ->withErrors(['email' => ['Failed to send the password reset email.']]);
         }
 
         // flash a success message
@@ -79,7 +73,7 @@ class PasswordResetController extends Controller
         // if the token does not exist, redirect back
         if (!$exists) {
             return redirect(route('password.reset.show'))
-                ->withErrors(['email' => 'The provided token is invalid.']);
+                ->withErrors(['email' => ['The provided token is invalid.']]);
         }
 
         // if the token exists, show the password reset form
@@ -104,7 +98,7 @@ class PasswordResetController extends Controller
 
         if (!$reset) {
             return redirect(route('password.reset.show'))
-                ->withErrors(['email' => 'Failed to reset the password.']);
+                ->withErrors(['email' => ['Failed to reset the password.']]);
         }
 
         // flash a success message

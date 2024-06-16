@@ -35,7 +35,7 @@ class CartController extends Controller
             return redirect()->back();
         }
         if (!$item['product_id'] || !is_numeric($item['product_id'])) {
-            session()->flash('error', 'Error: Invalid product');
+            session()->flash('flash-message', 'Error: Invalid product');
             return redirect()->back();
         }
 
