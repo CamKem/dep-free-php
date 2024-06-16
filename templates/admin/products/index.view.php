@@ -4,23 +4,22 @@
     new ModalManager('admin-product-create', 'product-create');
     new ModalManager('delete-form', 'delete');
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (<?= session()->has('open-product-create-modal') ? 'true' : 'false'  ?> === true) {
+    window.onload = () => {
+        if (<?= session()->has('open-create-modal') ? 'true' : 'false'  ?> === true) {
             document.dispatchEvent(new CustomEvent('openModal', {
                 bubbles: true,
                 detail: {action: 'product-create'}
             }));
         }
-        if (<?= session()->has('open-product-edit-modal') ? 'true' : 'false'  ?> === true) {
-            const id = "<?= session()->get('open-product-edit-modal') ?>";
+        if (<?= session()->has('open-edit-modal') ? 'true' : 'false'  ?> === true) {
+            const id = "<?= session()->get('open-edit-modal') ?>";
             // use the id to target the correct modal to open
             document.dispatchEvent(new CustomEvent('openModal', {
                 bubbles: true,
                 detail: {action: `product-edit-${id}`}
             }));
         }
-    });
-
+    }
 </script>
 <?= add('modals.confirmation', ['action' => 'delete']) ?>
 <?= add('modals.admin-product-create', ['categories' => $categories]) ?>
@@ -102,9 +101,8 @@
                                 new ModalManager('product-edit-<?= $product->id ?>', 'product-edit-<?= $product->id ?>');
                             </script>
                             <?= add('modals.admin-product-edit', compact('product', 'categories')) ?>
-                            <form name="product-edit-<?= $product->id ?>"
-                                  id="product-edit-<?= $product->id ?>"
-                            >
+                            <form name="product-edit-<?= $product->id ?>">
+<!--                                  id="edit---><?php //= $product->id ?><!--"-->
                                 <button>Edit</button>
                             </form>
                             <form method="post"
