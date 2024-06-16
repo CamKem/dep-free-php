@@ -1,7 +1,7 @@
 export default class Modal {
-    constructor(action, form) {
+    constructor(action, form = null) {
         this.action = action;
-        this.form = form
+        this.form = form ? form : action;
         let elementId = action + "-modal";
         this.modal = document.getElementById(elementId);
 
