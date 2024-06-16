@@ -33,21 +33,23 @@ export default class Modal {
     }
 
     handleEnter() {
-        if (!this.form) return;
-        this.form.addEventListener('keydown', (event) => {
-            event.preventDefault();
-            if (event.key === 'Enter') {
-                this.confirmAction();
-            }
-        })
+        if (typeof this.form !== 'string') {
+            this.form.addEventListener('keydown', (event) => {
+                event.preventDefault();
+                if (event.key === 'Enter') {
+                    this.confirmAction();
+                }
+            })
+        }
     }
 
     confirmAction() {
-        let confirm = new CustomEvent('confirmed', {
-            bubbles: false,
-            detail: {action: this.action},
-        });
-        this.form.dispatchEvent(confirm);
+        if (typeof this.form !== 'string') {
+            this.form.dispatchEvent(new CustomEvent('confirmed', {
+                bubbles: true,
+                detail: {action: this.action},
+            }));
+        }
         return this.closeModal();
     }
 
