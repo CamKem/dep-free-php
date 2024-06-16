@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Admin;
 
-use App\Actions\HandleCsrfTokens;
+use App\Actions\CsrfTokens;
 use app\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -125,7 +125,7 @@ class ProductController
     public function update(Request $request): Response
     {
         // validate the csrf token
-        (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
+        (new CsrfTokens)->handle(token: $request->get('csrf_token'));
 
         // get the product
         $product = (new Product())->query()

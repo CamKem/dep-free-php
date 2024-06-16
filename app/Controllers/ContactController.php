@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Actions\HandleCsrfTokens;
+use App\Actions\CsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -23,7 +23,7 @@ class ContactController extends Controller
     public function store(Request $request): Response
     {
         // validate the csrf token
-        (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
+        (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the request
         $validated = (new Validator)->validate(

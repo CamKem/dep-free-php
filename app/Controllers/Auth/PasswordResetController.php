@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Auth;
 
-use App\Actions\HandleCsrfTokens;
+use App\Actions\CsrfTokens;
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -25,7 +25,7 @@ class PasswordResetController extends Controller
     public function store(Request $request): Response
     {
         // validate the CSRF token
-        (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
+        (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the email
         $validated = (new Validator())->validate($request->only(['email']), [
@@ -86,7 +86,7 @@ class PasswordResetController extends Controller
     public function update(Request $request): Response
     {
         // validate the CSRF token
-        (new HandleCsrfTokens())->validateToken($request->get('csrf_token'));
+        (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the password
         $validated = (new Validator())->validate($request->only(['password']), [

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Actions\HandleCsrfTokens;
+use App\Actions\CsrfTokens;
 use App\Core\ServiceProvider;
 use App\Core\Session;
 use Override;
@@ -17,15 +17,13 @@ class SessionService extends ServiceProvider
         $this->app->singleton(Session::class);
     }
 
-    /**
-     * @throws RandomException
-     */
+    /** @throws RandomException */
     #[Override]
     public function boot(): void
     {
         $session = $this->app->resolve(Session::class);
         if (!$session->has('_token')) {
-            $session->set('_token', (new HandleCsrfTokens())->generateToken());
+            $session->set('_token', (new CsrfTokens())->handle(generate: true));
         }
     }
 }
