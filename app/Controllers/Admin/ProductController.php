@@ -78,7 +78,7 @@ class ProductController
         ]);
 
         if ($validated->hasErrors()) {
-            session()->flash('open-product-create-modal', true);
+            session()->flash('open-create-modal', true);
             session()->flash('flash-message', 'Please check the form for errors');
             return redirect()->route('admin.products.index')
                 ->withInput($request->all())
@@ -112,7 +112,7 @@ class ProductController
         ])->save();
 
         if (!$product) {
-            session()->flash('open-product-create-modal', true);
+            session()->flash('open-create-modal', true);
             session()->flash('flash-message', 'Product creation failed, please try again');
             return redirect()->route('admin.products.index')
                 ->withInput($request->all());
@@ -141,13 +141,8 @@ class ProductController
         // check if the request has errors
         if ($validated->hasErrors()) {
             session()->flash(
-                'open-product-edit-modal',
-                $request->get('id')
-            );
-            session()->flash(
-                'flash-message',
-                'Please check the form for errors'
-            );
+                'open-edit-modal', $request->get('id'));
+            session()->flash('flash-message', 'Please check the form for errors');
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
@@ -165,14 +160,8 @@ class ProductController
 
             // check if the image was not removed
             if (!$removed) {
-                session()->flash(
-                    'open-product-edit-modal',
-                    $request->get('id')
-                );
-                session()->flash(
-                    'flash-message',
-                    'Please check the form for errors'
-                );
+                session()->flash('open-edit-modal', $request->get('id'));
+                session()->flash('flash-message', 'Failed to update product image');
                 return redirect()
                     ->route('admin.products.index')
                     ->withInput($request->all());
@@ -212,7 +201,7 @@ class ProductController
         // check if the product was not updated
         if (!$updated) {
             session()->flash('flash-message', 'Product update failed, please try again');
-            session()->flash('open-product-edit-modal', true);
+            session()->flash('open-edit-modal', $product->id);
             return redirect()->route('admin.products.index');
         }
 
