@@ -127,9 +127,21 @@ class ProductController
         // validate the csrf token
         (new HandleCsrfTokens)->validateToken($request->get('csrf_token'));
 
+        // get the product
+        $product = (new Product())->query()
+            ->find($request->get('id'))
+            ->first();
+
+        // id the product name is the same as the request name, then the name is not unique
+        if ($product->name === $request->get('name')) {
+            $nameRule = ['required', 'string', 'min:3', 'max:255'];
+        } else {
+            $nameRule = ['required', 'string', 'min:3', 'max:255', 'unique:products,name'];
+        }
+
         // validate the request
         $validated = (new Validator())->validate($request->all(), [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'name' => $nameRule,
             'price' => ['required', 'number'],
             'category_id' => ['required', 'integer'],
             'sale_price' => ['number'],
@@ -147,11 +159,6 @@ class ProductController
                 ->withInput($request->all())
                 ->withErrors($validated->getErrors());
         }
-
-        // get the product
-        $product = (new Product())->query()
-            ->find($request->get('id'))
-            ->first();
 
         // check that the image is different from the current image
         if ($product->image !== $validated->get('image')) {
