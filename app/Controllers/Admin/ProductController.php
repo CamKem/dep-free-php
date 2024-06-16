@@ -61,10 +61,10 @@ class ProductController
     public function store(Request $request): Response
     {
         // TODO: eventually we need to work out a way to have only the old value go into the correct modal.
-        //  presently it's being server render into both the edit & create modals.
-        //  in future, we could extract the edit value from the DOM rather than have a server rendered modal
-        //  ready to go for each it. This would allow us to just use 1 modal for edit & 1 for create.
-        //  this would help eliminate the problem.
+        //  we could use the id of the product to prefix the old & error values in the session so they go
+        //  to the correct modal. This would help eliminate the problem of the old values being in the wrong modal.
+        //  Alternatively, look at 1 modal instance, which is populated with DOM values rather than server rendered modal
+        //  This would allow us to just use 1 modal for edit & 1 for create, this would help eliminate the problem.
         // NOTE: one modal for both wouldn't be the best because of the different inputs & Http method
         //  We could leverage datasets to store the old values in the DOM & then extract them when needed
         $validated = (new Validator())->validate($request->all(), [
