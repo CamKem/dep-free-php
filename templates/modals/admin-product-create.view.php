@@ -33,6 +33,7 @@
                              class="image-preview"
                              data-image="<?= old('image', 'default.svg') ?>"
                         >
+                        <!-- todo: remove the name on this hidden tag, so there is no change of it being submitted and causing a conflict -->
                         <input type="file" id="image" title="Image" name="image"
                                accept="image/*"
                                hidden>
