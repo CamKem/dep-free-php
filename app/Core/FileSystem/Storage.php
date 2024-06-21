@@ -25,7 +25,7 @@ class Storage
     public function put(string $path, array $contents): false|string
     {
         // if error is not 0, then we have an error
-        if ($contents['error'] !== 0) {
+        if ($contents['error'] && $contents['error'] !== 0) {
             return false;
         }
 
