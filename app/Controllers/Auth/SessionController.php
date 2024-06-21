@@ -24,9 +24,10 @@ class SessionController extends Controller
         (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         $validated = (new Validator())->validate(
-            $request->only(['email', 'password']), [
+            $request->only(['email', 'password', 'remember']), [
             'email' => ['required', 'email', 'exists:users'],
             'password' => ['required'],
+            'remember' => ['boolean']
         ]);
 
         if ($validated->hasErrors()) {
