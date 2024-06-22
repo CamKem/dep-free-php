@@ -82,6 +82,12 @@ class Session
         return $keyExists ? $errors[$key][0] : $default;
     }
 
+    // method for a new session id
+    public function regenerate(): void
+    {
+        session_regenerate_id(true);
+    }
+
     protected function prepareForNextRequest(): void
     {
         // remove the current old flash data
