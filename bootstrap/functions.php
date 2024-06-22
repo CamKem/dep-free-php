@@ -2,6 +2,7 @@
 
 use App\Core\App;
 use App\Core\Authentication\Auth;
+use App\Core\Caching\Cache;
 use App\Core\Collecting\Collection;
 use App\Core\Config;
 use App\Core\Env;
@@ -194,4 +195,9 @@ function now(): string
 function storage(): Storage
 {
     return app(Storage::class);
+}
+
+function cache(): mixed
+{
+    return app(Cache::class);
 }
