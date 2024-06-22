@@ -54,16 +54,20 @@ class Auth
         // remove the user from the session
         session()->remove('user');
         // remove the remember me from the database
-        (new User())->query()
-            ->where('id', $this->user->id)
-            ->update(['remember_token' => ''])
-            ->save();
+        if ($this->user->remember_token) {
+            (new User())->query()
+                ->where('id', $this->user->id)
+                ->update(['remember_token' => ''])
+                ->save();
+        }
         // remove the remember me cookie
-        setcookie('remember', '', time() - 3600);
+        if (cookie('remember')) {
+            setcookie('remember', '', time() - 3600);
+        }
         // remove the session cookie
         setcookie(session_name(), '', time() - 3600);
         // regenerate the session id
-        session_regenerate_id(true);
+        session()->regenerate();
         // finally, unset the user
         $this->user = null;
     }
@@ -73,7 +77,7 @@ class Auth
         return (new User())
             ->query()
             ->where('email', $email)
-           ->first();
+            ->first();
     }
 
     public function remember(User $user): void
