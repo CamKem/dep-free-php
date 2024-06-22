@@ -6,10 +6,10 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
 use App\Core\ServiceProvider;
-use App\Middleware\AdminMiddleware;
-use App\Middleware\AuthMiddleware;
-use App\Middleware\GuestMiddleware;
-use App\Middleware\PreviousUrlMiddleware;
+use app\HTTP\Middleware\AdminMiddleware;
+use app\HTTP\Middleware\AuthMiddleware;
+use app\HTTP\Middleware\GuestMiddleware;
+use app\HTTP\Middleware\PreviousUrlMiddleware;
 use Override;
 
 class MiddlewareService extends ServiceProvider
