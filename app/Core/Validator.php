@@ -9,6 +9,12 @@ class Validator
     protected array $errors = [];
     protected array $data = [];
 
+    // factory method to create a new instance of the class
+    public static function make(): self
+    {
+        return new static();
+    }
+
     public function validate(array $data, array $rules): self
     {
         foreach ($rules as $field => $fieldRules) {
