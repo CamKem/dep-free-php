@@ -7,15 +7,11 @@ use App\Core\Exceptions\ValidationException;
 class Validator
 {
     protected array $errors = [];
-    protected array $data = [];
 
-    // factory method to create a new instance of the class
-    public static function make(): self
-    {
-        return new static();
-    }
-
-    public function validate(array $data, array $rules): self
+    public function __construct(
+        readonly protected array $data,
+        readonly protected array $rules
+    )
     {
         foreach ($rules as $field => $fieldRules) {
             if (!is_array($fieldRules)) {
@@ -34,22 +30,36 @@ class Validator
                 $this->{$ruleName}($data, $field, ...$ruleParams);
             }
         }
-
-        $this->data = $data;
-
-        return $this;
     }
 
-    // get method to extract data from the data array, without calling a property directly
+    public static function validate(array $data, array $rules): self
+    {
+        return new self($data, $rules);
+    }
+
+    public function data(): array
+    {
+        return $this->data;
+    }
+
+    public function errors(): array
+    {
+        return $this->errors;
+    }
+
+    public function failed(): bool
+    {
+        return count($this->errors) > 0;
+            //!empty($this->errors);
+    }
+
     public function get(string $name, $default = null): mixed
     {
         return $this->data[$name] ?? $default;
     }
 
-    /**
-     * @param string $table
-     * @return string
-     */
+    /** Rules Methods Below Here */
+
     public function extractSingularModelNameFromTable(string $table): string
     {
         if (str_ends_with($table, 's')) {
@@ -88,16 +98,6 @@ class Validator
                 $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
             }
         }
-    }
-
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }
-
-    public function hasErrors(): bool
-    {
-        return !empty($this->errors);
     }
 
     protected function array(array $data, string $field): void
@@ -175,11 +175,6 @@ class Validator
         }
 
         return false;
-    }
-
-    public function data(): array
-    {
-        return $this->data;
     }
 
     protected function url(array $data, string $field): void
