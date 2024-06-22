@@ -38,18 +38,18 @@ class RegisterNewUser
 
     private function validate(Request $request): Response|Collection
     {
-        $validated = (new Validator())->validate(
+        $validated = Validator::validate(
             $request->only(['username', 'email', 'password']), [
             'username' => ['required', 'min:3', 'max:20', 'unique:users,username'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required']
         ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             return redirect()
                 ->route('register.index')
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         return collect($validated->data());

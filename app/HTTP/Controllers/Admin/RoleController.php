@@ -29,16 +29,18 @@ class RoleController
 
     public function store(Request $request): Response
     {
-        $validated = (new Validator())->validate($request->only(['name', 'description']), [
-            'name' => ['required', 'string', 'max:255', 'unique:roles'],
-            'description' => ['required', 'string', 'max:255'],
-        ]);
+        $validated = Validator::validate(
+            $request->only(['name', 'description']),
+            [
+                'name' => ['required', 'string', 'max:255', 'unique:roles'],
+                'description' => ['required', 'string', 'max:255'],
+            ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('flash-message', 'Please check the form for errors');
             return response()->back()
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         $role = (new Role())->query()
@@ -60,16 +62,19 @@ class RoleController
 
     public function update(Request $request): Response
     {
-        $validated = (new Validator())->validate($request->only(['name', 'description']), [
-            'name' => ['required', 'string', 'max:255', 'unique:roles'],
-            'description' => ['required', 'string', 'max:255'],
-        ]);
+        $validated = Validator::validate(
+            $request->only(['name', 'description']),
+            [
+                'name' => ['required', 'string', 'max:255', 'unique:roles'],
+                'description' => ['required', 'string', 'max:255'],
+            ]
+        );
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('flash-message', 'Please check the form for errors');
             return response()->back()
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         $role = (new Role())

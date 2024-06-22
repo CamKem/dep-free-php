@@ -28,14 +28,15 @@ class PasswordResetController extends Controller
         (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the email
-        $validated = (new Validator())->validate($request->only(['email']), [
-            'email' => ['required', 'email', 'exists:users,email']
-        ]);
+        $validated = Validator::validate(
+            $request->only(['email']),
+            ['email' => ['required', 'email', 'exists:users,email']]
+        );
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             return redirect(route('password.reset.show'))
                 ->withInput($validated->data())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         // get the user's username
@@ -46,7 +47,8 @@ class PasswordResetController extends Controller
             ->username;
 
         // send the password reset email
-        $sent = (new PasswordResetService())->createPasswordReset($validated->get('email'), $username);
+        $sent = (new PasswordResetService())
+            ->createPasswordReset($validated->get('email'), $username);
 
         // if $sent isn't returned as true, redirect back with an error message
         if (!$sent) {
@@ -56,7 +58,10 @@ class PasswordResetController extends Controller
         }
 
         // flash a success message
-        session()->flash('flash-message', 'An email has been sent with instructions to reset your password.');
+        session()->flash(
+            'flash-message',
+            'An email has been sent with instructions to reset your password.'
+        );
 
         // redirect back to the password reset form
         return redirect(route('password.reset.show'));
@@ -89,9 +94,10 @@ class PasswordResetController extends Controller
         (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the password
-        $validated = (new Validator())->validate($request->only(['password']), [
-            'password' => ['required', 'min:8']
-        ]);
+        $validated = Validator::validate(
+            $request->only(['password']),
+            ['password' => ['required', 'min:8']]
+        );
 
         // reset the user's password
         $reset = (new PasswordResetService())->resetPassword($request->get('token'), $validated->get('password'));
@@ -102,7 +108,9 @@ class PasswordResetController extends Controller
         }
 
         // flash a success message
-        session()->flash('flash-message', 'Your password has been reset. Please log in.');
+        session()->flash(
+            'flash-message', 'Your password has been reset. Please log in.'
+        );
 
         // redirect to the login page
         return redirect(route('login.index'));

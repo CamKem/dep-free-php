@@ -1,16 +1,15 @@
 <?php
 
-use App\Controllers\AboutController;
-use App\Controllers\CategoryController;
-use App\Controllers\ContactController;
-use App\Controllers\HomeController;
-use App\Controllers\ProductController;
-use app\Controllers\Shop\CartController;
-use app\Controllers\Shop\CheckoutController;
-use app\Controllers\Shop\OrderController;
-use app\Controllers\User\DashboardController;
 use App\Core\Routing\RouteProxy as Route;
-use App\Models\Order;
+use app\HTTP\Controllers\AboutController;
+use app\HTTP\Controllers\CategoryController;
+use app\HTTP\Controllers\ContactController;
+use app\HTTP\Controllers\HomeController;
+use app\HTTP\Controllers\ProductController;
+use app\HTTP\Controllers\Shop\CartController;
+use app\HTTP\Controllers\Shop\CheckoutController;
+use app\HTTP\Controllers\Shop\OrderController;
+use app\HTTP\Controllers\User\DashboardController;
 
 // Auth Routes
 include include_path('routes/auth.php');

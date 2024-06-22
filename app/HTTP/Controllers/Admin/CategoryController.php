@@ -33,17 +33,19 @@ class CategoryController
 
     public function store(Request $request): Response
     {
-        $validated = (new Validator())->validate($request->only(['name', 'status']), [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'status' => ['required', 'string'],
-        ]);
+        $validated = Validator::validate(
+            $request->only(['name', 'status']),
+            [
+                'name' => ['required', 'string', 'min:3', 'max:255'],
+                'status' => ['required', 'string'],
+            ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('open-create-modal', true);
             session()->flash('flash-message', 'Category was not created');
             return redirect()->back()
-                ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withInput($validated->data())
+                ->withErrors($validated->errors());
         }
 
         $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
@@ -64,27 +66,29 @@ class CategoryController
 
     public function update(Request $request): Response
     {
-        $category = (new Category())->query()->find($request->get('id'));
+        $validated = Validator::validate(
+            $request->only(['name', 'status']),
+            [
+                'name' => ['required', 'string', 'min:3', 'max:255'],
+                'status' => ['required', 'string']
+            ]);
 
-        $validated = (new Validator())->validate($request->only(['name', 'status']), [
-            'name' => ['required', 'string', 'min:3', 'max:255'],
-            'status' => ['required', 'string']
-        ]);
-
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('flash-message', 'Category was not updated');
-            return redirect()->back()->withErrors($validated->getErrors());
+            return redirect()->back()
+                ->withErrors($validated->errors());
         }
 
-        $categoryValues = $category->get();
+        $category = (new Category())->query()->find($request->get('id'));
+        $old = $category->first();
 
-        if ($categoryValues->name !== $validated->get('name')) {
+        if ($old->name !== $validated->get('name')) {
             $slug = Slugger::uniqueSlug($request->get('name'), Category::class, 'slug');
         }
 
         $updated = $category->update([
             'name' => $validated->get('name'),
-            'slug' => $slug ?? $categoryValues->slug,
+            'slug' => $slug ?? $old->slug,
             'status' => $validated->get('status'),
         ])->save();
 
@@ -109,9 +113,7 @@ class CategoryController
             return redirect()->back();
         }
 
-        $deleted = $category
-            ->query()
-            ->delete()->save();
+        $deleted = $category->query()->delete()->save();
 
         if (!$deleted) {
             session()->flash('flash-message', 'Category was not deleted');

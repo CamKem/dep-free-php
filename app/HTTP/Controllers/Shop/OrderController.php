@@ -43,25 +43,27 @@ class OrderController extends Controller
     public function store(Request $request): Response
     {
 
-        $validated = (new Validator())->validate($request->all(), [
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'address' => ['required', 'string'],
-            'city' => ['required', 'string'],
-            'state' => ['required', 'string'],
-            'postcode' => ['required', 'number', 'min:4', 'max:4'],
-            'contact_number' => ['required', 'number'],
-            'card_name' => ['required', 'string'],
-            'card_number' => ['required', 'number', 'min:16', 'max:16'],
-            'expiry_date' => ['required'],
-            'ccv' => ['required', 'number', 'min:3', 'max:3'],
-        ]);
+        $validated = Validator::validate(
+            $request->all(),
+            [
+                'first_name' => ['required', 'string'],
+                'last_name' => ['required', 'string'],
+                'address' => ['required', 'string'],
+                'city' => ['required', 'string'],
+                'state' => ['required', 'string'],
+                'postcode' => ['required', 'number', 'min:4', 'max:4'],
+                'contact_number' => ['required', 'number'],
+                'card_name' => ['required', 'string'],
+                'card_number' => ['required', 'number', 'min:16', 'max:16'],
+                'expiry_date' => ['required'],
+                'ccv' => ['required', 'number', 'min:3', 'max:3'],
+            ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('flash-message', 'Error: Order not created, please re-complete the form');
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         $ids = array_values(

@@ -23,18 +23,17 @@ class SessionController extends Controller
     {
         (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
-        $validated = Validator::make()
-            ->validate(
+        $validated = Validator::validate(
                 $request->only(['email', 'password', 'remember']), [
                 'email' => ['required', 'email', 'exists:users'],
                 'password' => ['required'],
                 'remember' => ['boolean']
             ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             return redirect(route('login.index'))
                 ->withInput($request->except(['password']))
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         $login = auth()->attempt($validated->data());

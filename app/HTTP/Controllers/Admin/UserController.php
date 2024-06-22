@@ -29,7 +29,7 @@ class UserController
             $users->whereHas('roles', function (QueryBuilder $query) use ($request) {
                 // TODO: change the query builder so it will infer to the role_user table here
                 return $query->where('role_user.role_id', $request->get('role'));
-                });
+            });
         }
 
         return view('admin.users.index', [
@@ -88,26 +88,28 @@ class UserController
         ];
 
         // only validate data for unique username if the username has changed
+        // TODO: add this into the validator class, to handle validation only on change
         if ($request->get('username') !== $user->username) {
             $rules['username'][] = 'unique:users,username';
         }
 
         // only validate data for unique email if the email has changed
+        // TODO: add this into the validator class, to handle validation only on change
         if ($request->get('email') !== $user->email) {
             $rules['email'][] = 'unique:users,email';
         }
 
         // validate and update the users details
-        $validated = (new Validator())->validate(
+        $validated = Validator::validate(
             $request->only(['username', 'email', 'roles']),
             $rules
         );
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('open-user-edit-modal', true);
             session()->flash('flash-message', 'Error: Please check the form for errors.');
             return response()->back()
-                ->withErrors($validated->getErrors())
+                ->withErrors($validated->errors())
                 ->withInput($request->all());
         }
 
@@ -144,19 +146,23 @@ class UserController
 
     public function store(Request $request): Response
     {
-        $validated = (new Validator())->validate(
-            $request->only(['username', 'email', 'password']), [
-            'username' => ['required', 'string', 'max:100', 'unique:users,username'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required']
-        ]);
+        $validated = Validator::validate(
+            $request->only(['username', 'email', 'password']),
+            [
+                'username' => ['required', 'string', 'max:100', 'unique:users,username'],
+                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+                'password' => ['required']
+            ]
+        );
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('open-user-create-modal', true);
-            session()->flash('flash-message', 'Error: Please check the form for errors.');
+            session()->flash(
+                'flash-message', 'Error: Please check the form for errors.'
+            );
             return redirect(route('admin.users.index'))
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         $user = (new User())
@@ -164,12 +170,18 @@ class UserController
             ->create([
                 'username' => $validated->get('username'),
                 'email' => $validated->get('email'),
-                'password' => password_hash($validated->get('password'), PASSWORD_DEFAULT),
+                'password' => password_hash(
+                    $validated->get('password'),
+                    PASSWORD_DEFAULT
+                ),
             ])->save();
 
         if (!$user) {
             session()->flash('open-user-create-modal', true);
-            session()->flash('flash-message', 'There was an error registering the user. Please try again.');
+            session()->flash(
+                'flash-message',
+                'There was an error registering the user. Please try again.'
+            );
             return redirect()->back()
                 ->withInput($request->all());
         }

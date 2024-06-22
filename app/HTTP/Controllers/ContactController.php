@@ -26,8 +26,10 @@ class ContactController extends Controller
         (new CsrfTokens())->handle(token: $request->get('csrf_token'));
 
         // validate the request
-        $validated = (new Validator)->validate(
-            $request->only(['first_name', 'last_name', 'contact', 'email', 'message', 'mailing_list']),
+        $validated = Validator::validate(
+            $request->only([
+                'first_name', 'last_name', 'contact', 'email', 'message', 'mailing_list'
+            ]),
             [
                 'first_name' => ['required', 'string', 'min:3', 'max:255'],
                 'last_name' => ['required', 'string', 'min:3', 'max:255'],
@@ -35,13 +37,14 @@ class ContactController extends Controller
                 'email' => ['required', 'email', 'max:255'],
                 'message' => ['required', 'string', 'min:10', 'max:255'],
                 'mailing_list' => ['boolean'],
-            ]);
+            ]
+        );
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('flash-message', 'Please correct the form errors.');
             return response()->back()
                 ->withInput($validated->data())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         // store the contact

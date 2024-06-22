@@ -67,22 +67,24 @@ class ProductController
         //  This would allow us to just use 1 modal for edit & 1 for create, this would help eliminate the problem.
         // NOTE: one modal for both wouldn't be the best because of the different inputs & Http method
         //  We could leverage datasets to store the old values in the DOM & then extract them when needed
-        $validated = (new Validator())->validate($request->all(), [
-            'name' => ['required', 'string', 'min:3', 'max:255', 'unique:products,name'],
-            'price' => ['required', 'number'],
-            'sale_price' => ['number'],
-            'category_id' => ['required', 'integer'],
-            'description' => ['required', 'string'],
-            'image' => ['required', 'string'],
-            'featured' => ['boolean'],
-        ]);
+        $validated = Validator::validate(
+            data: $request->all(),
+            rules: [
+                'name' => ['required', 'string', 'min:3', 'max:255', 'unique:products,name'],
+                'price' => ['required', 'number'],
+                'sale_price' => ['number'],
+                'category_id' => ['required', 'integer'],
+                'description' => ['required', 'string'],
+                'image' => ['required', 'string'],
+                'featured' => ['boolean'],
+            ]);
 
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash('open-create-modal', true);
             session()->flash('flash-message', 'Please check the form for errors');
             return redirect()->route('admin.products.index')
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         // create a slug for the product
@@ -140,24 +142,29 @@ class ProductController
         }
 
         // validate the request
-        $validated = (new Validator())->validate($request->all(), [
-            'name' => $nameRule,
-            'price' => ['required', 'number'],
-            'category_id' => ['required', 'integer'],
-            'sale_price' => ['number'],
-            'description' => ['required', 'string'],
-            'image' => ['required', 'string'],
-            'featured' => ['boolean'],
-        ]);
+        $validated = Validator::validate(
+            $request->all(),
+            [
+                'name' => $nameRule,
+                'price' => ['required', 'number'],
+                'category_id' => ['required', 'integer'],
+                'sale_price' => ['number'],
+                'description' => ['required', 'string'],
+                'image' => ['required', 'string'],
+                'featured' => ['boolean'],
+            ]);
 
         // check if the request has errors
-        if ($validated->hasErrors()) {
+        if ($validated->failed()) {
             session()->flash(
-                'open-edit-modal', $request->get('id'));
-            session()->flash('flash-message', 'Please check the form for errors');
+                'open-edit-modal', $request->get('id')
+            );
+            session()->flash(
+                'flash-message', 'Please check the form for errors'
+            );
             return redirect()->back()
                 ->withInput($request->all())
-                ->withErrors($validated->getErrors());
+                ->withErrors($validated->errors());
         }
 
         // check that the image is different from the current image
@@ -199,7 +206,7 @@ class ProductController
                     'sale_price'),
                     2,
                     '.',
-                '',
+                    '',
                 ),
             'image' => $validated->get('image'),
             'featured' => $validated->get('featured', 0),
