@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\App;
+use App\Core\Caching\Cache;
 use App\Core\Exceptions\RouteException;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
@@ -33,6 +34,9 @@ $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
 
 $app->registerProvider(new MiddlewareService($app));
+
+// register the cache class
+$app->bind(Cache::class, static fn() => Cache::create(config('cache.driver')));
 
 // Boot the Application
 $app->boot();
