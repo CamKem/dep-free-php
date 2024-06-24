@@ -1,3 +1,5 @@
 .env
 .idea/.gitignore
 .idea
+# vendor directory
+/vendor/
