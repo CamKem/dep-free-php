@@ -2,42 +2,37 @@
 
 namespace App\Core\Exceptions;
 
-/**
- * Exception handler class
- */
+use App\Core\Http\Response;
+use App\Core\Template;
+use JsonException;
+use Throwable;
+
 class Handler
 {
-    /**
-     * Handle the exception
-     *
-     * @param \Exception $e
-     * @return void
-     */
-    public function handle(\Exception $e)
-    {
-        echo $e->getMessage();
-    }
 
-    /**
-     * Handle the exception
-     *
-     * @param \Exception $e
-     * @return void
-     */
-    public function report(\Exception $e)
+    public function handle(Throwable $e): Response|Template
     {
-        echo $e->getMessage();
-    }
-
-    /**
-     * Handle the exception
-     *
-     * @param \Exception $e
-     * @return void
-     */
-    public function render(\Exception $e)
-    {
-        echo $e->getMessage();
+        if ($e instanceof RouteException) {
+            redirect()->status(404)
+                ->view('errors.404', [
+                    'title' => '404 Not Found',
+                    'message' => $e->getMessage()
+                ]);
+        } elseif ($e instanceof ValidationException) {
+            redirect()->back()
+                ->withInput($e->old())
+                ->withErrors($e->errors());
+        } elseif ($e instanceof JsonException || request()->wantsJson()) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
+        return redirect()
+            ->status($e->getCode())
+            ->view('errors.exception', [
+            'title' => 'Exception',
+            'message' => $e->getMessage()
+        ]);
     }
 
 }
