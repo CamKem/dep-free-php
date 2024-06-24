@@ -103,6 +103,7 @@ function env($key, $default = null): string
 
 function response(): Response
 {
+    /** @var Response $response */
     return app(Response::class);
 }
 
@@ -124,6 +125,7 @@ function request($key = null, $default = null): mixed
     if ($key === null) {
         return app(Request::class);
     }
+    /** @var Request $request */
     return app(Request::class)->get($key, $default);
 }
 
