@@ -3,6 +3,7 @@
 use App\Core\App;
 use App\Core\Caching\Cache;
 use App\Core\Exceptions\RouteException;
+use App\Core\Exceptions\ValidationException;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
@@ -42,27 +43,33 @@ $app->bind(Cache::class, static fn() => Cache::create(config('cache.driver')));
 $app->boot();
 
 // Set the error handler
-if(config('app.env') === 'local') {
+if (config('app.env') === 'local') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 }
 
 // set the exception handler
-set_exception_handler(static function (Throwable $e) use ($app) {
-    /** @var Request $request */
-    $request = $app->resolve(Request::class);
-    /** @var Response $response */
-    $response = $app->resolve(Response::class);
-    if ($e instanceof JsonException || $request->wantsJson()) {
-        return $response->json([
+set_exception_handler(static function (Throwable $e) {
+    if ($e instanceof RouteException) {
+        redirect()->status(404)
+            ->view('errors.404', [
+                'title' => '404 Not Found',
+                'message' => $e->getMessage()
+            ]);
+    } elseif ($e instanceof ValidationException) {
+        redirect()->back()
+            ->withInput($e->old())
+            ->withErrors($e->errors());
+    } elseif ($e instanceof JsonException || request()->wantsJson()) {
+        return response()->json([
             'error' => $e->getMessage()
         ]);
     }
-    return $response->view('errors.exception', [
-            'title' => 'Exception',
-            'message' => $e->getMessage()
-        ]);
+    return response()->view('errors.exception', [
+        'title' => 'Exception',
+        'message' => $e->getMessage()
+    ]);
 });
 
 // Route the request
@@ -74,6 +81,6 @@ try {
     // Route the request
     /** @var Router $router */
     $router->dispatch($request);
-} catch (RouteException $e) {
-    die($e->getMessage());
+} catch (Exception $e) {
+    throw $e;
 }
