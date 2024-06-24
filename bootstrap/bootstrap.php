@@ -2,8 +2,7 @@
 
 use App\Core\App;
 use App\Core\Caching\Cache;
-use App\Core\Exceptions\RouteException;
-use App\Core\Exceptions\ValidationException;
+use App\Core\Exceptions\Handler;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Routing\Router;
@@ -51,25 +50,7 @@ if (config('app.env') === 'local') {
 
 // set the exception handler
 set_exception_handler(static function (Throwable $e) {
-    if ($e instanceof RouteException) {
-        redirect()->status(404)
-            ->view('errors.404', [
-                'title' => '404 Not Found',
-                'message' => $e->getMessage()
-            ]);
-    } elseif ($e instanceof ValidationException) {
-        redirect()->back()
-            ->withInput($e->old())
-            ->withErrors($e->errors());
-    } elseif ($e instanceof JsonException || request()->wantsJson()) {
-        return response()->json([
-            'error' => $e->getMessage()
-        ]);
-    }
-    return response()->view('errors.exception', [
-        'title' => 'Exception',
-        'message' => $e->getMessage()
-    ]);
+    (new Handler())->handle($e);
 });
 
 // Route the request
