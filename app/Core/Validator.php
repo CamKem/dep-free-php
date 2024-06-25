@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Core\Exceptions\ValidationException;
+use RuntimeException;
 
 class Validator
 {
@@ -24,7 +25,7 @@ class Validator
                 $ruleParams = isset($ruleParts[1]) ? explode(',', $ruleParts[1]) : [];
 
                 if (!method_exists($this, $ruleName)) {
-                    throw new ValidationException('Validation rule ' . $ruleName . ' does not exist.');
+                    throw new RuntimeException('The ' . $ruleName . ' rule does not exist.');
                 }
 
                 $this->{$ruleName}($data, $field, ...$ruleParams);
@@ -34,7 +35,13 @@ class Validator
 
     public static function validate(array $data, array $rules): self
     {
-        return new self($data, $rules);
+        $instance = new self($data, $rules);
+
+        if ($instance->failed()) {
+            ValidationException::throw($instance->errors(), $data);
+        }
+
+        return $instance;
     }
 
     public function data(): array
