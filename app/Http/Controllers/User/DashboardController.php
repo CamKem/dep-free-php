@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Controllers\User;
+namespace app\Http\Controllers\User;
 
 use App\Core\Template;
 use App\Models\Order;
@@ -15,7 +15,7 @@ class DashboardController
             'orders' => (new Order())
                 ->query()
                 ->with('products')
-                ->where('user_id', auth()->user()->id)
+                ->where('user_id', auth()->user()?->get('id'))
                 ->orderBy('created_at', 'desc')
                 ->paginate(6),
         ]);
