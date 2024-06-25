@@ -3,7 +3,7 @@
 namespace App\Core;
 
 use App\Core\Exceptions\ValidationException;
-use RuntimeException;
+use http\Exception\InvalidArgumentException;
 
 class Validator
 {
@@ -25,7 +25,7 @@ class Validator
                 $ruleParams = isset($ruleParts[1]) ? explode(',', $ruleParts[1]) : [];
 
                 if (!method_exists($this, $ruleName)) {
-                    throw new RuntimeException('The ' . $ruleName . ' rule does not exist.');
+                    throw new InvalidArgumentException('The ' . $ruleName . ' rule does not exist.');
                 }
 
                 $this->{$ruleName}($data, $field, ...$ruleParams);
