@@ -50,6 +50,13 @@ class Model implements Arrayable, JsonSerializable
         $this->attributes[$name] = $value;
     }
 
+    // method to use instead of __get
+    // TODO: move to this getter method as its a better composition
+    public function get(string $name): mixed
+    {
+        return $this->__get($name);
+    }
+
     public function __isset(string $name): bool
     {
         return isset($this->attributes[$name]);
