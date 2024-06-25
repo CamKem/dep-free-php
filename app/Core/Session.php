@@ -24,7 +24,10 @@ class Session
             return $this->data[$key];
         }
         // check in the flash data
-        $flashData = array_merge($this->data['_flash.old'] ?? [], $this->data['_flash.new'] ?? []);
+        $flashData = array_merge(
+            $this->data['_flash.old'] ?? [],
+                $this->data['_flash.new'] ?? []
+        );
         return $flashData[$key] ?? $default;
     }
 
@@ -38,7 +41,10 @@ class Session
         if (isset($this->data[$key])) {
             return true;
         }
-        $flashData = array_merge($this->data['_flash.old'] ?? [], $this->data['_flash.new'] ?? []);
+        $flashData = array_merge(
+            $this->data['_flash.old'] ?? [],
+                $this->data['_flash.new'] ?? []
+        );
         return isset($flashData[$key]);
     }
 
