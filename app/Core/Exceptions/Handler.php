@@ -13,9 +13,9 @@ class Handler
     public function handle(Throwable $e): Response|Template
     {
         if ($e instanceof RouteException) {
-            redirect()->status(404)
-                ->view('errors.404', [
-                    'title' => '404 Not Found',
+            redirect()->status($e->getCode())
+                ->view('errors.exception', [
+                    'title' => 'Route Not Found',
                     'message' => $e->getMessage()
                 ]);
         } elseif ($e instanceof ValidationException) {
