@@ -6,7 +6,6 @@ use App\Core\Database\Model;
 use ArrayIterator;
 use Iterator;
 use Override;
-use stdClass;
 
 class ModelCollection extends Collection implements Iterator
 {
