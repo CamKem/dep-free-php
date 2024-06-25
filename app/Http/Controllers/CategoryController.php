@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Controllers;
+namespace app\Http\Controllers;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
@@ -16,6 +16,7 @@ class CategoryController extends Controller
         $category = (new Category())
             ->query()
             ->where('slug', $request->get('category'))
+            ->with('products')
             ->first();
 
         if (!$category) {
@@ -23,7 +24,7 @@ class CategoryController extends Controller
         }
 
         return view("categories.show", [
-            'title' => $category->name,
+            'title' => $category->get('name'),
             'category' => $category,
             'products' => (new Product())
                 ->query()
