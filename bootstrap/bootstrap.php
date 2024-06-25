@@ -53,15 +53,9 @@ set_exception_handler(static function (Throwable $e) {
     (new Handler())->handle($e);
 });
 
-// Route the request
-try {
-    // Get the request from the container, bound in the service
-    $request = $app->resolve(Request::class);
-    // Get the router from the container, bound in the service
-    $router = $app->resolve(Router::class);
-    // Route the request
-    /** @var Router $router */
-    $router->dispatch($request);
-} catch (Exception $e) {
-    throw $e;
-}
+// Get the router from the container
+$router = $app->resolve(Router::class);
+// Route the request and dispatch the router
+/** @var Router $router */
+$router->dispatch(request: request());
+// Note: a RouteNotFoundException will be thrown if no route is matched.
