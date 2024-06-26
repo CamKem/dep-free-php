@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Controllers\Shop;
+namespace app\Http\Controllers\Shop;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
@@ -67,7 +67,10 @@ class OrderController extends Controller
         }
 
         $ids = array_values(
-            array_map(fn($item) => $item['product_id'], session()->get('cart'))
+            array_map(
+                fn($item) => $item['product_id'],
+                session()->get('cart')
+            )
         );
 
         $products = (new Product())
@@ -94,7 +97,7 @@ class OrderController extends Controller
             ->query()
             ->create([
                 'status' => 'pending',
-                'user_id' => auth()->user()->id,
+                'user_id' => auth()->user()?->get('id'),
                 'first_name' => $validated->get('first_name'),
                 'last_name' => $validated->get('last_name'),
                 'address' => $address,
@@ -126,7 +129,7 @@ class OrderController extends Controller
         // find the order we just created
         $order = (new Order())
             ->query()
-            ->where('user_id', auth()->user()->id)
+            ->where('user_id', auth()->user()?->get('id'))
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -139,7 +142,7 @@ class OrderController extends Controller
         // add the cart items to the order
         session()->flash('flash-message', 'Order created successfully');
 
-        return redirect()->route('orders.show', ['order' => $order->id]);
+        return redirect()->route('orders.show', ['order' => $order->get('id')]);
     }
 
     public function destroy(Request $request): Response
