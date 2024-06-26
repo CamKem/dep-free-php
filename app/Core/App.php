@@ -52,8 +52,12 @@ class App extends Container
     {
         return [
             'services' => [
-                'registered' => array_map(get_class(...), $this->registeredProviders),
-                'booted' => array_map(get_class(...), $this->bootedProviders),
+                'registered' => array_map(
+                    get_class(...), $this->registeredProviders
+                ),
+                'booted' => array_map(
+                    get_class(...), $this->bootedProviders
+                ),
             ],
             'isBooted' => $this->booted,
         ];
@@ -98,7 +102,7 @@ class App extends Container
         }
     }
 
-    public function getProvider(ServiceProvider $provider): ServiceProvider|null
+    public function getProvider(ServiceProvider $provider): ?ServiceProvider
     {
         return array_filter(
             $this->registeredProviders,

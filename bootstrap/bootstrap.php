@@ -20,14 +20,14 @@ use App\Services\StorageService;
 $app = new App();
 
 // Register service providers in the correct order
-$app->registerProvider(new EnvService($app));
-$app->registerProvider(new ConfigService($app));
-$app->registerProvider(new DatabaseService($app));
-$app->registerProvider(new SessionService($app));
-$app->registerProvider(new AuthService($app));
-$app->registerProvider(new CategoryService($app));
-$app->registerProvider(new StorageService($app));
-$app->registerProvider(new RouterService($app));
+$app->registerProvider(new EnvService);
+$app->registerProvider(new ConfigService);
+$app->registerProvider(new DatabaseService);
+$app->registerProvider(new SessionService);
+$app->registerProvider(new AuthService);
+$app->registerProvider(new CategoryService);
+$app->registerProvider(new StorageService);
+$app->registerProvider(new RouterService);
 
 // Bind the Request & Response to the container
 $app->singleton(Request::class);
@@ -40,6 +40,8 @@ $app->bind(Cache::class, static fn() => Cache::create(config('cache.driver')));
 
 // Boot the Application
 $app->boot();
+
+$app->debugInfo();
 
 // Set the error handler
 if (config('app.env') === 'local') {
