@@ -157,9 +157,8 @@ class Model implements Arrayable, JsonSerializable
                                 $relatedModel = new $relatedModelClass;
                                 $relatedModel->id = $value;
 
-                                if (!isset($currentModel->relations[$relation])) {
-                                    $currentModel->relations[$relation] = [];
-                                }
+                                // if it's not set, make it an empty array
+                                $currentModel->relations[$relation] ??= [];
 
                                 $currentModel->relations[$relation][] = $relatedModel;
                                 $this->addRelationToLookup($currentLookup, $relation, $relatedModel);
@@ -191,9 +190,8 @@ class Model implements Arrayable, JsonSerializable
                                     $nestedRelationModel = new $nestedRelationModelClass;
                                     $nestedRelationModel->id = $value;
 
-                                    if (!isset($relatedModel->relations[$nestedRelation])) {
-                                        $relatedModel->relations[$nestedRelation] = [];
-                                    }
+                                    // if it's not set, make it an empty array
+                                    $relatedModel->relations[$nestedRelation] ??= [];
 
                                     $relatedModel->relations[$nestedRelation][] = $nestedRelationModel;
                                     $this->addRelationToLookup($currentLookup, $nestedRelation, $nestedRelationModel);
@@ -285,9 +283,7 @@ class Model implements Arrayable, JsonSerializable
             if ($relatedModel) {
                 foreach ($pivotColumns as $column => $value) {
                     $parts = explode('_', $column);
-                    if (!isset($relatedModel->pivot)) {
-                        $relatedModel->pivot = new stdClass;
-                    }
+                    $relatedModel->pivot ??= new stdClass;
 
                     $property = implode('_', array_slice($parts, 1));
                     $relatedModel->pivot->{$property} = $value;
@@ -337,10 +333,7 @@ class Model implements Arrayable, JsonSerializable
 
     private function addRelationToLookup(array &$currentLookup, string $relation, self $model): void
     {
-        if (!isset($currentLookup[$relation])) {
-            $currentLookup[$relation] = [];
-        }
-
+        $currentLookup[$relation] ??= [];
         $currentLookup[$relation][] = $model;
     }
 

@@ -84,8 +84,7 @@ class Session
     public function error(string $key, $default = null): mixed
     {
         $errors = $this->get('errors', []);
-        $keyExists = isset($errors[$key]);
-        return $keyExists ? $errors[$key][0] : $default;
+        return $errors[$key][0] ?? $default;
     }
 
     // method for a new session id
