@@ -64,7 +64,7 @@ class RouteCollection
      * @param string $name
      * @return Route|null
      */
-    public function getRoute(string $name): Route|null
+    public function getRoute(string $name): ?Route
     {
         return $this->routes->get($name);
     }
