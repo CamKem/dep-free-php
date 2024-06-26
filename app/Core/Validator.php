@@ -2,7 +2,6 @@
 
 namespace App\Core;
 
-use App\Core\Exceptions\ValidationException;
 use http\Exception\InvalidArgumentException;
 
 class Validator
@@ -37,10 +36,10 @@ class Validator
     {
         $instance = new self($data, $rules);
 
-        if ($instance->failed()) {
-            ValidationException::throw($instance->errors(), $data);
-        }
-
+        // NOTE: consider throwing an exception here if the validation fails
+        //  and allowing us to construct a response object from the exception
+        //  plus generating a flash message, with a failed message argument that
+        //  is passed in to this method.
         return $instance;
     }
 

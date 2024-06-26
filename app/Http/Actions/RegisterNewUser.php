@@ -46,6 +46,7 @@ class RegisterNewUser
         ]);
 
         if ($validated->failed()) {
+            session()->flash('flash-message', 'Please correct the form errors.');
             return redirect()
                 ->route('register.index')
                 ->withInput($request->all())

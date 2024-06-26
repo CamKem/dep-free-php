@@ -30,16 +30,11 @@ class SessionController extends Controller
                 'remember' => ['boolean']
             ]);
 
-        // TODO: WORK out if we want to explicitly check for failed validation here,
-        //  or if we let the exception handler deal with it, by throwing a ValidationException
-        //  in the Validator class.
-        // NOTE: One think we need to consider, is that data is optional in the validate method.
-        //  so we would need to consider ensuring that the correct data is returned in the response.
-//        if ($validated->failed()) {
-//            return redirect(route('login.index'))
-//                ->withInput($request->except(['password']))
-//                ->withErrors($validated->errors());
-//        }
+        if ($validated->failed()) {
+            return redirect(route('login.index'))
+                ->withInput($request->except(['password']))
+                ->withErrors($validated->errors());
+        }
 
         $login = auth()->attempt($validated->data());
 
