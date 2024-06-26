@@ -82,7 +82,7 @@ function include_path($path): string
 
 function class_basename($class): string
 {
-    $class = is_object($class) ? get_class($class) : $class;
+    $class = is_object($class) ? $class::class : $class;
     return basename(str_replace('\\', '/', $class));
 }
 
