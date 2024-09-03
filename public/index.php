@@ -13,8 +13,7 @@ spl_autoload_register(static function ($class) {
         if (file_exists($file)) {
             require $file;
         } else {
-            error_log("Class: {$class}");
-            error_log("Transformed Path: {$file}");
+            logger("Class $class not found at $file");
         }
     }
 });
