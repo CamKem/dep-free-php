@@ -2,6 +2,7 @@
 
 use App\Core\App;
 use App\Core\Authentication\Auth;
+use App\Core\Caching\Cache;
 use App\Core\Collecting\Collection;
 use App\Core\Config;
 use App\Core\Env;
@@ -81,7 +82,7 @@ function include_path($path): string
 
 function class_basename($class): string
 {
-    $class = is_object($class) ? get_class($class) : $class;
+    $class = is_object($class) ? $class::class : $class;
     return basename(str_replace('\\', '/', $class));
 }
 
@@ -102,6 +103,7 @@ function env($key, $default = null): string
 
 function response(): Response
 {
+    /** @var Response $response */
     return app(Response::class);
 }
 
@@ -123,6 +125,7 @@ function request($key = null, $default = null): mixed
     if ($key === null) {
         return app(Request::class);
     }
+    /** @var Request $request */
     return app(Request::class)->get($key, $default);
 }
 
@@ -194,4 +197,9 @@ function now(): string
 function storage(): Storage
 {
     return app(Storage::class);
+}
+
+function cache(): mixed
+{
+    return app(Cache::class);
 }

@@ -25,7 +25,7 @@ class Storage
     public function put(string $path, array $contents): false|string
     {
         // if error is not 0, then we have an error
-        if ($contents['error'] !== 0) {
+        if ($contents['error'] && $contents['error'] !== 0) {
             return false;
         }
 
@@ -97,7 +97,7 @@ class Storage
         return rename($this->path . $from, $this->path . $to);
     }
 
-    public function files(string $directory): array
+    public function files(?string $directory = null): array
     {
         return array_values(array_filter(scandir($this->path . $directory), function ($file) use ($directory) {
             return !in_array($file, ['.', '..']) && is_file($this->path . $directory . '/' . $file);

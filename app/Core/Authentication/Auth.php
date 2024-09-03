@@ -51,9 +51,25 @@ class Auth
 
     public function logout(): void
     {
-        $this->user = null;
+        // remove the user from the session
         session()->remove('user');
-        setcookie('remember', '', time() - 3600);
+        // remove the remember me from the database
+        if ($this->user->remember_token) {
+            (new User())->query()
+                ->where('id', $this->user->id)
+                ->update(['remember_token' => ''])
+                ->save();
+        }
+        // remove the remember me cookie
+        if (cookie('remember')) {
+            setcookie('remember', '', time() - 3600);
+        }
+        // remove the session cookie
+        setcookie(session_name(), '', time() - 3600);
+        // regenerate the session id
+        session()->regenerate();
+        // finally, unset the user
+        $this->user = null;
     }
 
     public function getUserByEmail(#[SensitiveParameter] string $email): ?User
@@ -61,7 +77,7 @@ class Auth
         return (new User())
             ->query()
             ->where('email', $email)
-           ->first();
+            ->first();
     }
 
     public function remember(User $user): void
@@ -105,10 +121,12 @@ class Auth
                 $this->login($user);
             } else {
                 // destroy the cookie
+                session()->flash('flash-message', 'Remember me cookie is invalid');
                 setcookie('remember', '', time() - 3600);
             }
         } else {
             // destroy the cookie
+            session()->flash('flash-message', 'Remember me cookie is invalid');
             setcookie('remember', '', time() - 3600);
         }
     }

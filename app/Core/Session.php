@@ -24,7 +24,10 @@ class Session
             return $this->data[$key];
         }
         // check in the flash data
-        $flashData = array_merge($this->data['_flash.old'] ?? [], $this->data['_flash.new'] ?? []);
+        $flashData = array_merge(
+            $this->data['_flash.old'] ?? [],
+                $this->data['_flash.new'] ?? []
+        );
         return $flashData[$key] ?? $default;
     }
 
@@ -38,7 +41,10 @@ class Session
         if (isset($this->data[$key])) {
             return true;
         }
-        $flashData = array_merge($this->data['_flash.old'] ?? [], $this->data['_flash.new'] ?? []);
+        $flashData = array_merge(
+            $this->data['_flash.old'] ?? [],
+                $this->data['_flash.new'] ?? []
+        );
         return isset($flashData[$key]);
     }
 
@@ -78,8 +84,13 @@ class Session
     public function error(string $key, $default = null): mixed
     {
         $errors = $this->get('errors', []);
-        $keyExists = isset($errors[$key]);
-        return $keyExists ? $errors[$key][0] : $default;
+        return $errors[$key][0] ?? $default;
+    }
+
+    // method for a new session id
+    public function regenerate(): void
+    {
+        session_regenerate_id(true);
     }
 
     protected function prepareForNextRequest(): void

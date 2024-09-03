@@ -28,13 +28,10 @@
                    id="password"
                    name="password"
                    title="Password"
-                   autocomplete="current-password"
-                   value="<?= old('password') ?>"
                    placeholder="Enter your password"
                    data-validate=true
             >
             <p class="error-message" id="password-error">
-                <?= error('password') ?>
             </p>
 
             <div class="form-bottom">

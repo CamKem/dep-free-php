@@ -2,14 +2,16 @@
 
 namespace App\Core;
 
-use App\Core\Exceptions\ValidationException;
+use http\Exception\InvalidArgumentException;
 
 class Validator
 {
     protected array $errors = [];
-    protected array $data = [];
 
-    public function validate(array $data, array $rules): self
+    public function __construct(
+        readonly protected array $data,
+        readonly protected array $rules
+    )
     {
         foreach ($rules as $field => $fieldRules) {
             if (!is_array($fieldRules)) {
@@ -22,28 +24,48 @@ class Validator
                 $ruleParams = isset($ruleParts[1]) ? explode(',', $ruleParts[1]) : [];
 
                 if (!method_exists($this, $ruleName)) {
-                    throw new ValidationException('Validation rule ' . $ruleName . ' does not exist.');
+                    throw new InvalidArgumentException('The ' . $ruleName . ' rule does not exist.');
                 }
 
                 $this->{$ruleName}($data, $field, ...$ruleParams);
             }
         }
-
-        $this->data = $data;
-
-        return $this;
     }
 
-    // get method to extract data from the data array, without calling a property directly
+    public static function validate(array $data, array $rules): self
+    {
+        $instance = new self($data, $rules);
+
+        // NOTE: consider throwing an exception here if the validation fails
+        //  and allowing us to construct a response object from the exception
+        //  plus generating a flash message, with a failed message argument that
+        //  is passed in to this method.
+        return $instance;
+    }
+
+    public function data(): array
+    {
+        return $this->data;
+    }
+
+    public function errors(): array
+    {
+        return $this->errors;
+    }
+
+    public function failed(): bool
+    {
+        return count($this->errors) > 0;
+            //!empty($this->errors);
+    }
+
     public function get(string $name, $default = null): mixed
     {
         return $this->data[$name] ?? $default;
     }
 
-    /**
-     * @param string $table
-     * @return string
-     */
+    /** Rules Methods Below Here */
+
     public function extractSingularModelNameFromTable(string $table): string
     {
         if (str_ends_with($table, 's')) {
@@ -82,16 +104,6 @@ class Validator
                 $this->errors[$field][] = 'The ' . $field . ' field already exists in the ' . $table . ' table.';
             }
         }
-    }
-
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }
-
-    public function hasErrors(): bool
-    {
-        return !empty($this->errors);
     }
 
     protected function array(array $data, string $field): void
@@ -169,11 +181,6 @@ class Validator
         }
 
         return false;
-    }
-
-    public function data(): array
-    {
-        return $this->data;
     }
 
     protected function url(array $data, string $field): void

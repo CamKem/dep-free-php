@@ -15,7 +15,7 @@ class DatabaseService extends ServiceProvider
     {
         $this->app->singleton(Database::class);
 
-        $this->app->singleton(Migrator::class);
+//        $this->app->singleton(Migrator::class);
     }
 
     /**

@@ -82,7 +82,7 @@ class RouteRegistrar
 
     /**
      * Register a new temporary route object
-     * Ensuring that the method is a valid HTTP method and the uri is a valid uri
+     * Ensuring that the method is a valid Http method and the uri is a valid uri
      * @param $method
      * @param $parameters
      * @return RouteRegistrar

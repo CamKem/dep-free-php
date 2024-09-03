@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Enums;
+namespace app\Enums;
 
-use App\Traits\EnumMethods;
+use App\Core\Traits\EnumMethods;
 
 enum OrderStatus: string
 {

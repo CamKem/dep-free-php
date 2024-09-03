@@ -26,6 +26,16 @@ class Router
 
     public function dispatch(Request $request): mixed
     {
+        try {
+            return $this->handle($request);
+        } catch (RouteException $e) {
+            return $this->abort($e->getCode());
+        }
+
+    }
+
+    public function handle(Request $request): mixed
+    {
         // Check for form spoofing
         $this->checkSpoofedForm($request);
 
@@ -58,11 +68,19 @@ class Router
         if ($action === null) {
             return (new $controller())($request);
         }
-
         // if $controller is a string, then we can call the method on the controller
         if (is_string($controller)) {
             return (new $controller)->$action($request);
         }
+
+        // if it hasn't matched any of the above, return the abort method
+        return false;
+    }
+
+    public function abort(int $code = 404): Template
+    {
+        // if there is no valid route, throw a RouteException
+        throw new RouteException("Route not found.", $code);
     }
 
     protected function resolveMiddleware(Route $route): void
@@ -146,17 +164,6 @@ class Router
     }
 
     /**
-     * Abort the request & Return the error page
-     * @param int $code
-     * @return Template
-     */
-    protected function abort(int $code = 404): Template
-    {
-        http_response_code($code);
-        return view("errors.{$code}", ['title' => $code]);
-    }
-
-    /**
      * Override the request method if form spoofing is detected
      * @param Request $request
      * @return void
@@ -167,7 +174,7 @@ class Router
             // Validate the _method field
             $method = strtoupper($request->get('_method'));
             if (in_array($method, ['PUT', 'PATCH', 'DELETE'])) {
-                // Use the _method field as the HTTP method
+                // Use the _method field as the Http method
                 $request->setMethod($method);
             }
         }

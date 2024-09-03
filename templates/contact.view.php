@@ -94,8 +94,6 @@
                     <?= error('message') ?>
                 </p>
 
-                <?= dump(session()->get('errors')) ?>
-
                 <div class="form-bottom">
                     <button id="submit" type="submit">Send</button>
                     <label for="mailing_list" class="checkbox-label">

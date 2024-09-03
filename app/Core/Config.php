@@ -51,10 +51,10 @@ class Config
         $value = $this->config;
 
         foreach ($keys as $key) {
-            if (!isset($value[$key])) {
+            $value = $value[$key] ?? null;
+            if ($value === null) {
                 return null;
             }
-            $value = $value[$key];
         }
 
         return $value;

@@ -2,14 +2,33 @@
 
 namespace App\Core\Exceptions;
 
-use Override;
-use Throwable;
+use Exception;
 
-class ValidationException extends \InvalidArgumentException implements ExceptionInterface
+class ValidationException extends Exception
 {
-    public function __construct($message, $code = 0, Throwable|null $previous = null)
+
+    protected readonly array $errors;
+    protected readonly array $old;
+
+    /** @throws ValidationException */
+    public static function throw($errors, $old): void
     {
-        parent::__construct($message, $code, $previous);
+        $instance = new static;
+
+        $instance->errors = $errors;
+        $instance->old = $old;
+
+        throw $instance;
+    }
+
+    public function errors(): array
+    {
+        return $this->errors;
+    }
+
+    public function old(): array
+    {
+        return $this->old;
     }
 
 }

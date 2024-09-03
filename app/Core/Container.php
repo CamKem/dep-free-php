@@ -29,7 +29,6 @@ class Container
     public function resolve(string $key): mixed
     {
         if (!isset($this->bindings[$key])) {
-
             throw new RuntimeException("No matching binding found for {$key}");
         }
 

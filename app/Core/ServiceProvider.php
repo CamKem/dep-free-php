@@ -6,11 +6,9 @@ abstract class ServiceProvider
 {
     protected App $app;
 //    protected array $bootCallbacks = [];
-
-    public function __construct(App $app)
+    public function __construct()
     {
-        /** @var App $app */
-        $this->app = $app;
+        $this->app = app();
     }
 
     abstract public function register(): void;
