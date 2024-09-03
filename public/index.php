@@ -7,7 +7,15 @@ spl_autoload_register(static function ($class) {
     $class = preg_replace('/^App/', 'app', $class);
     $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
 
-    require BASE_PATH . "{$class}.php";
+    $file = BASE_PATH . "{$class}.php";
+
+    if (file_exists($file)) {
+        require $file;
+    } else {
+        $error = "Autoload Error: Unable to load class: {$class} from file {$file}";
+        error_log($error);
+        throw new \RuntimeException($error);
+    }
 });
 
 require include_path('bootstrap/bootstrap.php');
