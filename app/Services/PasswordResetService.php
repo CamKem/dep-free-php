@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use app\Mailing\PasswordResetMail;
+use App\Mailing\PasswordResetMail;
 use App\Models\PasswordReset;
 use App\Models\User;
 use RuntimeException;

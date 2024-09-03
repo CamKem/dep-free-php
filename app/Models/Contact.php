@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use app\Core\Database\Model;
+use App\Core\Database\Model;
 
 class Contact extends Model
 {

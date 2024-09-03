@@ -1,12 +1,12 @@
 <?php
 
-namespace app\HTTP\Actions;
+namespace App\HTTP\Actions;
 
 use App\Core\Collecting\Collection;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Validator;
-use app\Mailing\NewUserMail;
+use App\Mailing\NewUserMail;
 use App\Models\Role;
 use App\Models\User;
 

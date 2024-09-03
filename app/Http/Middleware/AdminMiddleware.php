@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Middleware;
+namespace App\HTTP\Middleware;
 
 use App\Core\Http\Request;
 use App\Core\Middleware;
@@ -13,7 +13,7 @@ class AdminMiddleware extends Middleware
     #[Override]
     public function handle(Request $request, Closure $next): Closure
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()?->isAdmin()) {
             session()->flash('flash-message', 'You are not authorized to view this page.');
             redirect()->route('home');
         }

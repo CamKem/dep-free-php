@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Core\ServiceProvider;
-use app\Enums\CategoryStatus;
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 
 class CategoryService extends ServiceProvider

@@ -38,11 +38,11 @@ class Template
     {
         // TODO: implement config caching
         if (config('template.cache')) {
-            $cache = new Cache($filePath);
+            $cache = new Cache();
             if ($cache->isFresh()) {
                 return $cache->read();
             }
-            $content = $this->compileTemplate($filePath);
+            $content = $this->compileTemplate();
             $cache->write($content);
             return $content;
         }

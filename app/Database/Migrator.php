@@ -3,7 +3,7 @@
 namespace App\Database;
 
 use App\Core\App;
-use app\Core\Database\Database;
+use App\Core\Database\Database;
 
 class Migrator
 {
@@ -15,9 +15,9 @@ class Migrator
     public function migrate(): void
     {
         foreach (glob(include_path('app/Database/Tables/*.php')) as $migrationFile) {
-            $migrationClass = 'app\\Database\\Tables\\' . basename($migrationFile, '.php');
+            $migrationClass = 'App\\Database\\Tables\\' . basename($migrationFile, '.php');
 
-            if ($migrationClass === 'app\\Database\\Tables\\Migration') {
+            if ($migrationClass === 'App\\Database\\Tables\\Migration') {
                 continue;
             }
 

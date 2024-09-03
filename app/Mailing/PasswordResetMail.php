@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Mailing;
+namespace App\Mailing;
 
 use App\Core\Mailer;
 use SensitiveParameter;

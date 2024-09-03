@@ -5,6 +5,6 @@ configure(fn() => [
         'views' => 'templates',
         'assets' => 'public',
     ],
-    'cache' => true,
+    'cache' => false,
     'layout' => 'layouts.app',
 ]);

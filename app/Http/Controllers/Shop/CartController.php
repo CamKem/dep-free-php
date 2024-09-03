@@ -1,12 +1,12 @@
 <?php
 
-namespace app\HTTP\Controllers\Shop;
+namespace App\HTTP\Controllers\Shop;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
-use app\HTTP\Actions\RetrieveCartProducts;
+use App\HTTP\Actions\RetrieveCartProducts;
 
 class CartController extends Controller
 {

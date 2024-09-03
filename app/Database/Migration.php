@@ -6,7 +6,7 @@
 namespace App\Database;
 
 use App\Core\App;
-use app\Core\Database\Database;
+use App\Core\Database\Database;
 
 class Migration
 {

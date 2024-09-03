@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Core\Database\Relations;
+namespace App\Core\Database\Relations;
 
-use app\Core\Database\Model;
-use app\Core\Database\QueryBuilder;
-use app\Core\Database\Relation;
+use App\Core\Database\Model;
+use App\Core\Database\QueryBuilder;
+use App\Core\Database\Relation;
 use Override;
 
 class HasMany extends Relation

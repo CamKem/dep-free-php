@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Actions;
+namespace App\HTTP\Actions;
 
 use Random\RandomException;
 use SensitiveParameter;

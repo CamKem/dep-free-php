@@ -1,12 +1,12 @@
 <?php
 
-namespace app\Core\Database;
+namespace App\Core\Database;
 
 use App\Core\Collecting\ModelCollection;
 use App\Core\Collecting\Paginator;
-use app\Core\Database\Relations\BelongsTo;
-use app\Core\Database\Relations\HasMany;
-use app\Core\Database\Relations\HasManyThrough;
+use App\Core\Database\Relations\BelongsTo;
+use App\Core\Database\Relations\HasMany;
+use App\Core\Database\Relations\HasManyThrough;
 use RuntimeException;
 
 class QueryBuilder

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Enums;
+namespace App\Enums;
 
 use App\Core\Traits\EnumMethods;
 

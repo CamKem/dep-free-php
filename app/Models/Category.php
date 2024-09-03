@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use app\Core\Database\Model;
-use app\Core\Database\Relations\HasMany;
+use App\Core\Database\Model;
+use App\Core\Database\Relations\HasMany;
 
 class Category extends Model
 {

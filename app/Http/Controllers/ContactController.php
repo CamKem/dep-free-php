@@ -1,13 +1,13 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace App\Http\Controllers;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use app\HTTP\Actions\CsrfTokens;
+use App\HTTP\Actions\CsrfTokens;
 use App\Models\Contact;
 
 class ContactController extends Controller

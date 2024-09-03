@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use app\Core\Database\Model;
-use app\Core\Database\Relations\BelongsTo;
-use app\Core\Database\Relations\HasManyThrough;
-use app\Core\Database\Relations\HasOne;
+use App\Core\Database\Model;
+use App\Core\Database\Relations\BelongsTo;
+use App\Core\Database\Relations\HasManyThrough;
+use App\Core\Database\Relations\HasOne;
 
 class Order extends Model
 {
