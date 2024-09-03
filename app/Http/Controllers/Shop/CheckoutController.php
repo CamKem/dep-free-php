@@ -1,9 +1,9 @@
 <?php
 
-namespace App\HTTP\Controllers\Shop;
+namespace App\Http\Controllers\Shop;
 
 use App\Core\Template;
-use App\HTTP\Actions\RetrieveCartProducts;
+use App\Http\Actions\RetrieveCartProducts;
 
 class CheckoutController
 {

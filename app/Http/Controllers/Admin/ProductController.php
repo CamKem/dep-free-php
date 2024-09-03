@@ -1,13 +1,13 @@
 <?php
 
-namespace app\HTTP\Controllers\Admin;
+namespace app\Http\Controllers\Admin;
 
 use app\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use app\HTTP\Actions\CsrfTokens;
+use app\Http\Actions\CsrfTokens;
 use App\Models\Category;
 use App\Models\Product;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\HTTP\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use App\HTTP\Actions\CsrfTokens;
+use App\Http\Actions\CsrfTokens;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Services\PasswordResetService;

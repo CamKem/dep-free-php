@@ -1,9 +1,9 @@
 <?php
 
 use App\Core\Routing\RouteProxy as Route;
-use App\HTTP\Controllers\Auth\PasswordResetController;
-use App\HTTP\Controllers\Auth\RegistrationController;
-use App\HTTP\Controllers\Auth\SessionController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Controllers\Auth\SessionController;
 
 // Login routes
 Route::get('/login')

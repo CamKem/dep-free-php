@@ -1,12 +1,12 @@
 <?php
 
 use App\Core\Routing\RouteProxy as Route;
-use App\HTTP\Controllers\Admin\CategoryController;
-use App\HTTP\Controllers\Admin\DashboardController;
-use App\HTTP\Controllers\Admin\OrderController;
-use App\HTTP\Controllers\Admin\ProductController;
-use App\HTTP\Controllers\Admin\RoleController;
-use App\HTTP\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 
 // Roles
 Route::get('/admin/roles')

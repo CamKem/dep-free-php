@@ -1,6 +1,6 @@
 <?php
 
-namespace app\HTTP\Controllers\Admin;
+namespace app\Http\Controllers\Admin;
 
 use app\Core\Database\Slugger;
 use App\Core\Http\Request;

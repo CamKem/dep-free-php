@@ -1,6 +1,6 @@
 <?php
 
-namespace App\HTTP\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use app\Core\Database\QueryBuilder;
 use App\Core\Http\Request;

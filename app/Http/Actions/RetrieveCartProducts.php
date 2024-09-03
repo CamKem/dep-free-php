@@ -1,6 +1,6 @@
 <?php
 
-namespace App\HTTP\Actions;
+namespace App\Http\Actions;
 
 use App\Core\Collecting\ModelCollection;
 use App\Models\Product;

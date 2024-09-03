@@ -1,12 +1,12 @@
 <?php
 
-namespace App\HTTP\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Core\Controller;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
-use App\HTTP\Actions\RegisterNewUser;
+use App\Http\Actions\RegisterNewUser;
 use App\Models\User;
 
 class RegistrationController extends Controller

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Core\ServiceProvider;
 use App\Core\Session;
-use App\HTTP\Actions\CsrfTokens;
+use App\Http\Actions\CsrfTokens;
 use Override;
 use Random\RandomException;
 
