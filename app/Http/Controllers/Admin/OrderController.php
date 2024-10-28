@@ -2,11 +2,11 @@
 
 namespace app\Http\Controllers\Admin;
 
-use app\Core\Database\QueryBuilder;
+use App\Core\Database\QueryBuilder;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
-use app\Enums\OrderStatus;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
 

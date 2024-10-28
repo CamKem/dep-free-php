@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use app\Core\Database\QueryBuilder;
+use App\Core\Database\QueryBuilder;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;

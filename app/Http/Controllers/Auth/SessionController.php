@@ -7,7 +7,7 @@ use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use app\Http\Actions\CsrfTokens;
+use App\Http\Actions\CsrfTokens;
 
 class SessionController extends Controller
 {

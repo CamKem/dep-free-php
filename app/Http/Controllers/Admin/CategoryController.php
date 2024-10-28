@@ -2,12 +2,12 @@
 
 namespace app\Http\Controllers\Admin;
 
-use app\Core\Database\Slugger;
+use App\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use app\Enums\CategoryStatus;
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 
 class CategoryController

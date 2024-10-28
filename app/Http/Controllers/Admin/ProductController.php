@@ -2,12 +2,12 @@
 
 namespace app\Http\Controllers\Admin;
 
-use app\Core\Database\Slugger;
+use App\Core\Database\Slugger;
 use App\Core\Http\Request;
 use App\Core\Http\Response;
 use App\Core\Template;
 use App\Core\Validator;
-use app\Http\Actions\CsrfTokens;
+use App\Http\Actions\CsrfTokens;
 use App\Models\Category;
 use App\Models\Product;
 
