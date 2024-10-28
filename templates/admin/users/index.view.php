@@ -25,7 +25,7 @@
             <label for="search-bar" class="sr-only">Search users</label>
             <input type="text" name="search" id="search-bar"
                    value="<?= request()->get('search') ?>"
-                   placeholder="Search products">
+                   placeholder="Search users">
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>

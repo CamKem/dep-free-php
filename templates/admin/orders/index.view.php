@@ -9,7 +9,7 @@
         <span></span>
         <form class="search-form" action="<?= route('admin.orders.index') ?>"
               method="get">
-            <label for="search-bar" class="sr-only">Search users</label>
+            <label for="search-bar" class="sr-only">Search orders</label>
             <input type="text" name="search" id="search-bar"
                    value="<?= request()->get('search', 'pending') ?>"
                    placeholder="Search order">
