@@ -32,7 +32,7 @@ $app->registerProvider(new RouterService);
 $app->singleton(Request::class);
 $app->bind(Response::class, static fn() => new Response());
 
-$app->registerProvider(new MiddlewareService($app));
+$app->registerProvider(new MiddlewareService);
 
 // TODO: register the cache class
 //$app->bind(Cache::class, static fn() => Cache::create(config('cache.driver')));
