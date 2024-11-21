@@ -9,6 +9,7 @@ use App\Core\Template;
 use App\Core\Validator;
 use App\Http\Actions\CsrfTokens;
 use App\Models\Contact;
+use App\Services\MailChimpService;
 
 class ContactController extends Controller
 {
@@ -54,13 +55,26 @@ class ContactController extends Controller
             'contact' => $validated->get('contact'),
             'email' => $validated->get('email'),
             'message' => $validated->get('message'),
-            'mailing_list' => $validated->get('mailing_list', false),
+            'mailing_list' => $validated->get('mailing_list', false) === true ? 1 : 0,
         ]);
         $contact->save();
 
-        // store the request
+        if ($validated->get('mailing_list')) {
+            $service = new MailChimpService('12805a4d3b');
+            $response = $service->subscribe(
+                email: $_POST['email'],
+                mergeFields: [
+                    'FNAME' => $_POST['first_name'] ?? '',
+                    'LNAME' => $_POST['last_name'] ?? ''
+                ]);
+            if ($response->message() !== null) {
+                session()->flash('flash-message', $response->message());
+            } else {
+                session()->flash('flash-message', 'An error occurred: ' . $response->message() ?? 'Unknown error');
+            }
+        }
+
         session()->flash('flash-message', 'Your message has been sent successfully!');
-        // redirect back with a success message
         return redirect(route('contact.index'));
     }
 
