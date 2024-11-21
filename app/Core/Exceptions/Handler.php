@@ -12,6 +12,7 @@ class Handler
 
     public function handle(Throwable $e): Response|Template
     {
+        error_log($e->getMessage());
         if ($e instanceof RouteException) {
             redirect()->status($e->getCode())
                 ->view('errors.exception', [
