@@ -71,6 +71,13 @@ class Session
     public function flash(string $key, mixed $value): void
     {
         $flashData = $this->get('_flash.new', []);
+        if (isset($flashData[$key]) && !isset($this->data['_flash.old'][$key])) {
+            if (is_array($flashData[$key])) {
+                $value = array_merge($flashData[$key], $value);
+            } else {
+                $value = [$flashData[$key], $value];
+            }
+        }
         $flashData[$key] = $value;
         $this->set('_flash.new', $flashData);
     }
