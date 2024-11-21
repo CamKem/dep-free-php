@@ -1,10 +1,18 @@
 export default class FlashManager {
-    constructor(text) {
+    constructor(messages) {
         this.flashMessages = [];
-        if (text !== '') {
-            const flashMessage = new FlashMessage(text, this);
-            this.flashMessages.push(flashMessage);
+
+        if (messages instanceof Array && messages.length > 0) {
+            messages.forEach((message, index) => {
+                if (typeof message === 'string' && message !== '' && message !== null) {
+                    setTimeout(() => {
+                        const flashMessage = new FlashMessage(message, this);
+                        this.flashMessages.push(flashMessage);
+                    }, index * 200);
+                }
+            });
         }
+
         document.addEventListener('flashToggle', (event) => {
             if (event.detail.message) {
                 const flashMessage = new FlashMessage(event.detail.message, this);
