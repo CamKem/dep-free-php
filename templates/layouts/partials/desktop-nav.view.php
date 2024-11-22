@@ -4,6 +4,9 @@
             <a aria-label="Home" href="<?= route('home') ?>">Home</a>
         </li>
         <li>
+            <a aria-label="Products" href="<?= route('products.index') ?>">Products</a>
+        </li>
+        <li>
             <a aria-label="About" href="<?= route('about') ?>">About</a>
         </li>
         <li>
@@ -11,7 +14,8 @@
                href="<?= route('contact.index') ?>">Contact</a>
         </li>
         <li>
-            <a aria-label="Products" href="<?= route('products.index') ?>">Products</a>
+            <a aria-label="Subscribe"
+               href="<?= route('subscribe.index') ?>">Subscribe</a>
         </li>
         <?php if (auth()->check()): ?>
             <li style="position: relative;">
@@ -21,7 +25,6 @@
                     <span class="admin-badge">Admin</span>
                 <?php endif; ?>
             </li>
-
         <?php endif; ?>
     </ul>
 </nav>

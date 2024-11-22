@@ -60,7 +60,7 @@ class ContactController extends Controller
         $contact->save();
 
         if ($validated->get('mailing_list')) {
-            $service = new MailChimpService('12805a4d3b');
+            $service = new MailChimpService(env('MAILCHIMP_LIST_ID'));
             $response = $service->subscribe(
                 email: $_POST['email'],
                 mergeFields: [

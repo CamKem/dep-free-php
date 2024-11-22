@@ -36,7 +36,7 @@
                        title="First name"
                        value="<?= old('first_name') ?>"
                        placeholder="Your first name"
-                       data-validate=true
+                       data-validate="true"
                 >
                 <p class="error-message" id="first_name-error">
                     <?= error('first_name') ?>
@@ -49,7 +49,7 @@
                        title="Last name"
                        value="<?= old('last_name') ?>"
                        placeholder="Your last name"
-                       data-validate=true
+                       data-validate="true"
                 >
                 <p class="error-message" id="last_name-error">
                     <?= error('last_name') ?>
@@ -62,7 +62,7 @@
                        value="<?= old('contact') ?>"
                        title="Contact number"
                        placeholder="Your contact number"
-                       data-validate=true
+                       data-validate="true"
                 >
                 <p class="error-message" id="contact-error">
                     <?= error('contact') ?>
@@ -75,7 +75,7 @@
                        value="<?= old('email') ?>"
                        title="Email address"
                        placeholder="Your email address"
-                       data-validate=true
+                       data-validate="true"
                 >
                 <p class="error-message" id="email-error">
                     <?= error('email') ?>
@@ -87,7 +87,7 @@
                           title="Message"
                           rows="5"
                           placeholder="Please write a message here..."
-                          data-validate=false
+                          data-validate="false"
                 ><?= old('message') ?></textarea>
 
                 <p class="error-message" id="message-error">
@@ -97,13 +97,13 @@
                 <div class="form-bottom">
                     <button id="submit" type="submit">Send</button>
                     <label for="mailing_list" class="checkbox-label">
-                        Join mailing list:
+                        Subscribe to our newsletter:
                         <input type="checkbox"
                                aria-label="Join mailing list"
                                id="mailing_list"
                                name="mailing_list"
                                value="1"
-                               data-validate=false
+                               data-validate="false"
                         >
                     </label>
                 </div>
