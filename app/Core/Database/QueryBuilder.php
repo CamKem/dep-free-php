@@ -16,6 +16,7 @@ class QueryBuilder
     protected string $query;
     protected string $table;
     protected array $select = ['*'];
+    protected array $raw = [];
     protected array $conditions = [];
     protected array $orConditions = [];
     protected array $orderBy = [];
@@ -409,6 +410,21 @@ class QueryBuilder
             $this->query .= " OFFSET {$this->offset[0]}";
         }
 
+        // TODO: work out how to handle raw array (whereRaw, rawSelect, etc)
+        if (!empty($this->raw)) {
+            foreach ($this->raw as $key => $value) {
+                if ($key === 'where') {
+                    $this->query .= " WHERE ";
+                    foreach ($value as $index => $raw) {
+                        if ($index > 0) {
+                            $this->query .= " AND ";
+                        }
+                        $this->query .= $raw;
+                    }
+                }
+            }
+        }
+
         return $this->query;
     }
 
@@ -449,6 +465,16 @@ class QueryBuilder
         $this->orderBy = [];
         $this->limit = [];
         $this->offset = [];
+        // clear the raw array
+        $this->raw = [];
+    }
+
+    // the whereRaw method should allow the user to pass in a raw SQL string,
+    // which will be appended to the query string.
+    public function whereRaw(string $string): static
+    {
+        $this->raw['where'][] = $string;
+        return $this;
     }
 
     protected function getConditionsFromAttributes(): void
