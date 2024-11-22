@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Shop\CartController;
 use App\Http\Controllers\Shop\CheckoutController;
 use App\Http\Controllers\Shop\OrderController;
+use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\User\DashboardController;
 
 // Auth Routes
@@ -26,6 +27,13 @@ Route::get('/')
 Route::get('/about')
     ->controller(AboutController::class)
     ->name('about');
+
+Route::get('/subscribe')
+    ->controller([SubscribeController::class, 'index'])
+    ->name('subscribe.index');
+Route::post('/subscribe')
+    ->controller([SubscribeController::class, 'store'])
+    ->name('subscribe.store');
 
 // Contact Routes
 Route::get('/contact')
