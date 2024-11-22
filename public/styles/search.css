@@ -29,18 +29,42 @@
     font-size: var(--font-small);
 }
 
-#search-button {
-    width: 40px;
+.search-button-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--small-gap);
     height: 40px;
+    width: fit-content;
+    margin-left: var(--small-gap);
     border-radius: calc(var(--medium-radius) * 5);
     background-color: var(--dark-blue-color);
-    color: var(--white-color);
     border: 0;
-    margin-left: var(--default-margin);
-    padding: 0;
-    font-size: var(--font-small);
+    padding: 0 var(--small-padding);
+    cursor: pointer;
 }
 
-#search-button:hover {
+.search-button-group:hover {
     background-color: var(--mid-blue-color);
+}
+
+.search-button-group:hover #search-button,
+.search-button-group:hover #voice-search-button {
+    color: var(--very-light-blue-color);
+    background-color: var(--mid-blue-color);
+}
+
+.search-button-group #search-button:hover,
+.search-button-group #voice-search-button:hover {
+    background-color: var(--dark-blue-color);
+}
+
+#search-button, #voice-search-button {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    font-size: var(--font-small);
+    color: var(--white-color);
+    background-color: var(--dark-blue-color);
+    border: 0;
 }
