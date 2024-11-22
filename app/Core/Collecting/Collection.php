@@ -3,6 +3,7 @@
 namespace App\Core\Collecting;
 
 use App\Core\Arrayable;
+use InvalidArgumentException;
 use JsonException;
 use JsonSerializable;
 use Traversable;
@@ -32,7 +33,7 @@ class Collection implements Arrayable, JsonSerializable
             }
         }
 
-        return $this;
+        return new static($this->items);
     }
 
     public function first(?callable $callback = null, mixed $default = null): mixed
@@ -84,8 +85,7 @@ class Collection implements Arrayable, JsonSerializable
 
     public function filter(callable $callback): self
     {
-        array_filter($this->items, $callback);
-        return $this;
+        return new static(array_filter($this->items, $callback, ARRAY_FILTER_USE_BOTH));
     }
 
     public function count(): int
@@ -140,6 +140,54 @@ class Collection implements Arrayable, JsonSerializable
     public function isEmpty(): bool
     {
         return empty($this->items);
+    }
+
+    public function sortBy(callable|string $value, string $order = 'asc'): self
+    {
+        if (is_string($value)) {
+            $callback = static fn($item) => is_object($item) ? $item->$value : $item[$value];
+        } elseif (is_callable($value)) {
+            $callback = $value;
+        } else {
+            throw new InvalidArgumentException('Invalid value provided for sortBy');
+        }
+
+        $items = $this->items;
+
+        uasort($items, static function ($a, $b) use ($callback, $order) {
+            $result = $callback($a) <=> $callback($b);
+            return $order === 'desc' ? -$result : $result;
+        });
+
+        return new static($items);
+    }
+
+    public function min(?string $key = null): mixed
+    {
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        if ($key === null) {
+            return min($this->items);
+        }
+
+        return min(array_column($this->items, $key));
+    }
+
+    public function values(): self
+    {
+        return new static(array_values($this->items));
+    }
+
+    public function keys(): self
+    {
+        return new static(array_keys($this->items));
+    }
+
+     public function take(int $limit): self
+    {
+        return new static(array_slice($this->items, 0, $limit));
     }
 
     public function __serialize(): array
