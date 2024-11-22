@@ -17,16 +17,20 @@
         <a aria-label="Home" href="<?= route('home') ?>">
             <li class="mobile-nav-item">Home</li>
         </a>
+        <a aria-label="View Products"
+           href="<?= route('products.index') ?>">
+            <li class="mobile-nav-item">Products</li>
+        </a>
         <a aria-label="About SW" href="<?= route('about') ?>">
-            <li class="mobile-nav-item">About SW</li>
+            <li class="mobile-nav-item">About</li>
         </a>
         <a aria-label="Contact Us"
            href="<?= route('contact.index') ?>">
-            <li class="mobile-nav-item">Contact Us</li>
+            <li class="mobile-nav-item">Contact</li>
         </a>
-        <a aria-label="View Products"
-           href="<?= route('products.index') ?>">
-            <li class="mobile-nav-item">View Products</li>
+        <a aria-label="Subscribe to the mailing list"
+           href="<?= route('subscribe.index') ?>">
+            <li class="mobile-nav-item">Subscribe</li>
         </a>
     </ul>
 </nav>
