@@ -69,4 +69,17 @@ class Response {
         return self::redirect(app(Router::class)->generate($name, $params));
     }
 
+    // flash a session with a key and value, or an array of key value pairs
+    public function with(string|array $key, mixed $value = null): static
+    {
+        if (is_array($key)) {
+            foreach ($key as $sessionKey => $sessionValue) {
+                session()->flash($sessionKey, $sessionValue);
+            }
+        } else {
+            session()->flash($key, $value);
+        }
+        return $this;
+    }
+
 }
