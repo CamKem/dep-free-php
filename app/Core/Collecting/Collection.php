@@ -200,4 +200,9 @@ class Collection implements Arrayable, JsonSerializable
         $this->items = $data;
     }
 
+    public function add($item): void
+    {
+        $this->items[] = $item;
+    }
+
 }
