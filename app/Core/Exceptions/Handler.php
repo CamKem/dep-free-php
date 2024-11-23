@@ -29,7 +29,7 @@ class Handler
             ]);
         }
         return redirect()
-            ->status($e->getCode())
+            ->status(is_int($e->getCode()) ? $e->getCode() : 500)
             ->view('errors.exception', [
             'title' => 'Exception',
             'message' => $e->getMessage()
