@@ -60,9 +60,26 @@
                 }
                 ?>
                    placeholder="Search products">
-            <button type="submit" id="search-button">
-                <i class="fas fa-search" aria-hidden="true"></i>
-            </button>
+            <div class="search-button-group">
+                <script type="module">
+                    import VoiceSearch from '/scripts/voiceSearch.js';
+
+                    const conditions = [
+                        'brave' in navigator,
+                        window.location.href.includes('localhost'),
+                        window.location.protocol !== 'https:',
+                        (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)),
+                    ];
+
+                    if (conditions.some(condition => condition === true)) {
+                        document.getElementById('voice-search-button').style.display = 'none';
+                    } else {
+                        new VoiceSearch(
+                            document.getElementById('search-bar'),
+                            document.getElementById('voice-search-button')
+                        );
+                    }
+                </script>
                 <button type="button"
                         aria-label="Voice Search"
                         title="Voice Search"
