@@ -63,6 +63,20 @@
             <button type="submit" id="search-button">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
+                <button type="button"
+                        aria-label="Voice Search"
+                        title="Voice Search"
+                        id="voice-search-button"
+                >
+                    <i class="fas fa-microphone search-icon"
+                       aria-hidden="true"
+                    ></i>
+                    <span class="tooltip">Click to search by voice</span>
+                </button>
+                <button type="submit" id="search-button">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                </button>
+            </div>
         </form>
     </div>
 
