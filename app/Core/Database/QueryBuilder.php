@@ -318,6 +318,17 @@ class QueryBuilder
             $setClause = implode(", ", array_map(fn($column) => "{$column} = :{$column}", $columns));
             $this->query = "UPDATE {$this->table} SET {$setClause}";
         } elseif ($this->verb === 'SELECT') {
+            // we need to handle the selectRaw here, it will be stored in $raw['select'] array
+            // we will loop through the array and add the raw select to the query
+            if (!empty($this->raw)) {
+                foreach ($this->raw as $key => $value) {
+                    if ($key === 'select') {
+                        foreach ($value as $raw) {
+                            $this->select[] = $raw;
+                        }
+                    }
+                }
+            }
             $this->query = "SELECT " . implode(", ", array_unique($this->select)) . " FROM {$this->table}";
         }
 
@@ -389,6 +400,35 @@ class QueryBuilder
             }
         }
 
+        // handle the raw where clause
+        if (!empty($this->raw) && !str_contains($this->query, 'WHERE')) {
+            foreach ($this->raw as $key => $value) {
+                if ($key === 'where') {
+                    // TODO: ensure this works with multiple raw where clauses
+                    //foreach ($value as $raw) {
+                    //  $this->query .= " WHERE {$raw}";
+                    //}
+                    $this->query .= " WHERE ";
+                    foreach ($value as $index => $raw) {
+                        if ($index > 0) {
+                            $this->query .= " AND ";
+                        }
+                        $this->query .= $raw;
+                    }
+                }
+                // handle the orWhere raw clause
+                if ($key === 'orWhere') {
+                    $this->query .= " OR ";
+                    foreach ($value as $index => $raw) {
+                        if ($index > 0) {
+                            $this->query .= " OR ";
+                        }
+                        $this->query .= $raw;
+                    }
+                }
+            }
+        }
+
         // handle a group by clause
         if (!empty($this->groupBy) && !str_contains($this->query, 'GROUP BY')) {
             $this->query .= " GROUP BY " . implode(", ", $this->groupBy);
@@ -408,21 +448,6 @@ class QueryBuilder
         // handle offset clause
         if (!empty($this->offset) && !str_contains($this->query, 'OFFSET')) {
             $this->query .= " OFFSET {$this->offset[0]}";
-        }
-
-        // TODO: work out how to handle raw array (whereRaw, rawSelect, etc)
-        if (!empty($this->raw)) {
-            foreach ($this->raw as $key => $value) {
-                if ($key === 'where') {
-                    $this->query .= " WHERE ";
-                    foreach ($value as $index => $raw) {
-                        if ($index > 0) {
-                            $this->query .= " AND ";
-                        }
-                        $this->query .= $raw;
-                    }
-                }
-            }
         }
 
         return $this->query;
@@ -474,6 +499,18 @@ class QueryBuilder
     public function whereRaw(string $string): static
     {
         $this->raw['where'][] = $string;
+        return $this;
+    }
+
+    public function orWhereRaw(string $string)
+    {
+        $this->raw['orWhere'][] = $string;
+        return $this;
+    }
+
+    public function selectRaw(string $string): static
+    {
+        $this->raw['select'][] = $string;
         return $this;
     }
 
