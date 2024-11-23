@@ -28,11 +28,13 @@
                         <span>Login</span>
                     </a>
                 <?php endif; ?>
-                <a class="cart-view" aria-label="View Cart Link" href="<?= route('cart.show') ?>">
+                <a class="cart-view" aria-label="View Cart Link"
+                   href="<?= route('cart.show') ?>">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                     <span>View Cart</span>
                 </a>
-                <a class="cart-item-count" aria-label="Items in cart" href="<?= route('cart.show') ?>">
+                <a class="cart-item-count" aria-label="Items in cart"
+                   href="<?= route('cart.show') ?>">
                     <span><?= count(session()->get('cart', [])) ?> items</span>
                 </a>
             </div>
