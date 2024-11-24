@@ -2,6 +2,7 @@
 
 use App\Core\Routing\RouteProxy as Route;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\SiteMapGeneratorController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -22,6 +23,15 @@ include include_path('routes/admin.php');
 Route::get('/')
     ->controller(HomeController::class)
     ->name('home');
+
+Route::get('/robots.txt')
+    ->controller(function () {
+        return response()->file(public_path('robots.txt'));
+})->name('robots');
+
+Route::get('/sitemap.xml')
+    ->controller(SiteMapGeneratorController::class)
+    ->name('sitemap');
 
 // About Route
 Route::get('/about')
