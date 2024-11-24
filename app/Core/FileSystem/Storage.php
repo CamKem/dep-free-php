@@ -2,6 +2,8 @@
 
 namespace App\Core\FileSystem;
 
+use RuntimeException;
+
 class Storage
 {
 
@@ -22,44 +24,57 @@ class Storage
         return file_get_contents($this->path . $path);
     }
 
-    public function put(string $path, array $contents): false|string
+    public function put(string $path, array|string $contents): false|string
     {
-        // if error is not 0, then we have an error
-        if ($contents['error'] && $contents['error'] !== 0) {
+        // Ensure the directory exists
+        $directory = dirname($this->path . $path);
+        if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $directory));
+        }
+
+        if (is_array($contents)) {
+            // Handle file upload scenario
+            if ($contents['error'] && $contents['error'] !== 0) {
+                // if error is not 0, then we have an error
+                return false;
+            }
+
+            // we need to get the contents of the file
+            $file = file_get_contents($contents['tmp_name']);
+            // now we need to remove the file from the temp location
+            unlink($contents['tmp_name']);
+            // we need to ensure the name is web safe, no spaces, etc
+            $name = str_replace(' ', '-', $contents['name']);
+            // we need to handle non-breaking spaces & control characters
+            // there is a regex for all control characters, it;s $regex = '/[\p{Cf}]/u';
+            // we also need to handle non-breaking spaces & narrow non-breaking spaces
+            // U+202F & U+00A0, respectively - we can add it to the regex
+            $name = preg_replace('/[\p{Cf}\x{00A0}\x{202F}]/u', '-', $name);
+
+            // we need to handle the case where the file already exists
+            if (file_exists($this->path . $path . $name)) {
+                $name = time() . '-' . $name;
+            }
+
+            // we need to move the file from the temp location to the storage location
+            $uploaded = file_put_contents($this->path . $path . $name, $file);
+            if ($uploaded === false) {
+                return false;
+            }
+
+            // if $uploaded === $contents['size'], then we have a successful upload
+            if ($uploaded === $contents['size']) {
+                return $path . $name;
+            }
+
             return false;
         }
 
-        // we need to get the contents of the file
-        $file = file_get_contents($contents['tmp_name']);
-
-        // now we need to remove the file from the temp location
-        unlink($contents['tmp_name']);
-
-        // we need to ensure the name is web safe, no spaces, etc
-        $name = str_replace(' ', '-', $contents['name']);
-
-        // we need to handle non-breaking spaces & control characters
-        // there is a regex for all control characters, it;s $regex = '/[\p{Cf}]/u';
-        // we also need to handle non-breaking spaces & narrow non-breaking spaces
-        // U+202F & U+00A0, respectively - we can add it to the regex
-        $name = preg_replace('/[\p{Cf}\x{00A0}\x{202F}]/u', '-', $name);
-
-        // we need to handle the case where the file already exists
-        if (file_exists($this->path . $path . $name)) {
-            $name = time() . '-' . $name;
+        // Handle string content scenario
+        $result = file_put_contents($this->path . $path, $contents);
+        if ($result !== false) {
+            return $path;
         }
-
-        // we need to move the file from the temp location to the storage location
-        $uploaded = file_put_contents($this->path . $path . $name, $file);
-        if ($uploaded === false) {
-            return false;
-        }
-
-        // if $uploaded === $contents['size'], then we have a successful upload
-        if ($uploaded === $contents['size']) {
-            return $path . $name;
-        }
-
         return false;
     }
 
