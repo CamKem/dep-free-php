@@ -1,21 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://www.example.com/</loc>
-        <lastmod>2019-01-01</lastmod>
-        <changefreq>monthly</changefreq>
+        <loc>https://deliverable-d.test/login</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>http://www.example.com/about</loc>
-        <lastmod>2019-01-01</lastmod>
-        <changefreq>monthly</changefreq>
+        <loc>https://deliverable-d.test/register</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>http://www.example.com/contact</loc>
-        <lastmod>2019-01-01</lastmod>
-        <changefreq>monthly</changefreq>
+        <loc>https://deliverable-d.test/password/reset</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/robots.txt</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/sitemap.xml</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/about</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/subscribe</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/contact</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/products</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://deliverable-d.test/cart</loc>
+        <lastmod>2024-11-24</lastmod>
+        <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
 </urlset>
