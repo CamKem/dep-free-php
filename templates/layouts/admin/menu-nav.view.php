@@ -16,6 +16,9 @@
             <a href="<?= route('admin.roles.index') ?>">
                 <li class="nav-links">Roles</li>
             </a>
+            <a href="<?= route('sitemap.generate') ?>">
+                <li class="nav-links">Generate Sitemap</li>
+            </a>
             <a href="<?= route('logout') ?>">
                 <li class="nav-links-logout">Logout</li>
             </a>
