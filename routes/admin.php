@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SiteMapGeneratorController;
 use App\Http\Controllers\Admin\UserController;
 
 // Roles
@@ -125,3 +126,9 @@ Route::delete('/admin/products/{id}')
     ->controller([ProductController::class, 'destroy'])
     ->middleware(['auth', 'admin'])
     ->name('admin.products.destroy');
+
+// sitemap generation route
+Route::get('/generate-sitemap')
+    ->controller(SiteMapGeneratorController::class)
+    ->name('sitemap.generate')
+    ->middleware(['auth', 'admin']);
