@@ -53,6 +53,17 @@ function route(string $name, string|array|null $params = []): string
     return app(Router::class)->generate($name, $params ?? []);
 }
 
+if (! function_exists('sanitize')) {
+    function sanitize(string $value): string
+    {
+        return htmlspecialchars(
+            filter_var(
+                trim($value)
+                , FILTER_SANITIZE_FULL_SPECIAL_CHARS)
+            , ENT_QUOTES);
+    }
+}
+
 function abort($code = 404): Template
 {
     http_response_code($code);
