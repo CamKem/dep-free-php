@@ -88,7 +88,7 @@ class QueryBuilder
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
         $column = $this->checkPrefixRelation($column);
-        $this->orderBy = [$column, $direction];
+        $this->orderBy[] = [$column, $direction];
         return $this;
     }
 
@@ -434,10 +434,19 @@ class QueryBuilder
             $this->query .= " GROUP BY " . implode(", ", $this->groupBy);
         }
 
+        $lastItemOnQuery = strtoupper(substr(strrchr($this->query, ' '), 1));
         // handle order by clause
-        if (!empty($this->orderBy) && !str_contains($this->query, 'ORDER BY')) {
-            $this->query .= " ORDER BY ";
-            $this->query .= "{$this->orderBy[0]} {$this->orderBy[1]}";
+        if (!empty($this->orderBy) && $lastItemOnQuery !== 'ORDER BY') {
+            // remove any null values from the orderBy array
+            $this->orderBy = array_filter($this->orderBy);
+            foreach ($this->orderBy as $index => $order) {
+                if ($index === 0) {
+                    $this->query .= " ORDER BY ";
+                } elseif ($index > 0) {
+                    $this->query .= ",";
+                }
+                $this->query .= "{$order[0]} {$order[1]}";
+            }
         }
 
         // handle limit clause
@@ -627,8 +636,11 @@ class QueryBuilder
 
         // if there is an orderBy present we need to prefix the column with the table name
         if (!empty($this->orderBy)) {
-            $this->orderBy = ["{$this->table}.{$this->orderBy[0]}", $this->orderBy[1]];
-            $this->select($this->orderBy[0]);
+            foreach ($this->orderBy as $order) {
+                // add the table prefix to the orderBy and select the column
+                $this->orderBy[] = ["{$this->table}.{$order[0]}", $order[1]];
+                $this->select("{$this->table}.{$order[0]}");
+            }
         }
 
         $totalRows = $this->db->execute(
