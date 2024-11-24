@@ -101,11 +101,12 @@ class ModelCollection extends Collection implements Iterator
         return new ArrayIterator($this->items);
     }
 
-    public function load(string $relation): void
+    public function load(string $relation): self
     {
         foreach ($this->items as $item) {
             $item->load($relation);
         }
+        return $this;
     }
 
 }
