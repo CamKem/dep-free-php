@@ -1,0 +1,7 @@
+# Robots File
+
+User-agent: *
+
+Disallow: /admin/
+
+Sitemap: http://www.example.com/sitemap.xml
