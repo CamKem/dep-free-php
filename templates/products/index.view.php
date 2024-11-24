@@ -4,7 +4,7 @@
         <div class="standard-container mb-8">
             <p class="text-section">Did you mean
                 <?php if (count($matched_product_words) === 1) : ?>
-                    <a href="<?= route('products.index', ['search' => $matched_product_words]) ?>" class="general-link"><?= $matched_product_words[0] ?></a> instead of <strong class="general-link"><?= $matched_search_words[0] ?></strong>?</p>
+                    <a href="<?= route('products.index', ['search' => $matched_product_words]) ?>" class="general-link"><?= $matched_product_words[0] ?></a> instead of <strong class="general-link"><?= $matched_search_words[0] ?></strong>?
                 <?php else : ?>
                         <?php foreach ($matched_product_words as $index => $matched_product_word) : ?>
                             <a href="<?= route('products.index', ['search' => $matched_product_word]) ?>" class="general-link"><?= $matched_product_word ?></a>
