@@ -304,6 +304,20 @@ class QueryBuilder
             }
         }
 
+        // do the addition of adding the raw queries to the query string, at the beginning.
+        if (!empty($this->raw) && isset($this->raw['add'])) {
+            foreach ($this->raw['add'] as $index => $raw) {
+                $this->query .= " {$raw}";
+                $last = count($this->raw['add']) - 1;
+                if ($index < $last) {
+                    $this->query .= ",";
+                }
+            }
+        }
+        // NOTE: Eventually we will need to modify the query builder to store all the method calls in the same array
+        //  so we can have thing applied in the order of operation, respecting when the developer calls the methods
+        //  rather than trying to have it all in this toSQL method that works for all scenarios & use cases.
+
         if ($this->verb === 'DELETE') {
             $this->query = "DELETE FROM {$this->table}";
         } elseif ($this->verb === 'INSERT') {
@@ -319,16 +333,14 @@ class QueryBuilder
         } elseif ($this->verb === 'SELECT') {
             // we need to handle the selectRaw here, it will be stored in $raw['select'] array
             // we will loop through the array and add the raw select to the query
-            if (!empty($this->raw)) {
-                foreach ($this->raw as $key => $value) {
-                    if ($key === 'select') {
-                        foreach ($value as $raw) {
-                            $this->select[] = $raw;
-                        }
-                    }
+            if (!empty($this->raw) && isset($this->raw['select'])) {
+                foreach ($this->raw['select'] as $rawSelect) {
+                    $this->select($rawSelect);
                 }
             }
-            $this->query = "SELECT " . implode(", ", array_unique($this->select)) . " FROM {$this->table}";
+        if (!empty($this->select)) {
+                $this->query .= "SELECT " . implode(", ", array_unique($this->select)) . " FROM {$this->table}";
+            }
         }
 
         // handle from clause
@@ -400,7 +412,7 @@ class QueryBuilder
         }
 
         // handle the raw where clause
-        if (!empty($this->raw) && !str_contains($this->query, 'WHERE')) {
+        if (!empty($this->raw)) {
             foreach ($this->raw as $key => $value) {
                 if ($key === 'where') {
                     // TODO: ensure this works with multiple raw where clauses
@@ -516,6 +528,13 @@ class QueryBuilder
     public function selectRaw(string $string): static
     {
         $this->raw['select'][] = $string;
+        return $this;
+    }
+
+    // add a raw query to the query builder (useful for CTEs and subqueries)
+    public function addRaw(string $string): static
+    {
+        $this->raw['add'][] = $string;
         return $this;
     }
 
