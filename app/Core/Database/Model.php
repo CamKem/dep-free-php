@@ -204,6 +204,7 @@ class Model implements Arrayable, JsonSerializable
                     } else if ($relation === 'pivot') {
                         $pivotColumns[$column] = $value;
                     } else {
+                        // here is where we need to recursive property depth
                         $this->setProperty($currentModel, $parts, $value, $relation, $currentLookup);
                     }
                 }
@@ -246,28 +247,25 @@ class Model implements Arrayable, JsonSerializable
                 $property = implode('_', $parts);
                 $model->{$property} = $value;
             }
-        } elseif (count($parts) === 3) {
+        } else {
             $relatedModel = $this->searchLookupReturnModel($currentLookup, $relation);
             if ($relatedModel) {
                 $nestedRelation = $this->convertToSingular($parts[1]);
-                //method_exists($model, $parts[1]) ? $parts[1] :
-                //$this->convertToSingular($parts[1]);
                 if (method_exists($relatedModel, $nestedRelation)) {
-                    // NOTE: this part of the code has not been tested
-                    //  need to ensure it's functional & required
                     $nestedModels = $relatedModel->relations[$nestedRelation];
                     $nestedModel = end($nestedModels);
-                    $nestedModel->{$parts[2]} = $value;
+                    $this->setProperty($nestedModel, array_slice($parts, 1), $value, $nestedRelation, $currentLookup);
                 } elseif (method_exists($relatedModel, $parts[1])) {
-                    // NOTE: this part of the code has not been tested
-                    //  need to ensure it's functional & required
                     $nestedModels = $relatedModel->relations[$parts[1]];
                     $nestedModel = end($nestedModels);
-                    $nestedModel->{$parts[2]} = $value;
+                    $this->setProperty($nestedModel, array_slice($parts, 1), $value, $parts[1], $currentLookup);
                 } else {
                     $property = implode('_', array_slice($parts, 1));
                     $relatedModel->{$property} = $value;
                 }
+            } else {
+                $property = implode('_', $parts);
+                $model->{$property} = $value;
             }
         }
     }
