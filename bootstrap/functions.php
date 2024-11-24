@@ -92,6 +92,11 @@ function include_path($path): string
     return BASE_PATH . $path;
 }
 
+function public_path($path): string
+{
+    return BASE_PATH . 'public/' . $path;
+}
+
 function class_basename($class): string
 {
     $class = is_object($class) ? $class::class : $class;
@@ -204,6 +209,11 @@ function cookie($key): ?string
 function now(): string
 {
     return date('Y-m-d H:i:s');
+}
+
+function url(string $path): string
+{
+    return env('APP_URL') . $path;
 }
 
 function storage(): Storage
