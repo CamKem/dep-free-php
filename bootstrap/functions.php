@@ -54,9 +54,10 @@ function route(string $name, string|array|null $params = []): string
 }
 
 if (! function_exists('sanitize')) {
-    function sanitize(string $value): string
+    function sanitize(?string $value): string
     {
-        return htmlspecialchars(
+        return $value === null ? '' :
+            htmlspecialchars(
             filter_var(
                 trim($value)
                 , FILTER_SANITIZE_FULL_SPECIAL_CHARS)
