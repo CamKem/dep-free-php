@@ -4,6 +4,7 @@ namespace App\Core\Http;
 
 use App\Core\Routing\Router;
 use App\Core\Template;
+use InvalidArgumentException;
 use JsonException;
 
 class Response {
@@ -80,6 +81,17 @@ class Response {
             session()->flash($key, $value);
         }
         return $this;
+    }
+
+    public function file(string $path, ?string $name = null): void
+    {
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException('File not found.');
+        }
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . ($name ?? basename($path)) . '"');
+        readfile($path);
+        exit;
     }
 
 }
