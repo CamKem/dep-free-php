@@ -13,6 +13,9 @@ namespace App\Core\Routing;
  * @method static delete(string $uri)
  * @method static options(string $uri)
  * @method static any(string $uri)
+ *
+ * Chainable methods:
+ * @controller(string|array|callable $controller)
  */
 class RouteProxy
 {
