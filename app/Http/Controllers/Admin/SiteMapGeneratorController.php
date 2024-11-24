@@ -14,7 +14,7 @@ class SiteMapGeneratorController
         $sitemap = $this->generateSiteMap($routes);
         $updated = $this->updateSiteMapFile($sitemap);
         if ($updated !== false) {
-            return response()->back()->with('success', 'Site map generated successfully.');
+            return redirect(route('admin.index'))->with('flash-message', 'Site map generated successfully.');
         }
     }
 
@@ -24,10 +24,10 @@ class SiteMapGeneratorController
         $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
         /** @var Route $route */
-        foreach ($routes as $route) {
-            if ($route->getMethod() === 'GET'
-                && !str_contains($route->uri(), 'admin')
-                && in_array('admin', $route->getMiddleware(), true) === false
+        foreach ($routes->getRoutes() as $name => $route) {
+            if (strtolower($route->getMethod()) === 'get'
+                && empty(array_intersect(['admin', 'auth'], $route->getMiddleware()))
+                && !preg_match('/\{.*?}/', $route->uri())
             ) {
                 $sitemap .= '    <url>' . PHP_EOL;
                 $sitemap .= '        <loc>' . url($route->uri()) . '</loc>' . PHP_EOL;
@@ -45,8 +45,6 @@ class SiteMapGeneratorController
 
     private function updateSiteMapFile($sitemap): string|false
     {
-        $filePath = public_path('sitemap.xml');
-        return (new Storage($filePath))->
-            put($filePath, $sitemap);
+        return storage()->put('sitemap.xml', $sitemap);
     }
 }
