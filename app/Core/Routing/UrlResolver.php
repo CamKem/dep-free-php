@@ -31,7 +31,13 @@ class UrlResolver
             // else if there is more params than expected, we should add the rest to the query string
         } else if (count($params) > count($route->getParameters())) {
             $params = array_diff_key($params, $route->getParameters());
+            if (count($params) === 1 && is_array($params[array_key_first($params)])) {
+                $params[array_key_first($params)] = str_replace(' ', '+',
+                    implode(' ', $params[array_key_first($params)])
+                );
+            }
             $query = http_build_query($params);
+            $query = urldecode($query);
             $uri .= '?' . $query;
         }
         return $uri;
