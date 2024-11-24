@@ -161,4 +161,9 @@ class Route
         return (new UrlResolver)->resolve($this, $params);
     }
 
+    public function uri(): string
+    {
+        return $this->uri;
+    }
+
 }
