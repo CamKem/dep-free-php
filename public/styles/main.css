@@ -1,5 +1,6 @@
 @import url('variables.css');
 @import url('general.css');
+@import url('about.css');
 @import url('header.css');
 @import url('category-nav.css');
 @import url('search.css');
@@ -17,3 +18,15 @@
 @import url('flash.css');
 @import url('footer.css');
 @import url('footer-bottom.css');
+
+.admin-badge {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -45px;
+    font-size: 8px;
+    background-color: var(--mid-blue-color);
+    color: var(--white-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+}

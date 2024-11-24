@@ -28,17 +28,3 @@
         <?php endif; ?>
     </ul>
 </nav>
-
-<style>
-    .admin-badge {
-        position: absolute;
-        top: 0;
-        bottom 0;
-        right: -45px;
-        font-size: 8px;
-        background-color: var(--mid-blue-color);
-        color: var(--white-color);
-        padding: 0.25rem 0.5rem;
-        border-radius: 5px;
-    }
-</style>
