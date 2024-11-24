@@ -271,7 +271,6 @@ class QueryBuilder
                             $this->commonRelated($relation);
                         }
                         $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id");
-
                     }
                 }
             }
@@ -290,15 +289,15 @@ class QueryBuilder
                     $this->select("{$this->table}.*");
                     if ($relation instanceof HasMany || $relation instanceof BelongsTo) {
                         $this->select("COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count");
-                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
+                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id");
                     } elseif ($relation instanceof HasManyThrough) {
                         $pivotTable = $relation->getPivotTable();
                         $this->select[] = "COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count";
-                        $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
-                        $this->join($relatedTable, "{$relatedTable}.id", '=', "{$pivotTable}.{$relatedColumn}", 'LEFT');
+                        $this->join($pivotTable, "{$pivotTable}.{$foreignColumn}", '=', "{$this->table}.id");
+                        $this->join($relatedTable, "{$relatedTable}.id", '=', "{$pivotTable}.{$relatedColumn}");
                     } else {
                         $this->select[] = "COUNT(DISTINCT {$relatedTable}.id) AS {$relationName}_count";
-                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id", 'LEFT');
+                        $this->join($relatedTable, "{$relatedTable}.{$foreignColumn}", '=', "{$this->table}.id");
                     }
                     $this->groupBy("{$this->table}.id");
                 }
@@ -405,9 +404,6 @@ class QueryBuilder
             foreach ($this->raw as $key => $value) {
                 if ($key === 'where') {
                     // TODO: ensure this works with multiple raw where clauses
-                    //foreach ($value as $raw) {
-                    //  $this->query .= " WHERE {$raw}";
-                    //}
                     $this->query .= " WHERE ";
                     foreach ($value as $index => $raw) {
                         if ($index > 0) {
