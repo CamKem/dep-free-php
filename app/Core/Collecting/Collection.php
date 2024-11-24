@@ -142,6 +142,11 @@ class Collection implements Arrayable, JsonSerializable
         return empty($this->items);
     }
 
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
+    }
+
     public function sortBy(callable|string $value, string $order = 'asc'): self
     {
         if (is_string($value)) {

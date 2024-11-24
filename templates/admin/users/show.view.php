@@ -47,7 +47,7 @@
                 <strong>Joined:</strong> <?= date('d M Y', strtotime($user->created_at)) ?>
             </p>
         </div>
-        <?php if ($user->roles && !$user->roles->isEmpty()): ?>
+        <?php if ($user->roles && $user->roles->isNotEmpty()): ?>
             <div class="content__details">
                 <h3 class="content__heading__middle">
                     <i class="fa-solid fa-universal-access"></i>
@@ -74,7 +74,7 @@
                 </ul>
             </div>
         <?php endif; ?>
-        <?php if (!$orders->isEmpty()): ?>
+        <?php if ($orders->isNotEmpty()): ?>
             <div class="content__details">
                 <h3 class="content__heading__middle">
                     <i class="fa-solid fa-cart-shopping"></i>
