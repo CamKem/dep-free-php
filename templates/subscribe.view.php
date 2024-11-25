@@ -30,5 +30,6 @@
                 <?= error('email') ?>
             </p>
             <button id="submit" type="submit">Subscribe</button>
+        </form>
     </div>
 </section>

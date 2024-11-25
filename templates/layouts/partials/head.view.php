@@ -15,4 +15,4 @@
           rel="stylesheet">
     <script type="module" src="/scripts/main.js"></script>
 </head>
-<body id="<?= mb_strtolower($title) ?>">
+<body>
