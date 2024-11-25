@@ -100,17 +100,16 @@
     <nav class="category-nav content-container" aria-label="Product categories">
         <ul>
             <?php
-            // get the active categories to make it styled on active state
             $active = request()->get('category');
             foreach ($categories as $category) {
-                echo "<a aria-label=\"{$category->name}\"
-                         href=\"" . route('categories.show', ['category' => $category->slug]) . "\"
-                         class=\"" . ($active === $category->slug ? 'category-active' : '') . "\"
-                      >
-                          <li class=\"" . ($active === $category->slug ? 'category-active' : '') . "\">
-                              {$category->name}
-                          </li>
-                      </a>";
+                echo "<li class=\"" . ($active === $category->slug ? 'category-active' : '') . "\">
+                    <a aria-label=\"{$category->name}\"
+                    href=\"" . route('categories.show', ['category' => $category->slug]) . "\"
+                    class=\"" . ($active === $category->slug ? 'category-active' : '') . "\"
+                    >
+                        {$category->name}
+                    </a>
+                </li>";
             }
             ?>
         </ul>
