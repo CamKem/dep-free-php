@@ -1,7 +1,12 @@
 # Robots File
 
 User-agent: *
+Disallow: /admin
+Disallow: /login
+Disallow: /register
 
-Disallow: /admin/
+# Allow all other content to be crawled
+Allow: /
 
+# Sitemap location
 Sitemap: http://sw.iterated.tech/sitemap.xml
