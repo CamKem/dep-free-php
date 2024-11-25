@@ -4,4 +4,4 @@ User-agent: *
 
 Disallow: /admin/
 
-Sitemap: http://www.example.com/sitemap.xml
+Sitemap: http://sw.iterated.tech/sitemap.xml
