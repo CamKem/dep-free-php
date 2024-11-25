@@ -90,7 +90,7 @@
                     ></i>
                     <span class="tooltip">Click to search by voice</span>
                 </button>
-                <button type="submit" id="search-button">
+                <button type="submit" id="product-search-button">
                     <i class="fas fa-search search-icon" aria-hidden="true"></i>
                 </button>
             </div>
