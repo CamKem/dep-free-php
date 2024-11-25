@@ -48,18 +48,18 @@
     background-color: var(--mid-blue-color);
 }
 
-.search-button-group:hover #product-search-button,
+.search-button-group:hover #search-button,
 .search-button-group:hover #voice-search-button {
     color: var(--very-light-blue-color);
     background-color: var(--mid-blue-color);
 }
 
-.search-button-group #product-search-button:hover,
+.search-button-group #search-button:hover,
 .search-button-group #voice-search-button:hover {
     background-color: var(--dark-blue-color);
 }
 
-#product-search-button, #voice-search-button {
+#search-button, #voice-search-button {
     position: relative;
     width: 25px;
     height: 25px;

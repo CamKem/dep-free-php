@@ -34,7 +34,11 @@
             <input type="text" name="search" id="search-bar"
                    value="<?= request()->get('search') ?>"
                    placeholder="Search products">
-            <button type="submit" id="product-search-button">
+            <button type="submit" id="search-button"
+                    title="Search products"
+                    aria-label="Search products"
+                    aria-describedby="search-bar"
+            >
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>
