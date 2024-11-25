@@ -1,36 +1,49 @@
 <nav class="hidden mobile-only mobile-nav">
     <ul>
         <?php if (auth()->check()): ?>
+        <li>
             <a aria-label="Dashboard"
                href="<?= route('dashboard.index') ?>">
-                <li>Welcome, <?= auth()->user()->username ?></li>
+                <span>Welcome, <?= auth()->user()->username ?></span>
             </a>
+        </li>
+        <li class="mobile-nav-item">
             <a aria-label="Logout" href="<?= route('logout') ?>">
-                <li class="mobile-nav-login">Logout</li>
+                <span>Logout</span>
             </a>
+        </li>
         <?php else: ?>
+        <li class="mobile-nav-item">
             <a aria-label="Login"
                href="<?= route('login.index') ?>">
-                <li class="mobile-nav-login">Login</li>
+                <span>Login</span>
             </a>
+        </li>
         <?php endif; ?>
-        <a aria-label="Home" href="<?= route('home') ?>">
-            <li class="mobile-nav-item">Home</li>
-        </a>
-        <a aria-label="View Products"
-           href="<?= route('products.index') ?>">
-            <li class="mobile-nav-item">Products</li>
-        </a>
-        <a aria-label="About SW" href="<?= route('about') ?>">
-            <li class="mobile-nav-item">About</li>
-        </a>
-        <a aria-label="Contact Us"
-           href="<?= route('contact.index') ?>">
-            <li class="mobile-nav-item">Contact</li>
-        </a>
-        <a aria-label="Subscribe to the mailing list"
-           href="<?= route('subscribe.index') ?>">
-            <li class="mobile-nav-item">Subscribe</li>
-        </a>
+        <li class="mobile-nav-item">
+            <a aria-label="Home" href="<?= route('home') ?>">Home</a></li>
+        <li class="mobile-nav-item">
+            <a aria-label="View Products"
+               href="<?= route('products.index') ?>">
+                <span>Products</span>
+            </a>
+        </li>
+        <li class="mobile-nav-item">
+            <a aria-label="About SW" href="<?= route('about') ?>">
+                <span>About</span>
+            </a>
+        </li>
+        <li class="mobile-nav-item">
+            <a aria-label="Contact Us"
+               href="<?= route('contact.index') ?>">
+                <span>Contact</span>
+            </a>
+        </li>
+        <li class="mobile-nav-item">
+            <a aria-label="Subscribe to the mailing list"
+               href="<?= route('subscribe.index') ?>">
+                <span>Subscribe</span>
+            </a>
+        </li>
     </ul>
 </nav>
