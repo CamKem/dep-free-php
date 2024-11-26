@@ -49,11 +49,13 @@ class SubscribeController
 
         if ($mailChimp->message() !== null) {
             return response()->back()
-                ->with('flash-message', $mailChimp->message());
+                ->with('flash-message', $mailChimp->message())
+                ->with('action', 'error');
         }
 
-        session()->flash('flash-message', 'You have been subscribed to our mailing list.');
-        return response()->redirect('/');
+        return response()->back()
+            ->with('flash-message', 'You have been subscribed to our mailing list.')
+            ->with('action', 'success');
     }
 
 }
