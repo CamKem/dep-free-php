@@ -40,9 +40,9 @@
             </a>
         </li>
         <li class="mobile-nav-item">
-            <a aria-label="Subscribe to the mailing list"
+            <a aria-label="Subscribe to Newsletter"
                href="<?= route('subscribe.index') ?>">
-                <span>Subscribe</span>
+                <span>Nesletter</span>
             </a>
         </li>
     </ul>

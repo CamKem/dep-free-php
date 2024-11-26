@@ -38,7 +38,7 @@ Route::get('/about')
     ->controller(AboutController::class)
     ->name('about');
 
-Route::get('/subscribe')
+Route::get('/newsletter')
     ->controller([SubscribeController::class, 'index'])
     ->name('subscribe.index');
 Route::post('/subscribe')

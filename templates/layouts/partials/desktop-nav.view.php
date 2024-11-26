@@ -14,8 +14,8 @@
                href="<?= route('contact.index') ?>">Contact</a>
         </li>
         <li>
-            <a aria-label="Subscribe"
-               href="<?= route('subscribe.index') ?>">Subscribe</a>
+            <a aria-label="Newsletter"
+               href="<?= route('subscribe.index') ?>">Newsletter</a>
         </li>
         <?php if (auth()->check()): ?>
             <li style="position: relative;">
