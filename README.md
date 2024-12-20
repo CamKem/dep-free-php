@@ -1,4 +1,10 @@
-# Project Name
+# Dep Free PHP
+
+----------------
+[![License](https://img.shields.io/github/license/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/commits/master)
+----------------
 
 ## Overview
 
@@ -34,13 +40,36 @@ To get started with this framework, follow these steps:
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/your-repo/project-name.git
+    git clone https://github.com/CamKem/dep-free-php.git project_name
+    ```
+   
+2. **Create a mysql database**:
+    ```sql
+    CREATE DATABASE project_name;
     ```
 
-2. **Set up environment variables**:
-    Create a `.env` file and configure your environment variables.
-
-3. **Run the application**:
+3. **Copy the environment file**:
+    ```sh
+    cp .env.example .env
+    ```
+   
+4. **Update the environment file**:
+    Update the `.env` file with your database credentials, mailer settings, and other configurations.
+    ```dotenv
+    APP_NAME=DepFreePHP
+   
+    DB_USER=root
+    DB_PASSWORD=
+    DB_NAME=you_database_name
+    
+    MAILER_HOST=smtp.mailtrap.io
+    MAILER_PORT=2525
+    MAILER_USERNAME=your_username
+    MAILER_PASSWORD=your_password
+   
+    # Other configurations...
+    ```
+5. **Star a PHP server to run the application**:
     ```sh
     php -S localhost:8000 -t public
     ```
