@@ -47,13 +47,18 @@ To get started with this framework, follow these steps:
     ```sql
     CREATE DATABASE project_name;
     ```
+   
+3. **Use the sql file to create the tables**:
+    ```sh
+    mysql -u root -p project_name < db/dump.sql
+    ```
 
-3. **Copy the environment file**:
+4. **Copy the environment file**:
     ```sh
     cp .env.example .env
     ```
    
-4. **Update the environment file**:
+5. **Update the environment file**:
     Update the `.env` file with your database credentials, mailer settings, and other configurations.
     ```dotenv
     APP_NAME=DepFreePHP
@@ -69,10 +74,16 @@ To get started with this framework, follow these steps:
    
     # Other configurations...
     ```
-5. **Star a PHP server to run the application**:
+6. **Star a PHP server to run the application**:
     ```sh
     php -S localhost:8000 -t public
     ```
+   
+7. **Begin development**:
+    - You can now start using the framework & making changes to the code.
+    - We appreciate your feedback and contributions.
+    - Visit `http://localhost:8000` in your browser to see the application running. 
+    - Visit `http://localhost:8000/admin` to access the admin panel.
 
 ## Documentation
 
