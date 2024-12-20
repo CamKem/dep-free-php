@@ -1,10 +1,7 @@
 # Dep Free PHP
-
-----------------
 [![License](https://img.shields.io/github/license/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/issues)
 [![GitHub last commit](https://img.shields.io/github/last-commit/CamKem/dep-free-php)](https://github.com/CamKem/dep-free-php/commits/master)
-----------------
 
 ## Overview
 
