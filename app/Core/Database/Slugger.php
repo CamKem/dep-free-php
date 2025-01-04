@@ -13,20 +13,25 @@ class Slugger
     public static function uniqueSlug(string $string, string $model, string $column): string
     {
         $slug = static::slugify($string);
-        $count = 1;
-        while (static::slugExists(new $model, $column, $slug)) {
-            $slug = static::slugify($string) . '-' . $count++;
-        }
+        $last = static::lastSuffix(new $model, $column, $slug);
+        $slug .= ($last ? '-' . ($last + 1) : '');
         return $slug;
     }
 
-    private static function slugExists(Model $model, string $column, string $slug): bool
+    private static function lastSuffix(Model $model, string $column, string $slug): int
     {
-        $query = $model->query()
-            ->select('count(*) as count')
-            ->where($column, '=', $slug)
-            ->getRaw();
-        return $query[0]['count'] > 0;
+        return (int) $model->query()
+                ->addRaw("
+                WITH slug_suffix AS (
+                    SELECT MAX(CAST(SUBSTRING_INDEX({$column}, '-', -1) AS UNSIGNED)) as max_suffix
+                    FROM {$model->getTable()}
+                    WHERE {$column} LIKE '{$slug}-%'
+                )
+            ")
+            ->selectRaw('max_suffix')
+            ->from('slug_suffix')
+            ->first()
+            ->max_suffix;
     }
 
 }
